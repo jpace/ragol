@@ -1,0 +1,4 @@
+0.0.1 @ 2013-03-09
+
+  Initial version, merging Synoption (from PVN) and OptProc (from RIEL).
+
