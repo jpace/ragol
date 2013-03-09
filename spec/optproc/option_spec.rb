@@ -1,8 +1,70 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'test/unit'
 require 'ragol/optproc/optproc'
+
+describe OptProc::Option do
+  before :all do
+    # ignore what they have in ENV[HOME]    
+    ENV['HOME'] = '/this/should/not/exist'
+  end
+  
+  describe :match_tag do
+    before :all do
+      @opt = OptProc::Option.new :tags => %w{ --after-context -A }, :arg => [ :integer ]
+    end
+
+    def run_match tag
+      @opt.match [ tag ]
+    end
+
+    describe "exact match" do
+      it "long tag" do
+        run_match('--after-context').should == 1.0
+      end
+
+      it "long tag with =" do
+        run_match('--after-context=3').should == 1.0
+      end
+
+      it "short tag" do
+        run_match('-A').should == 1.0
+      end
+    end
+    
+    describe "non match" do
+      it "wrong long tag" do
+        run_match('--before-context').should be_nil
+      end
+
+      it "wrong short tag" do
+        run_match('-b').should be_nil
+      end
+    end
+    
+    describe "is case sensitive" do
+      it "long tag" do
+        run_match('--After-Context').should be_nil
+      end
+
+      it "short tag" do
+        run_match('-a').should be_nil
+      end
+    end
+
+    describe "partial match" do
+      it "long tag" do
+        run_match('--after-cont').should == 0.12
+      end
+
+      it "long tag with =" do
+        run_match('--after-cont=3').should == 0.12
+      end
+    end
+  end
+end
+
+__END__
 
 class OptionTestCase < Test::Unit::TestCase
   def setup

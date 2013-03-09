@@ -2,10 +2,11 @@ require 'rubygems'
 require 'rake/testtask'
 require 'rubygems/package_task'
 require 'fileutils'
+require 'rspec/core/rake_task'
 
 Dir['tasks/**/*.rake'].each { |t| load t }
 
-task :default => 'test'
+task :default => [ 'test', 'spec' ]
 
 Rake::TestTask.new('test') do |t|
   t.libs << 'lib'
@@ -30,9 +31,12 @@ spec = Gem::Specification.new do |s|
   s.has_rdoc           = false
 
   s.add_dependency("riel", ">= 1.1.16")
+  s.add_dependency("logue", ">= 0.0.1")
 end
  
 Gem::PackageTask.new(spec) do |pkg| 
   pkg.need_zip = true 
   pkg.need_tar_gz = true 
 end 
+
+RSpec::Core::RakeTask.new(:spec)

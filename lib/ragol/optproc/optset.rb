@@ -2,7 +2,6 @@
 # -*- ruby -*-
 
 require 'logue/loggable'
-# require 'riel/enumerable'
 require 'ragol/optproc/option'
 
 module OptProc
@@ -10,10 +9,10 @@ module OptProc
     attr_reader :options
     
     def initialize data
-      @options   = Array.new
+      @options = Array.new
       @shortopts = Array.new
-      @longopts  = Array.new
-      @regexps   = Hash.new
+      @longopts = Array.new
+      @regexps = Hash.new
       
       data.each do |optdata|
         opt = OptProc::Option.new optdata
@@ -96,14 +95,14 @@ module OptProc
       @bestopts  = Array.new
       
       optlist.each do |option|
-        next unless mv = option.match(args)
-        if mv >= 1.0
+        next unless matchval = option.match(args)
+        if matchval >= 1.0
           # exact match:
           option.set_value args
           return option
-        elsif !@bestmatch || @bestmatch <= mv
-          @bestmatch = mv
-          @bestopts  << option
+        elsif !@bestmatch || @bestmatch <= matchval
+          @bestmatch = matchval
+          @bestopts << option
         end
       end
       nil
