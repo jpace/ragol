@@ -102,7 +102,7 @@ module OptProc
 
       @md = nil
       
-      if @regexps && (@md = @regexps.collect { |re| re.match(opt) }.detect)
+      if @regexps && (@md = @regexps.collect { |re| re.match(opt) }.detect { |x| x })
         1.0
       else
         match_tag tag
@@ -186,7 +186,9 @@ module OptProc
     end
 
     def set val, opt = nil, args = nil
-      setargs = [ val, opt, args ].select_with_index { |x, i| i < @set.arity }
+      ary = [ val, opt, args ]
+      ary.extend RIEL::EnumerableExt
+      setargs = ary.select_with_index { |x, i| i < @set.arity }
       @set.call(*setargs)
     end
   end

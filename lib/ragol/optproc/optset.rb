@@ -2,7 +2,7 @@
 # -*- ruby -*-
 
 require 'logue/loggable'
-require 'riel/enumerable'
+# require 'riel/enumerable'
 require 'ragol/optproc/option'
 
 module OptProc
@@ -34,7 +34,7 @@ module OptProc
             (assocopts[ch] ||= Array.new) << opt
           end
           
-          if res = opt.res
+          if res = opt.regexps
             res.each do |re|
               (@regexps[re] ||= Array.new) << opt
             end
@@ -53,7 +53,7 @@ module OptProc
     def process_option args
       opt = args[0]
 
-      if md = COMBINED_OPTS_RES.collect { |re| re.match opt }.detect
+      if md = COMBINED_OPTS_RES.collect { |re| re.match opt }.detect { |x| x }
         lhs = md[1]
         rhs = "-" + md[2]
         args[0, 1] = lhs, rhs
