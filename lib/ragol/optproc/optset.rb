@@ -56,7 +56,6 @@ module OptProc
         lhs = md[1]
         rhs = "-" + md[2]
         args[0, 1] = lhs, rhs
-        
         return process_option args
       elsif opt[0] == 45
         ch = opt[1]
