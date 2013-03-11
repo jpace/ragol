@@ -65,6 +65,13 @@ describe OptProc::OptionSet do
       @set.process_option %w{ -d }
       @executed.should be_false
     end
+
+    it "leaves one unprocessed argument" do
+      args = %w{ -a something }
+      @set.process_option args
+      args.should have(1).items
+      args[0].should eql 'something'
+    end
   end
 
   describe "processes two options" do
@@ -177,7 +184,50 @@ describe OptProc::OptionSet do
         @abc_executed.should be_true
         @def_executed.should be_true
         args.should be_empty
-      end  
+      end
+    end
+  end
+
+  describe "processes incomplete options" do
+    before :each do
+      @abc_executed = false
+      optdata = Array.new
+      optdata << {
+        :tags => %w{ --abc },
+        :set  => Proc.new { @abc_executed = true }
+      }
+      @abcdef_executed = false
+      optdata << {
+        :tags => %w{ --abcdef },
+        :set  => Proc.new { @abcdef_executed = true }
+      }
+      @ghi_executed = false
+      optdata << {
+        :tags => %w{ --ghi },
+        :set  => Proc.new { @ghi_executed = true }
+      }
+      @set = OptProc::OptionSet.new optdata
+    end
+
+    it "uses full unambiguous option" do
+      args = %w{ --abc }
+      @set.process_option args
+      @abc_executed.should be_true
+      @abcdef_executed.should be_false
+      @ghi_executed.should be_false
+    end
+
+    it "uses short unambiguous option" do
+      args = %w{ --gh }
+      @set.process_option args
+      @abc_executed.should be_false
+      @abcdef_executed.should be_false
+      @ghi_executed.should be_true
+    end
+
+    it "uses ambiguous option" do
+      args = %w{ --ab }
+      expect { @set.process_option(args) }.to raise_error(RuntimeError, "ambiguous match of '--ab'; matches options: (--abc), (--abcdef)")
     end
   end
 end
