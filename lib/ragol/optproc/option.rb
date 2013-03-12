@@ -41,9 +41,9 @@ module OptProc
         while arg = demargs.shift
           case arg
           when :required
-            @type = "required"
+            @type = :required
           when :optional
-            @type = "optional"
+            @type = :optional
           when :none
             @type = nil
           when :regexp
@@ -52,7 +52,7 @@ module OptProc
             if re = ARG_TYPES.assoc(arg)
               @valuere = re[1]
               @argtype = arg
-              @type ||= "required"
+              @type ||= :required
             end
           end
         end
@@ -81,17 +81,16 @@ module OptProc
     end
 
     def match_tag tag
-      if tm = @tags.detect do |t|
-          t.index(tag) == 0 && tag.length <= t.length
-        end
-        
-        if tag.length == tm.length
-          1.0
-        else
-          tag.length.to_f * 0.01
-        end
+      tm = @tags.detect do |t|
+        t.index(tag) == 0 && tag.length <= t.length
+      end
+
+      return unless tm
+
+      if tag.length == tm.length
+        1.0
       else
-        nil
+        tag.length.to_f * 0.01
       end
     end
     
@@ -115,7 +114,7 @@ module OptProc
 
       if @md
         # already have match data
-      elsif @type == "required"
+      elsif @type == :required
         if val
           # already have value
         elsif args.size > 0
@@ -123,11 +122,10 @@ module OptProc
         else
           $stderr.puts "value expected"
         end
-
         if val
           match_value val
         end
-      elsif @type == "optional"
+      elsif @type == :optional
         if val
           # already have value
           match_value val
@@ -174,7 +172,7 @@ module OptProc
         when nil
           val
         else
-          log { "unknown argument type: #{@argtype.inspect}" }
+          debug { "unknown argument type: #{@argtype.inspect}" }
         end
       elsif @argtype == :boolean
         true

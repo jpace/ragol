@@ -231,133 +231,24 @@ describe OptProc::OptionSet do
     end
   end
 
-  describe "with argument" do
+  describe "as regexp" do
     before :each do
       optdata = Array.new
 
-      @string_value = nil
+      @abc_value = nil
       optdata << {
-        :tags => %w{ --str },
-        :arg  => [ :string ],
-        :set  => Proc.new { |v| @string_value = v }
+        :res => %r{ ^ - ([1-9]\d*) $ }x,
+        :set => Proc.new { |val| @abc_value = val },
       }
 
-      @integer_value = nil
-      optdata << {
-        :tags => %w{ --int },
-        :arg  => [ :integer ],
-        :set  => Proc.new { |v| @integer_value = v }
-      }
-
-      @iopt_value = nil
-      optdata << {
-        :tags => %w{ --iopt },
-        :arg  => [ :integer, :optional ],
-        :set  => Proc.new { |v| @iopt_value = v }
-      }
-
-      @float_value = nil
-      optdata << {
-        :tags => %w{ --flt },
-        :arg  => [ :float ],
-        :set  => Proc.new { |val| @float_value = val },
-      }
-      
       @set = OptProc::OptionSet.new optdata
     end
 
-    it "takes a required string" do
-      args = %w{ --str xyz }
+    it "matches" do
+      args = %w{ -123 }
       @set.process_option args
-      @string_value.should eql 'xyz'
-    end
-
-    it "takes a required integer" do
-      args = %w{ --int 1 }
-      @set.process_option args
-      @integer_value.should eql 1
-    end
-
-    it "rejects a non-integer" do
-      pending "not yet implemented"
-      args = %w{ --int 1.0 }
-      @set.process_option args
-      @integer_value.should be_nil
-    end
-
-    it "takes an optional integer" do
-      args = %w{ --iopt 1 }
-      @set.process_option args
-      @iopt_value.should eql 1
-    end
-
-    it "ignores a missing optional integer" do
-      args = %w{ --iopt }
-      @set.process_option args
-      @iopt_value.should be_nil
-    end
-
-    it "takes a required float" do
-      args = %w{ --flt 3.1415 }
-      @set.process_option args
-      @float_value.should eql 3.1415
-    end
-  end
-
-  describe "with regexp" do
-    describe "without datatype conversion" do
-      before :each do
-        optdata = Array.new
-
-        @abc_value = nil
-        optdata << {
-          :res  => %r{ ^ - ([1-9]\d*) $ }x,
-          :set  => Proc.new { |val| @abc_value = val },
-        }
-
-        @set = OptProc::OptionSet.new optdata
-      end
-
-      it "string becomes matchdata" do
-        args = %w{ -123 }
-        @set.process_option args
-        @abc_value.should be_a_kind_of(MatchData)
-        @abc_value[1].should eql '123'
-      end
-    end
-    
-    describe "with datatype conversion" do
-      before :each do
-        optdata = Array.new
-
-        @integer_value = nil
-        optdata << {
-          :res  => %r{ ^ - (1\d*) $ }x,
-          :arg  => [ :integer ],
-          :set  => Proc.new { |val| @integer_value = val },
-        }
-
-        @string_value = nil
-        optdata << {
-          :res  => %r{ ^ - (2\d*) $ }x,
-          :arg  => [ :string ],
-          :set  => Proc.new { |val| @string_value = val },
-        }
-        
-        @set = OptProc::OptionSet.new optdata
-      end
-
-      it "converts string" do
-        args = %w{ -123 }
-        @set.process_option args
-        @integer_value.should eql 123
-      end
-
-      it "converts integer" do
-        args = %w{ -234 }
-        @set.process_option args
-        @string_value.should eql '234'
-      end
+      @abc_value.should be_a_kind_of(MatchData)
+      @abc_value[1].should eql '123'
     end
   end
 end
