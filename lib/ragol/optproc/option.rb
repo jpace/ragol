@@ -8,7 +8,7 @@ module OptProc
   class Option
     include Logue::Loggable
 
-    attr_reader :md, :tags, :regexps
+    attr_reader :tags, :regexps
 
     ARG_INTEGER = %r{^ ([\-\+]?\d+)               $ }x
     ARG_FLOAT   = %r{^ ([\-\+]?\d* (?:\.\d+)?)    $ }x
@@ -24,8 +24,7 @@ module OptProc
     def initialize args = Hash.new, &blk
       @tags = args[:tags] || Array.new
       @rcfield = args[:rcfield] || args[:rc]
-      @rcfield = [ @rcfield ] if @rcfield.kind_of?(String)
-      @md = nil
+      @rcfield = [ @rcfield ].flatten
       @set = blk || args[:set]
       
       @type = nil
@@ -86,7 +85,7 @@ module OptProc
       end
 
       return unless tm
-
+      
       if tag.length == tm.length
         1.0
       else
@@ -116,7 +115,7 @@ module OptProc
         # already have match data
       elsif @type == :required
         if val
-          # already have value
+          # already have value from split
         elsif args.size > 0
           val = args.shift
         else
@@ -132,24 +131,24 @@ module OptProc
         elsif args.size > 0
           if %r{^-}.match args[0]
             # skipping next value; apparently option
-          elsif match_value args[0]
+          elsif match_value(args[0])
             # value matches
             args.shift
           end
         end
       end
 
-      value = value_from_match
+      value = value_from_match @md
 
       set value, opt, args
     end
 
-    def value_from_match
-      if @md 
+    def value_from_match md
+      if md
         if @argtype.nil? || @argtype == :regexp
-          @md
+          md
         else
-          convert_value @md[1]
+          convert_value md[1]
         end
       elsif @argtype == :boolean
         true

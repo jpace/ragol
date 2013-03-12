@@ -34,6 +34,11 @@ module OptProc
       end
     end
 
+    def set_option_value option, args
+      option.set_value args
+      option
+    end
+
     def set_option args
       bestmatch = nil
       bestopts = Array.new
@@ -42,8 +47,7 @@ module OptProc
         next unless matchval = option.match(args)
         if matchval >= 1.0
           # exact match:
-          option.set_value args
-          return option
+          return set_option_value option, args
         elsif !bestmatch || bestmatch <= matchval
           bestmatch = matchval
           bestopts << option
@@ -53,8 +57,7 @@ module OptProc
       return unless bestmatch
 
       if bestopts.size == 1
-        bestopts[0].set_value args
-        bestopts[0]
+        set_option_value bestopts[0], args
       else
         optstr = bestopts.collect { |y| '(' + y.tags.join(', ') + ')' }.join(', ')
         raise "ambiguous match of '#{args[0]}'; matches options: #{optstr}"
