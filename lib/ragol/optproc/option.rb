@@ -35,7 +35,7 @@ module OptProc
 
       @regexps = args[:regexps] || args[:res]
       @regexps = [ @regexps ] if @regexps.kind_of?(Regexp)
-      
+
       if args[:arg]
         demargs = args[:arg].dup
         while arg = demargs.shift
@@ -101,7 +101,7 @@ module OptProc
       tag = opt.split('=', 2)[0] || opt
 
       @md = nil
-      
+
       if @regexps && (@md = @regexps.collect { |re| re.match(opt) }.detect { |x| x })
         1.0
       else

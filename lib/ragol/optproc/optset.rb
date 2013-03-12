@@ -25,7 +25,6 @@ module OptProc
       opt = args[0]
 
       if md = COMBINED_OPTS_RES.collect { |re| re.match opt }.detect { |x| x }
-        puts "md: #{md}"
         lhs = md[1]
         rhs = "-" + md[2]
         args[0, 1] = lhs, rhs
