@@ -212,6 +212,12 @@ describe OptProc::Option do
         :arg  => [ :string ],
         :set  => Proc.new { |val| @string_value = val },
       }
+
+      @regexp_value = nil
+      optdata << {
+        :regexp => %r{ ^ -- (x[yz]+) $ }x,
+        :set  => Proc.new { |val| @regexp_value = val },
+      }
       
       @set = OptProc::OptionSet.new optdata
     end
@@ -226,6 +232,13 @@ describe OptProc::Option do
       args = %w{ -234 }
       @set.process_option args
       @string_value.should eq '234'
+    end
+
+    it "does not convert regexp" do
+      args = %w{ --xy }
+      @set.process_option args
+      @regexp_value.should be_kind_of(MatchData)
+      @regexp_value[1].should eql 'xy'
     end
   end
 end

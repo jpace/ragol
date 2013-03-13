@@ -32,8 +32,8 @@ module OptProc
       
       @argtype = nil
 
-      @regexps = args[:regexps] || args[:res]
-      @regexps = [ @regexps ] if @regexps.kind_of?(Regexp)
+      @regexps = args[:regexps] || args[:regexp] || args[:res]
+      @regexps = [ @regexps ].flatten if @regexps
 
       if args[:arg]
         demargs = args[:arg].dup
@@ -110,7 +110,7 @@ module OptProc
     def set_value args, opt = args[0]
       val = opt.split('=', 2)[1]
       args.shift
-
+      
       if @md
         # already have match data
       elsif @type == :required
