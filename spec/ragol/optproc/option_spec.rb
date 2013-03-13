@@ -46,6 +46,11 @@ describe OptProc::Option do
       @string_value.should eq 'xyz'
     end
 
+    it "expects a required argument" do
+      args = %w{ --str }
+      expect { process args }.to raise_error(RuntimeError, "value expected for option: --str")
+    end
+
     it "takes an optional argument" do
       args = %w{ --sopt xyz }
       process args

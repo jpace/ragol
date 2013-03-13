@@ -107,39 +107,48 @@ module OptProc
       end
     end
 
-    def set_value args, opt = args[0]
+    def get_required_value val, args
+      if val
+        # already have value from split
+      elsif args.size > 0
+        val = args.shift
+      else
+        raise "value expected for option: #{self}"
+      end
+      if val
+        match_value val
+      end
+      val
+    end
+
+    def get_optional_value val, args
+      if val
+        # already have value
+        match_value val
+      elsif args.size > 0
+        if %r{^-}.match args[0]
+          # skipping next value; apparently option
+        elsif match_value(args[0])
+          # value matches
+          args.shift
+        end
+      end
+      val
+    end
+
+    def set_value args
+      opt = args.shift
       val = opt.split('=', 2)[1]
-      args.shift
       
       if @md
         # already have match data
       elsif @type == :required
-        if val
-          # already have value from split
-        elsif args.size > 0
-          val = args.shift
-        else
-          $stderr.puts "value expected"
-        end
-        if val
-          match_value val
-        end
+        val = get_required_value val, args
       elsif @type == :optional
-        if val
-          # already have value
-          match_value val
-        elsif args.size > 0
-          if %r{^-}.match args[0]
-            # skipping next value; apparently option
-          elsif match_value(args[0])
-            # value matches
-            args.shift
-          end
-        end
+        val = get_optional_value val, args
       end
-
+      
       value = value_from_match @md
-
       set value, opt, args
     end
 
