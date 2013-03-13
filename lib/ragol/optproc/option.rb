@@ -63,107 +63,34 @@ module OptProc
   end
 
   class OptionArgument
-    def initialize type
+    def initialize tags, type, valuere
+      @tags = tags
       @type = type
+      @valuere = valuere
     end
-  end
-  
-  class Option
-    include Logue::Loggable
 
-    attr_reader :tags, :regexps
-
-    ARG_INTEGER = %r{^ ([\-\+]?\d+)               $ }x
-    ARG_FLOAT   = %r{^ ([\-\+]?\d* (?:\.\d+)?)    $ }x
-    ARG_STRING  = %r{^ [\"\']? (.*?) [\"\']?      $ }x
-    ARG_BOOLEAN = %r{^ (yes|true|on|no|false|off) $ }ix
-
-    ARG_TYPES = Hash[:integer => ARG_INTEGER,
-                     :float   => ARG_FLOAT,
-                     :string  => ARG_STRING,
-                     :boolean => ARG_BOOLEAN]
-
-    def initialize args = Hash.new, &blk
-      @tags = OptionTags.new(args[:tags] || Array.new)
-
-      @rcfield = args[:rcfield] || args[:rc]
-      @rcfield = [ @rcfield ].flatten
-      
-      @set = blk || args[:set]
-      
-      @type = nil
-      @valuere = nil
-      
-      argtype = nil
-
-      @regexps = args[:regexps] || args[:regexp] || args[:res]
-      @regexps = [ @regexps ].flatten if @regexps
-
-      if args[:arg]
-        demargs = args[:arg].dup
-        while arg = demargs.shift
-          case arg
-          when :required
-            @type = :required
-          when :optional
-            @type = :optional
-          when :none
-            @type = nil
-          when :regexp
-            @valuere = demargs.shift
-          else
-            if re = ARG_TYPES[arg]
-              @valuere = re
-              argtype = arg
-              @type ||= :required
-            end
-          end
-        end
+    def take_value val, args
+      case @type
+      when :required
+        get_required_value val, args
+      when :optional
+        get_optional_value val, args
+      when :none, nil
+        nil
       end
-
-      @optvalue = OptionValue.new argtype
-    end
-
-    def inspect
-      super + '[' + @tags.tags.collect { |t| t.inspect }.join(" ") + ']'
-    end
-
-    def to_str
-      to_s
-    end
-
-    def to_s
-      @tags.to_s
-    end
-
-    def match_rc? field
-      @rcfield && @rcfield.include?(field)
     end
 
     def match_value val
       @valuere && @valuere.match(val)
     end
 
-    def match_score args
-      return if args.empty?
-      opt = args[0]
-      return unless opt && %r{^-}.match(opt)
-
-      if @regexps && @regexps.find { |re| re.match(opt) }
-        1.0
-      else
-        tag = opt.split('=', 2)[0] || opt
-        @tags.match_score tag
-      end
-    end
-    
     def get_required_value val, args
       if val
         # already have value from split
       elsif args.size > 0
         val = args.shift
       else
-        raise "value expected for option: #{self}"
+        raise "value expected for option: #{@tags}"
       end
 
       md = nil
@@ -194,38 +121,108 @@ module OptProc
       end
       md
     end
+  end
+  
+  class Option
+    include Logue::Loggable
+
+    attr_reader :tags, :regexps
+
+    ARG_INTEGER = %r{^ ([\-\+]?\d+)               $ }x
+    ARG_FLOAT   = %r{^ ([\-\+]?\d* (?:\.\d+)?)    $ }x
+    ARG_STRING  = %r{^ [\"\']? (.*?) [\"\']?      $ }x
+    ARG_BOOLEAN = %r{^ (yes|true|on|no|false|off) $ }ix
+
+    ARG_TYPES = Hash[:integer => ARG_INTEGER,
+                     :float   => ARG_FLOAT,
+                     :string  => ARG_STRING,
+                     :boolean => ARG_BOOLEAN]
+
+    def initialize args = Hash.new, &blk
+      @tags = OptionTags.new(args[:tags] || Array.new)
+
+      @rcfield = args[:rcfield] || args[:rc]
+      @rcfield = [ @rcfield ].flatten if @rcfield
+      
+      @setter = blk || args[:set]
+      
+      type = nil
+      valuere = nil
+      
+      argtype = nil
+
+      @regexps = args[:regexps] || args[:regexp] || args[:res]
+      @regexps = [ @regexps ].flatten if @regexps
+
+      if args[:arg]
+        demargs = args[:arg].dup
+        while arg = demargs.shift
+          case arg
+          when :required
+            type = :required
+          when :optional
+            type = :optional
+          when :none
+            type = nil
+          when :regexp
+            valuere = demargs.shift
+          else
+            if re = ARG_TYPES[arg]
+              valuere = re
+              argtype = arg
+              type ||= :required
+            end
+          end
+        end
+      end
+
+      @optvalue = OptionValue.new argtype
+      @optarg = OptionArgument.new @tags, type, valuere
+    end
+
+    def inspect
+      super + '[' + @tags.tags.collect { |t| t.inspect }.join(" ") + ']'
+    end
+
+    def to_str
+      to_s
+    end
+
+    def to_s
+      @tags.to_s
+    end
+
+    def match_rc? field
+      @rcfield && @rcfield.include?(field)
+    end
+
+    def match_score args
+      return if args.empty?
+      opt = args[0]
+      return unless opt && %r{^-}.match(opt)
+
+      if @regexps && @regexps.find { |re| re.match(opt) }
+        1.0
+      else
+        tag = opt.split('=', 2)[0] || opt
+        @tags.match_score tag
+      end
+    end
 
     def set_value args
       opt = args.shift
 
-      md = nil
-
-      if @regexps
-        md = @regexps.collect { |re| re.match(opt) }.detect { |x| x }
-      end
-      
-      unless md
+      unless md = @regexps && @regexps.collect { |re| re.match(opt) }.detect { |x| x }
         val = opt.split('=', 2)[1]
-        md = case @type
-             when :required
-               get_required_value val, args
-             when :optional
-               get_optional_value val, args
-             when :none, nil
-               nil
-             end
+        md = @optarg.take_value val, args
       end
       
       value = @optvalue.convert md
 
-      set value, opt, args
-    end
-
-    def set val, opt = nil, args = nil
-      ary = [ val, opt, args ]
+      ary = [ value, opt, args ]
       ary.extend RIEL::EnumerableExt
-      setargs = ary.select_with_index { |x, i| i < @set.arity }
-      @set.call(*setargs)
+      setargs = ary.select_with_index { |x, i| i < @setter.arity }
+      @setter.call(*setargs)
     end
   end
 end
