@@ -206,11 +206,14 @@ module OptProc
       
       unless md
         val = opt.split('=', 2)[1]
-        if @type == :required
-          md = get_required_value val, args
-        elsif @type == :optional
-          md = get_optional_value val, args
-        end
+        md = case @type
+             when :required
+               get_required_value val, args
+             when :optional
+               get_optional_value val, args
+             when :none, nil
+               nil
+             end
       end
       
       value = @optvalue.convert md

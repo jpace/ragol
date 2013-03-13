@@ -247,7 +247,7 @@ describe OptProc::Option do
     end
   end
 
-  describe "option with no argument" do
+  describe "option with argument :none" do
     before :each do
       optdata = Array.new
 
@@ -258,6 +258,12 @@ describe OptProc::Option do
         :set  => Proc.new { |x| @none_value = 'wasset' }
       }
 
+      @undefn_value = nil
+      optdata << {
+        :tags => %w{ --undefn },
+        :set  => Proc.new { |x| @undefn_value = 'setitwas' }
+      }
+
       @set = OptProc::OptionSet.new optdata
     end
 
@@ -265,10 +271,17 @@ describe OptProc::Option do
       @set.process_option args
     end
 
-    it "ignores the argument" do
+    it "can take :none as argument" do
       args = %w{ --none xyz }
       process args
       @none_value.should eql 'wasset'
+      args.should have(1).items
+    end
+
+    it "defaults to :none" do
+      args = %w{ --undefn xyz }
+      process args
+      @undefn_value.should eql 'setitwas'
       args.should have(1).items
     end
   end

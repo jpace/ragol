@@ -16,4 +16,4 @@ Tue Mar 12 19:37:00 2013
 
 Wed Mar 13 19:29:43 2013
 
-  Added test for option with no argument.
+  Added test for option with :none and no (default) argument.
