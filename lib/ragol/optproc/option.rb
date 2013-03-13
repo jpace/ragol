@@ -5,6 +5,65 @@ require 'logue/loggable'
 require 'riel/enumerable'
 
 module OptProc
+  class OptionTags
+    attr_reader :tags
+
+    def initialize tags
+      @tags = tags
+    end
+
+    def match_score tag
+      tm = @tags.detect do |t|
+        t.index(tag) == 0 && tag.length <= t.length
+      end
+
+      return unless tm
+      
+      if tag.length == tm.length
+        1.0
+      else
+        tag.length.to_f * 0.01
+      end
+    end
+
+    def to_s
+      @tags.join(', ')
+    end
+  end
+
+  class OptionValue
+    def initialize argtype
+      @argtype = argtype
+    end
+    
+    def convert md
+      return md if @argtype.nil? || @argtype == :regexp
+      unless val = md && md[1]
+        # we return nil for undefined, as opposed to false for defined
+        return @argtype == :boolean || nil
+      end
+
+      case @argtype
+      when :string
+        val
+      when :integer
+        val.to_i
+      when :float
+        val.to_f
+      when :boolean
+        to_boolean val
+      when nil
+        val
+      else
+        debug { "unknown argument type: #{@argtype.inspect}" }
+      end
+    end
+
+    def to_boolean val
+      %w{ yes true on soitenly }.include? val.downcase
+    end
+  end
+  
   class Option
     include Logue::Loggable
 
@@ -22,9 +81,11 @@ module OptProc
     ARG_TYPES << [ :boolean, ARG_BOOLEAN ]
 
     def initialize args = Hash.new, &blk
-      @tags = args[:tags] || Array.new
+      @tags = OptionTags.new(args[:tags] || Array.new)
+
       @rcfield = args[:rcfield] || args[:rc]
       @rcfield = [ @rcfield ].flatten
+      
       @set = blk || args[:set]
       
       @type = nil
@@ -59,7 +120,7 @@ module OptProc
     end
 
     def inspect
-      '[' + @tags.collect { |t| t.inspect }.join(" ") + ']'
+      super + '[' + @tags.tags.collect { |t| t.inspect }.join(" ") + ']'
     end
 
     def to_str
@@ -67,7 +128,7 @@ module OptProc
     end
 
     def to_s
-      @tags.join " "
+      @tags.to_s
     end
 
     def match_rc? field
@@ -75,38 +136,22 @@ module OptProc
     end
 
     def match_value val
-      @md = @valuere && @valuere.match(val)
-      @md && @md[1]
+      @valuere && @valuere.match(val)
     end
 
-    def match_tag tag
-      tm = @tags.detect do |t|
-        t.index(tag) == 0 && tag.length <= t.length
-      end
+    def match_score args
+      return if args.empty?
+      opt = args[0]
+      return unless opt && %r{^-}.match(opt)
 
-      return unless tm
-      
-      if tag.length == tm.length
+      if @regexps && @regexps.find { |re| re.match(opt) }
         1.0
       else
-        tag.length.to_f * 0.01
+        tag = opt.split('=', 2)[0] || opt
+        @tags.match_score tag
       end
     end
     
-    def match args, opt = args[0]
-      return nil unless %r{^-}.match opt
-
-      tag = opt.split('=', 2)[0] || opt
-
-      @md = nil
-
-      if @regexps && (@md = @regexps.collect { |re| re.match(opt) }.detect { |x| x })
-        1.0
-      else
-        match_tag tag
-      end
-    end
-
     def get_required_value val, args
       if val
         # already have value from split
@@ -115,80 +160,58 @@ module OptProc
       else
         raise "value expected for option: #{self}"
       end
+
+      md = nil
+
       if val
-        match_value val
+        md = match_value(val)
+        md && md[1]
       end
-      val
+      md
     end
 
     def get_optional_value val, args
+      md = nil
+
       if val
         # already have value
-        match_value val
+        md = @valuere && @valuere.match(val)
       elsif args.size > 0
         if %r{^-}.match args[0]
           # skipping next value; apparently option
-        elsif match_value(args[0])
-          # value matches
-          args.shift
+        else
+          md = match_value(args[0])
+          if md && md[1]
+            # value matches
+            args.shift
+          end
         end
       end
-      val
+      md
     end
 
     def set_value args
       opt = args.shift
-      val = opt.split('=', 2)[1]
-      
-      if @md
-        # already have match data
-      elsif @type == :required
-        val = get_required_value val, args
-      elsif @type == :optional
-        val = get_optional_value val, args
+
+      md = nil
+
+      if @regexps
+        md = @regexps.collect { |re| re.match(opt) }.detect { |x| x }
       end
       
-      value = value_from_match @md
+      unless md
+        val = opt.split('=', 2)[1]
+        if @type == :required
+          md = get_required_value val, args
+        elsif @type == :optional
+          md = get_optional_value val, args
+        end
+      end
+      
+      ov = OptionValue.new @argtype
+      value = ov.convert md
+
       set value, opt, args
-    end
-
-    def value_from_match md
-      if md
-        if @argtype.nil? || @argtype == :regexp
-          md
-        else
-          convert_value md[1]
-        end
-      elsif @argtype == :boolean
-        true
-      end
-    end
-
-    def convert_value val
-      if val
-        case @argtype
-        when :string
-          val
-        when :integer
-          val.to_i
-        when :float
-          val.to_f
-        when :boolean
-          to_boolean val
-        when :regexp
-          val
-        when nil
-          val
-        else
-          debug { "unknown argument type: #{@argtype.inspect}" }
-        end
-      elsif @argtype == :boolean
-        true
-      end
-    end
-
-    def to_boolean val
-      %w{ yes true on soitenly }.include? val.downcase
     end
 
     def set val, opt = nil, args = nil
