@@ -61,9 +61,9 @@ module Synoption
     def process args
       options_processed = Array.new
 
-      info "args: #{args.inspect}"
+      debug "args: #{args.inspect}"
       @unprocessed = args
-      info "@unprocessed: #{@unprocessed.inspect}"
+      debug "@unprocessed: #{@unprocessed.inspect}"
 
       aborted = false
       

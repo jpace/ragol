@@ -246,4 +246,30 @@ describe OptProc::Option do
       @regexp_value[1].should eql 'xy'
     end
   end
+
+  describe "option with no argument" do
+    before :each do
+      optdata = Array.new
+
+      @none_value = nil
+      optdata << {
+        :tags => %w{ --none },
+        :arg  => [ :none ],
+        :set  => Proc.new { |x| @none_value = 'wasset' }
+      }
+
+      @set = OptProc::OptionSet.new optdata
+    end
+
+    def process args
+      @set.process_option args
+    end
+
+    it "ignores the argument" do
+      args = %w{ --none xyz }
+      process args
+      @none_value.should eql 'wasset'
+      args.should have(1).items
+    end
+  end
 end

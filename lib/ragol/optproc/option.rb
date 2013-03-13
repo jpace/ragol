@@ -13,11 +13,9 @@ module OptProc
     end
 
     def match_score tag
-      tm = @tags.detect do |t|
+      return unless tm = @tags.detect do |t|
         t.index(tag) == 0 && tag.length <= t.length
       end
-
-      return unless tm
       
       if tag.length == tm.length
         1.0
@@ -27,7 +25,7 @@ module OptProc
     end
 
     def to_s
-      @tags.join(', ')
+      @tags.join ', '
     end
   end
 
@@ -63,6 +61,12 @@ module OptProc
       %w{ yes true on soitenly }.include? val.downcase
     end
   end
+
+  class OptionArgument
+    def initialize type
+      @type = type
+    end
+  end
   
   class Option
     include Logue::Loggable
@@ -74,11 +78,10 @@ module OptProc
     ARG_STRING  = %r{^ [\"\']? (.*?) [\"\']?      $ }x
     ARG_BOOLEAN = %r{^ (yes|true|on|no|false|off) $ }ix
 
-    ARG_TYPES = Array.new
-    ARG_TYPES << [ :integer, ARG_INTEGER ]
-    ARG_TYPES << [ :float,   ARG_FLOAT   ]
-    ARG_TYPES << [ :string,  ARG_STRING  ]
-    ARG_TYPES << [ :boolean, ARG_BOOLEAN ]
+    ARG_TYPES = Hash[:integer => ARG_INTEGER,
+                     :float   => ARG_FLOAT,
+                     :string  => ARG_STRING,
+                     :boolean => ARG_BOOLEAN]
 
     def initialize args = Hash.new, &blk
       @tags = OptionTags.new(args[:tags] || Array.new)
@@ -91,7 +94,7 @@ module OptProc
       @type = nil
       @valuere = nil
       
-      @argtype = nil
+      argtype = nil
 
       @regexps = args[:regexps] || args[:regexp] || args[:res]
       @regexps = [ @regexps ].flatten if @regexps
@@ -109,14 +112,16 @@ module OptProc
           when :regexp
             @valuere = demargs.shift
           else
-            if re = ARG_TYPES.assoc(arg)
-              @valuere = re[1]
-              @argtype = arg
+            if re = ARG_TYPES[arg]
+              @valuere = re
+              argtype = arg
               @type ||= :required
             end
           end
         end
       end
+
+      @optvalue = OptionValue.new argtype
     end
 
     def inspect
@@ -175,7 +180,7 @@ module OptProc
 
       if val
         # already have value
-        md = @valuere && @valuere.match(val)
+        md = match_value(val)
       elsif args.size > 0
         if %r{^-}.match args[0]
           # skipping next value; apparently option
@@ -208,8 +213,7 @@ module OptProc
         end
       end
       
-      ov = OptionValue.new @argtype
-      value = ov.convert md
+      value = @optvalue.convert md
 
       set value, opt, args
     end

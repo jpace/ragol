@@ -13,3 +13,7 @@ Mon Mar 11 19:20:24 2013
 Tue Mar 12 19:37:00 2013
 
   Added tests.
+
+Wed Mar 13 19:29:43 2013
+
+  Added test for option with no argument.

@@ -6,7 +6,7 @@ require 'logue/loggable'
 require 'stringio'
 require 'test/unit'
 
-Logue::Log.level = Logue::Log::DEBUG
+Logue::Log.level = Logue::Log::INFO
 Logue::Log.set_widths(-35, 4, -35)
 
 module Synoption
