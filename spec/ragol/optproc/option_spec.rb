@@ -113,12 +113,11 @@ describe OptProc::Option do
       @integer_value.should eq 1
     end
 
-    # it "rejects a non-integer" do
-    #   pending "not yet implemented"
-    #   args = %w{ --int 1.0 }
-    #   process args
-    #   @integer_value.should be_nil
-    # end
+    it "rejects a non-integer" do
+      args = %w{ --int 1.0 }
+      expect { process args }.to raise_error(RuntimeError, "invalid argument '1.0' for option: --int")
+      @integer_value.should be_nil
+    end
 
     it "takes an optional argument" do
       args = %w{ --iopt 1 }
@@ -161,6 +160,12 @@ describe OptProc::Option do
       args = %w{ --flt 3 }
       process args
       @float_value.should eq 3
+    end
+
+    it "rejects a non-float" do
+      args = %w{ --flt foobar }
+      expect { process args }.to raise_error(RuntimeError, "invalid argument 'foobar' for option: --flt")
+      @integer_value.should be_nil
     end
   end
   
@@ -283,6 +288,37 @@ describe OptProc::Option do
       process args
       @undefn_value.should eql 'setitwas'
       args.should have(1).items
+    end
+  end
+
+  describe "option with argument :required" do
+    before :each do
+      optdata = Array.new
+
+      @str_value = nil
+      optdata << {
+        :tags => %w{ --str },
+        :arg  => [ :string, :required ],
+        :set  => Proc.new { |x| @str_value = x }
+      }
+
+      @set = OptProc::OptionSet.new optdata
+    end
+
+    def process args
+      @set.process_option args
+    end
+
+    it "takes the argument" do
+      args = %w{ --str foo }
+      process args
+      @str_value.should eql 'foo'
+      args.should have(0).items
+    end
+
+    it "expects a required argument" do
+      args = %w{ --str }
+      expect { process args }.to raise_error(RuntimeError, "value expected for option: --str")
     end
   end
 end

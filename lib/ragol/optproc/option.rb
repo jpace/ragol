@@ -63,28 +63,22 @@ module OptProc
   end
 
   class OptionArgument
-    def initialize tags, type, valuere
+    def initialize tags, valuere
       @tags = tags
-      @type = type
       @valuere = valuere
     end
 
     def take_value val, args
-      case @type
-      when :required
-        get_required_value val, args
-      when :optional
-        get_optional_value val, args
-      when :none, nil
-        nil
-      end
+      nil
     end
 
     def match_value val
       @valuere && @valuere.match(val)
     end
+  end
 
-    def get_required_value val, args
+  class RequiredOptionArgument < OptionArgument
+    def take_value val, args
       if val
         # already have value from split
       elsif args.size > 0
@@ -94,15 +88,18 @@ module OptProc
       end
 
       md = nil
-
+      
       if val
         md = match_value(val)
+        raise "invalid argument '#{val}' for option: #{@tags}" unless md
         md && md[1]
       end
       md
     end
+  end
 
-    def get_optional_value val, args
+  class OptionalOptionArgument < OptionArgument
+    def take_value val, args
       md = nil
 
       if val
@@ -122,7 +119,7 @@ module OptProc
       md
     end
   end
-  
+
   class Option
     include Logue::Loggable
 
@@ -146,38 +143,40 @@ module OptProc
       
       @setter = blk || args[:set]
       
-      type = nil
-      valuere = nil
-      
+      valuere = nil      
       argtype = nil
 
       @regexps = args[:regexps] || args[:regexp] || args[:res]
       @regexps = [ @regexps ].flatten if @regexps
+
+      optargcls = nil
 
       if args[:arg]
         demargs = args[:arg].dup
         while arg = demargs.shift
           case arg
           when :required
-            type = :required
+            optargcls = RequiredOptionArgument
           when :optional
-            type = :optional
+            optargcls = OptionalOptionArgument
           when :none
-            type = nil
+            optargcls = OptionArgument
           when :regexp
             valuere = demargs.shift
           else
             if re = ARG_TYPES[arg]
               valuere = re
               argtype = arg
-              type ||= :required
+              optargcls ||= RequiredOptionArgument
             end
           end
         end
       end
 
+      optargcls ||= OptionArgument
+
       @optvalue = OptionValue.new argtype
-      @optarg = OptionArgument.new @tags, type, valuere
+      @optarg = optargcls.new @tags, valuere
     end
 
     def inspect
