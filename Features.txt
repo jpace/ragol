@@ -21,3 +21,7 @@ Wed Mar 13 19:29:43 2013
 Thu Mar 14 20:33:49 2013
 
   Implemented behavior for invalid argument for integer and float options.
+
+Fri Mar 15 17:14:23 2013
+
+  Added functionality to check for valid argument type.
