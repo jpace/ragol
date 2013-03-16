@@ -26,6 +26,27 @@ module OptProc
     class << self
       alias_method :old_new, :new
       def new args = Hash.new, &blk
+        optargs = [ args[:arg] ].flatten.compact
+
+        reqtype = case
+                  when optargs.include?(:required)
+                    RequiredOptionArgument
+                  when optargs.include?(:optional)
+                    OptionalOptionArgument
+                  when optargs.include?(:none)
+                    nil
+                  end
+        
+        opttype = [ (ARG_TYPES.keys & optargs) ].flatten.compact[0]
+
+        if opttype
+          reqtype ||= RequiredOptionArgument
+          args[:valuere] = ARG_TYPES[opttype]
+          args[:opttype] = eval('OptProc::' + opttype.to_s.capitalize + 'Value')
+        end
+        
+        args[:reqtype] = reqtype
+        
         if args[:regexps] || args[:regexp] || args[:res]
           RegexpOption.old_new args, &blk
         else
@@ -42,38 +63,12 @@ module OptProc
       
       @setter = blk || args[:set]
       
-      valuere = nil      
-      argtype = nil
+      valuere    = args[:valuere]
+      opttypecls = args[:opttype]
+      optargcls  = args[:reqtype]
 
-      optargcls = nil
-
-      if args[:arg]
-        demargs = args[:arg].dup
-        while arg = demargs.shift
-          case arg
-          when :required
-            optargcls = RequiredOptionArgument
-          when :optional
-            optargcls = OptionalOptionArgument
-          when :none
-            optargcls = OptionArgument
-          when :regexp
-            valuere = demargs.shift
-          else
-            if re = ARG_TYPES[arg]
-              valuere = re
-              argtype = arg
-              optargcls ||= RequiredOptionArgument
-            end
-          end
-        end
-      end
-
-      optvalcls = argtype && eval('OptProc::' + argtype.to_s.capitalize + 'Value')
-      @optvalue = optvalcls && optvalcls.new
-      
-      optargcls ||= OptionArgument
-      @optarg = optargcls.new @tags, valuere
+      @optvalue = opttypecls && opttypecls.new
+      @optarg = optargcls && optargcls.new(@tags, valuere)
     end
 
     def inspect
@@ -101,7 +96,7 @@ module OptProc
     end
 
     def take_value opt, args
-      @optarg.take_value opt, args
+      @optarg && @optarg.take_value(opt, args)
     end
 
     def set_value args

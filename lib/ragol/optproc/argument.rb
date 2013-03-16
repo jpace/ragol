@@ -8,15 +8,15 @@ module OptProc
       @valuere = valuere
     end
 
-    def take_value opt, args
-      nil
-    end
-
     def do_match val
-      unless md = (@valuere && @valuere.match(val))
-        raise "invalid argument '#{val}' for option: #{@tags}"
+      if @valuere
+        unless md = @valuere.match(val)
+          raise "invalid argument '#{val}' for option: #{@tags}"
+        end
+        md
+      else
+        val
       end
-      md
     end
   end
 

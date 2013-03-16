@@ -359,4 +359,29 @@ describe OptProc::Option do
       @regexp_value[1].should eql 'xy'
     end
   end
+
+  describe "option without arg type" do
+    before :each do
+      optdata = Array.new
+
+      @xyz_value = nil
+      optdata << {
+        :tags => %w{ --xyz },
+        :arg  => [ :required ],
+        :set  => Proc.new { |v| @xyz_value = v }
+      }
+      
+      @set = OptProc::OptionSet.new optdata
+    end
+
+    def process args
+      @set.process_option args
+    end
+
+    it "takes a required argument" do
+      args = %w{ --xyz abc }
+      process args
+      @xyz_value.should eq 'abc'
+    end
+  end
 end
