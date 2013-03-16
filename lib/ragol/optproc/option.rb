@@ -13,16 +13,6 @@ module OptProc
 
     attr_reader :tags, :regexps
 
-    ARG_INTEGER = %r{^ ([\-\+]?\d+)               $ }x
-    ARG_FLOAT   = %r{^ ([\-\+]?\d* (?:\.\d+)?)    $ }x
-    ARG_STRING  = %r{^ [\"\']? (.*?) [\"\']?      $ }x
-    ARG_BOOLEAN = %r{^ (yes|true|on|no|false|off) $ }ix
-
-    ARG_TYPES = Hash[:integer => ARG_INTEGER,
-                     :float   => ARG_FLOAT,
-                     :string  => ARG_STRING,
-                     :boolean => ARG_BOOLEAN]
-
     class << self
       alias_method :old_new, :new
       def new args = Hash.new, &blk
@@ -37,12 +27,12 @@ module OptProc
                     nil
                   end
         
-        opttype = [ (ARG_TYPES.keys & optargs) ].flatten.compact[0]
+        opttype = [ (OptProc::ARG_TYPES.keys & optargs) ].flatten.compact[0]
 
         if opttype
           reqtype ||= RequiredOptionArgument
-          args[:valuere] = ARG_TYPES[opttype]
-          args[:opttype] = eval('OptProc::' + opttype.to_s.capitalize + 'Value')
+          args[:valuere] = OptProc::ARG_TYPES[opttype][0]
+          args[:opttype] = OptProc::ARG_TYPES[opttype][1]
         end
         
         args[:reqtype] = reqtype
