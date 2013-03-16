@@ -186,10 +186,24 @@ describe OptProc::Option do
       @float_value.should eq 3
     end
 
-    it "rejects a non-float" do
+    it "rejects a non-float string" do
       args = %w{ --flt foobar }
       expect { process args }.to raise_error(RuntimeError, "invalid argument 'foobar' for option: --flt")
-      @integer_value.should be_nil
+    end
+
+    it "rejects a non-float string as =" do
+      args = %w{ --flt=foobar }
+      expect { process args }.to raise_error(RuntimeError, "invalid argument 'foobar' for option: --flt")
+    end
+
+    it "rejects a non-float number" do
+      args = %w{ --flt 1.3.5 }
+      expect { process args }.to raise_error(RuntimeError, "invalid argument '1.3.5' for option: --flt")
+    end
+
+    it "rejects a non-float number as" do
+      args = %w{ --flt=1.3.5 }
+      expect { process args }.to raise_error(RuntimeError, "invalid argument '1.3.5' for option: --flt")
     end
   end
   
@@ -299,23 +313,22 @@ describe OptProc::Option do
     end
   end
 
-
   describe "regexp option" do
     before :each do
       optdata = Array.new
 
       @integer_value = nil
       optdata << {
-        :res  => %r{ ^ - (1\d*) $ }x,
-        :arg  => [ :integer ],
-        :set  => Proc.new { |val| @integer_value = val },
+        :regexp => %r{ ^ - (1\d*) $ }x,
+        :arg    => [ :integer ],
+        :set    => Proc.new { |val| @integer_value = val },
       }
 
       @string_value = nil
       optdata << {
-        :res  => %r{ ^ - (2\d*) $ }x,
-        :arg  => [ :string ],
-        :set  => Proc.new { |val| @string_value = val },
+        :regexp => %r{ ^ - (2\d*) $ }x,
+        :arg    => [ :string ],
+        :set    => Proc.new { |val| @string_value = val },
       }
 
       @regexp_value = nil

@@ -23,6 +23,17 @@ module OptProc
                      :string  => ARG_STRING,
                      :boolean => ARG_BOOLEAN]
 
+    class << self
+      alias_method :old_new, :new
+      def new args = Hash.new, &blk
+        if args[:regexps] || args[:regexp] || args[:res]
+          RegexpOption.old_new args, &blk
+        else
+          old_new args, &blk
+        end
+      end
+    end
+
     def initialize args = Hash.new, &blk
       @tags = OptionTags.new(args[:tags] || Array.new)
 
@@ -33,9 +44,6 @@ module OptProc
       
       valuere = nil      
       argtype = nil
-
-      @regexps = args[:regexps] || args[:regexp] || args[:res]
-      @regexps = [ @regexps ].flatten if @regexps
 
       optargcls = nil
 
@@ -84,28 +92,45 @@ module OptProc
       return if args.empty?
       opt = args[0]
       return unless opt && opt[0] == '-'
+      match_tag_score opt
+    end
 
-      if @regexps && @regexps.find { |re| re.match(opt) }
-        1.0
-      else
-        tag = opt.split('=', 2)[0] || opt
-        @tags.match_score tag
-      end
+    def match_tag_score opt
+      tag = opt.split('=', 2)[0] || opt
+      @tags.match_score tag
+    end
+
+    def take_value opt, args
+      @optarg.take_value opt, args
     end
 
     def set_value args
       opt = args.shift
-
-      unless md = @regexps && @regexps.collect { |re| re.match(opt) }.detect { |x| x }
-        md = @optarg.take_value opt, args
-      end
-      
+      md = take_value opt, args      
       value = @optvalue ? @optvalue.convert(md) : md
 
       ary = [ value, opt, args ]
       ary.extend RIEL::EnumerableExt
       setargs = ary.select_with_index { |x, i| i < @setter.arity }
       @setter.call(*setargs)
+    end
+  end
+
+  class RegexpOption < Option
+    def initialize args = Hash.new, &blk
+      @regexps = args[:regexps] || args[:regexp] || args[:res]
+      @regexps = [ @regexps ].flatten
+      
+      super
+    end
+
+    def match_tag_score opt
+      return 1.0 if @regexps.find { |re| re.match(opt) }
+      super
+    end
+
+    def take_value opt, args
+      @regexps.collect { |re| re.match(opt) }.detect { |x| x }
     end
   end
 end

@@ -25,3 +25,7 @@ Thu Mar 14 20:33:49 2013
 Fri Mar 15 17:14:23 2013
 
   Added functionality to check for valid argument type.
+
+Sat Mar 16 11:00:22 2013
+
+  Expanded tests for valid argument type.
