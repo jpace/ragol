@@ -2,16 +2,26 @@
 # -*- ruby -*-
 
 module OptProc
+  class InvalidArgument < RuntimeError
+    attr_reader :value
+    
+    def initialize value
+      @value = value
+    end
+  end
+
+  class MissingExpectedArgument < RuntimeError
+  end
+
   class OptionArgument
-    def initialize tags, valuere
-      @tags = tags
+    def initialize valuere
       @valuere = valuere
     end
 
     def do_match val
       if @valuere
         unless md = @valuere.match(val)
-          raise "invalid argument '#{val}' for option: #{@tags}"
+          raise InvalidArgument.new val
         end
         md
       else
@@ -23,27 +33,25 @@ module OptProc
   class RequiredOptionArgument < OptionArgument
     def take_value opt, args
       val = opt.split('=', 2)[1] || args.shift
-      raise "value expected for option: #{@tags}" unless val
+      raise MissingExpectedArgument.new unless val
       do_match val
     end
   end
 
   class OptionalOptionArgument < OptionArgument
-    def take_value opt, args
-      val = opt.split('=', 2)[1]
+    def next_value args
+      return if args.empty? || args[0][0] == '-'
+      if md = do_match(args[0])
+        args.shift
+        md
+      end
+    end
 
-      if val
-        do_match(val)
-      elsif args.size > 0
-        if %r{^-}.match args[0]
-          # skipping next value; apparently option
-          nil
-        elsif md = do_match(args[0])
-          args.shift
-          md
-        end
+    def take_value opt, args
+      if val = opt.split('=', 2)[1]
+        do_match val
       else
-        nil
+        next_value args
       end
     end
   end

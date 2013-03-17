@@ -3,15 +3,12 @@
 
 require 'logue/loggable'
 require 'riel/enumerable'
-require 'ragol/optproc/tags'
 require 'ragol/optproc/value'
 require 'ragol/optproc/argument'
 
 module OptProc
   class Option
     include Logue::Loggable
-
-    attr_reader :tags, :regexps
 
     class << self
       alias_method :old_new, :new
@@ -40,14 +37,12 @@ module OptProc
         if args[:regexps] || args[:regexp] || args[:res]
           RegexpOption.old_new args, &blk
         else
-          old_new args, &blk
+          TagOption.old_new args, &blk
         end
       end
     end
 
     def initialize args = Hash.new, &blk
-      @tags = OptionTags.new(args[:tags] || Array.new)
-
       @rcfield = args[:rcfield] || args[:rc]
       @rcfield = [ @rcfield ].flatten if @rcfield
       
@@ -58,15 +53,7 @@ module OptProc
       optargcls  = args[:reqtype]
 
       @optvalue = opttypecls && opttypecls.new
-      @optarg = optargcls && optargcls.new(@tags, valuere)
-    end
-
-    def inspect
-      super + '[' + @tags.inspect + ']'
-    end
-
-    def to_s
-      @tags.to_s
+      @optarg = optargcls && optargcls.new(valuere)
     end
 
     def match_rc? field
@@ -78,15 +65,6 @@ module OptProc
       opt = args[0]
       return unless opt && opt[0] == '-'
       match_tag_score opt
-    end
-
-    def match_tag_score opt
-      tag = opt.split('=', 2)[0] || opt
-      @tags.match_score tag
-    end
-
-    def take_value opt, args
-      @optarg && @optarg.take_value(opt, args)
     end
 
     def set_value args
@@ -101,17 +79,49 @@ module OptProc
     end
   end
 
+  class TagOption < Option
+    attr_reader :tags
+    
+    def initialize args = Hash.new, &blk
+      @tags = args[:tags] || Array.new
+      super
+    end
+
+    def match_tag_score opt
+      tag = opt.split('=', 2)[0] || opt
+      return unless tm = @tags.detect do |t|
+        t.index(tag) == 0 && tag.length <= t.length
+      end
+      
+      if tag.length == tm.length
+        1.0
+      else
+        tag.length.to_f * 0.01
+      end
+    end
+
+    def take_value opt, args
+      begin
+        @optarg && @optarg.take_value(opt, args)
+      rescue InvalidArgument => e
+        raise "invalid argument '#{e.value}' for option: #{@tags.join(', ')}"
+      rescue MissingExpectedArgument => e
+        raise "value expected for option: #{@tags.join(', ')}"
+      end
+    end
+  end
+
   class RegexpOption < Option
+    attr_reader :regexps
+    
     def initialize args = Hash.new, &blk
       @regexps = args[:regexps] || args[:regexp] || args[:res]
       @regexps = [ @regexps ].flatten
-      
       super
     end
 
     def match_tag_score opt
       return 1.0 if @regexps.find { |re| re.match(opt) }
-      super
     end
 
     def take_value opt, args
