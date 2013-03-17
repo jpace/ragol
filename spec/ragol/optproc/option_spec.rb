@@ -201,7 +201,7 @@ describe OptProc::Option do
       expect { process args }.to raise_error(RuntimeError, "invalid argument '1.3.5' for option: --flt")
     end
 
-    it "rejects a non-float number as" do
+    it "rejects a non-float number as =" do
       args = %w{ --flt=1.3.5 }
       expect { process args }.to raise_error(RuntimeError, "invalid argument '1.3.5' for option: --flt")
     end
@@ -240,6 +240,16 @@ describe OptProc::Option do
       it "takes #{val} as false" do
         test_boolean false, [ '--bool', val ]
       end
+    end
+
+    it "rejects a non-boolean" do
+      args = %w{ --bool oui }
+      expect { process args }.to raise_error(RuntimeError, "invalid argument 'oui' for option: --bool")
+    end
+
+    it "rejects a non-boolean as =" do
+      args = %w{ --bool=oui }
+      expect { process args }.to raise_error(RuntimeError, "invalid argument 'oui' for option: --bool")
     end
   end
 

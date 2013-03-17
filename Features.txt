@@ -30,3 +30,7 @@ Sat Mar 16 11:00:22 2013
 
   Expanded tests for valid argument type.
   Added test for unspecified argument type.
+
+Sun Mar 17 11:03:22 2013
+
+  Added tests for invalid boolean argument.
