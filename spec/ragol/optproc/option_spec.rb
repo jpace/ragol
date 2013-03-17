@@ -9,6 +9,14 @@ describe OptProc::Option do
     ENV['HOME'] = '/this/should/not/exist'
   end
 
+  def create_set optdata
+    @set = OptProc::OptionSet.new optdata
+  end
+
+  def process args
+    @set.process_option args
+  end
+
   describe "string option" do
     before :each do
       optdata = Array.new
@@ -27,23 +35,22 @@ describe OptProc::Option do
         :set  => Proc.new { |v| @sopt_value = v }
       }
 
-      @set = OptProc::OptionSet.new optdata
-    end
-
-    def process args
-      @set.process_option args
+      create_set optdata
     end
 
     it "takes a required argument" do
-      args = %w{ --str xyz }
-      process args
+      process %w{ --str xyz }
       @string_value.should eq 'xyz'
     end
 
     it "takes a required argument with =" do
-      args = %w{ --str=xyz }
-      process args
+      process %w{ --str=xyz }
       @string_value.should eq 'xyz'
+    end
+
+    it "takes a required argument matching tag" do
+      process %w{ --str -foo }
+      @string_value.should eq '-foo'
     end
 
     it "expects a required argument" do
@@ -52,32 +59,27 @@ describe OptProc::Option do
     end
 
     it "takes an optional argument" do
-      args = %w{ --sopt xyz }
-      process args
+      process %w{ --sopt xyz }
       @sopt_value.should eq 'xyz'
     end
 
     it "takes an optional argument with =" do
-      args = %w{ --sopt=xyz }
-      process args
+      process %w{ --sopt=xyz }
       @sopt_value.should eq 'xyz'
     end
 
     it "ignores a missing optional argument" do
-      args = %w{ --sopt }
-      process args
+      process %w{ --sopt }
       @sopt_value.should be_nil
     end
 
     it "optional ignores a following --xyz option" do
-      args = %w{ --sopt --xyz }
-      process args
+      process %w{ --sopt --xyz }
       @sopt_value.should be_nil
     end
 
     it "optional ignores a following -x option" do
-      args = %w{ --sopt -x }
-      process args
+      process %w{ --sopt -x }
       @sopt_value.should be_nil
     end
   end
@@ -100,16 +102,11 @@ describe OptProc::Option do
         :set  => Proc.new { |v| @iopt_value = v }
       }
       
-      @set = OptProc::OptionSet.new optdata
-    end
-
-    def process args
-      @set.process_option args
+      create_set optdata
     end
 
     it "takes a required argument" do
-      args = %w{ --int 1 }
-      process args
+      process %w{ --int 1 }
       @integer_value.should eq 1
     end
 
@@ -126,20 +123,17 @@ describe OptProc::Option do
     end
 
     it "takes an optional argument" do
-      args = %w{ --iopt 1 }
-      process args
+      process %w{ --iopt 1 }
       @iopt_value.should eq 1
     end
 
     it "takes an optional argument as =" do
-      args = %w{ --iopt=1 }
-      process args
+      process %w{ --iopt=1 }
       @iopt_value.should eq 1
     end
 
     it "ignores a missing optional argument" do
-      args = %w{ --iopt }
-      process args
+      process %w{ --iopt }
       @iopt_value.should be_nil
     end
 
@@ -167,22 +161,16 @@ describe OptProc::Option do
         :set  => Proc.new { |val| @float_value = val }
       }
       
-      @set = OptProc::OptionSet.new optdata
-    end
-
-    def process args
-      @set.process_option args
+      create_set optdata
     end
 
     it "takes a required argument" do
-      args = %w{ --flt 3.1415 }
-      process args
+      process %w{ --flt 3.1415 }
       @float_value.should eq 3.1415
     end
 
     it "takes a required integer argument" do
-      args = %w{ --flt 3 }
-      process args
+      process %w{ --flt 3 }
       @float_value.should eq 3
     end
 
@@ -218,11 +206,7 @@ describe OptProc::Option do
         :set  => Proc.new { |val| @boolean_value = val }
       }
       
-      @set = OptProc::OptionSet.new optdata
-    end
-
-    def process args
-      @set.process_option args
+      create_set optdata
     end
 
     def test_boolean exp, args
@@ -270,11 +254,7 @@ describe OptProc::Option do
         :set  => Proc.new { |x| @undefn_value = 'setitwas' }
       }
 
-      @set = OptProc::OptionSet.new optdata
-    end
-
-    def process args
-      @set.process_option args
+      create_set optdata
     end
 
     it "can take :none as argument" do
@@ -303,11 +283,7 @@ describe OptProc::Option do
         :set  => Proc.new { |x| @str_value = x }
       }
 
-      @set = OptProc::OptionSet.new optdata
-    end
-
-    def process args
-      @set.process_option args
+      create_set optdata
     end
 
     it "takes the argument" do
@@ -347,24 +323,21 @@ describe OptProc::Option do
         :set    => Proc.new { |val| @regexp_value = val },
       }
       
-      @set = OptProc::OptionSet.new optdata
+      create_set optdata
     end
 
     it "converts integer" do
-      args = %w{ -123 }
-      @set.process_option args
+      process %w{ -123 }
       @integer_value.should eq 123
     end
 
     it "converts string" do
-      args = %w{ -234 }
-      @set.process_option args
+      process %w{ -234 }
       @string_value.should eq '234'
     end
 
     it "does not convert regexp" do
-      args = %w{ --xy }
-      @set.process_option args
+      process %w{ --xy }
       @regexp_value.should be_kind_of(MatchData)
       @regexp_value[1].should eql 'xy'
     end
@@ -381,16 +354,11 @@ describe OptProc::Option do
         :set  => Proc.new { |v| @xyz_value = v }
       }
       
-      @set = OptProc::OptionSet.new optdata
-    end
-
-    def process args
-      @set.process_option args
+      create_set optdata
     end
 
     it "takes a required argument" do
-      args = %w{ --xyz abc }
-      process args
+      process %w{ --xyz abc }
       @xyz_value.should eq 'abc'
     end
   end

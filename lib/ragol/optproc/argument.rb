@@ -39,7 +39,7 @@ module OptProc
   end
 
   class OptionalOptionArgument < OptionArgument
-    def next_value args
+    def take_next_value args
       return if args.empty? || args[0][0] == '-'
       if md = do_match(args[0])
         args.shift
@@ -51,7 +51,7 @@ module OptProc
       if val = opt.split('=', 2)[1]
         do_match val
       else
-        next_value args
+        take_next_value args
       end
     end
   end

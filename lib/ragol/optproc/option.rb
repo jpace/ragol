@@ -25,7 +25,7 @@ module OptProc
                   end
         
         opttype = [ (OptProc::ARG_TYPES.keys & optargs) ].flatten.compact[0]
-
+        
         if opttype
           reqtype ||= RequiredOptionArgument
           args[:valuere] = OptProc::ARG_TYPES[opttype][0]

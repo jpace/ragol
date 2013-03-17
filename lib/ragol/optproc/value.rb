@@ -50,7 +50,6 @@ module OptProc
 
   class RegexpValue < OptionValue
     # not implemented
-
     def convert md
       md
     end
