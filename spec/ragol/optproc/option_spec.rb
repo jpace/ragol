@@ -18,6 +18,42 @@ describe OptProc::Option do
   end
 
   describe "string option" do
+    describe "required (implicit)" do
+      before :each do
+        optdata = Array.new
+
+        @string_value = nil
+        optdata << {
+          :tags => %w{ --str },
+          :arg  => [ :string ],
+          :set  => Proc.new { |v| @string_value = v }
+        }
+
+        create_set optdata
+      end
+
+      it "takes a required argument" do
+        process %w{ --str xyz }
+        @string_value.should eq 'xyz'
+      end
+
+      it "takes a required argument with =" do
+        process %w{ --str=xyz }
+        @string_value.should eq 'xyz'
+      end
+
+      it "takes a required argument matching tag" do
+        process %w{ --str -foo }
+        @string_value.should eq '-foo'
+      end
+
+      it "expects a required argument" do
+        args = %w{ --str }
+        expect { process args }.to raise_error(RuntimeError, "value expected for option: --str")
+      end
+
+    end
+
     before :each do
       optdata = Array.new
 
