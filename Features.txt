@@ -34,3 +34,7 @@ Sat Mar 16 11:00:22 2013
 Sun Mar 17 11:03:22 2013
 
   Added tests for invalid boolean argument.
+
+Mon Mar 18 19:25:34 2013
+
+  Rewrote tests for clarity.

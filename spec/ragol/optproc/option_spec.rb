@@ -19,7 +19,7 @@ describe OptProc::Option do
 
   describe "string option" do
     describe "required (implicit)" do
-      before :each do
+      before do
         optdata = Array.new
 
         @string_value = nil
@@ -32,19 +32,50 @@ describe OptProc::Option do
         create_set optdata
       end
 
+      subject { @string_value }
+
       it "takes an argument" do
         process %w{ --str xyz }
-        @string_value.should eq 'xyz'
+        should eq 'xyz'
       end
 
       it "takes an argument with =" do
         process %w{ --str=xyz }
-        @string_value.should eq 'xyz'
+        should eq 'xyz'
       end
 
       it "takes an argument matching tag" do
         process %w{ --str -foo }
-        @string_value.should eq '-foo'
+        should eq '-foo'
+      end
+
+      it "expects an argument" do
+        args = %w{ --str }
+        expect { process args }.to raise_error(RuntimeError, "value expected for option: --str")
+      end
+    end
+
+    describe "required (explicit)" do
+      before do
+        optdata = Array.new
+
+        @str_value = nil
+        optdata << {
+          :tags => %w{ --str },
+          :arg  => [ :string, :required ],
+          :set  => Proc.new { |x| @str_value = x }
+        }
+
+        create_set optdata
+      end
+
+      subject { @str_value }
+
+      it "takes the argument" do
+        args = %w{ --str foo }
+        process args
+        should eql 'foo'
+        args.should have(0).items
       end
 
       it "expects an argument" do
@@ -54,7 +85,7 @@ describe OptProc::Option do
     end
 
     describe "optional" do
-      before :each do
+      before do
         optdata = Array.new
 
         @sopt_value = nil
@@ -67,101 +98,118 @@ describe OptProc::Option do
         create_set optdata
       end
 
-      it "takes an optional argument" do
+      subject { @sopt_value }
+
+      it "takes an argument" do
         process %w{ --sopt xyz }
-        @sopt_value.should eq 'xyz'
+        should eq 'xyz'
       end
 
-      it "takes an optional argument with =" do
+      it "takes an argument with =" do
         process %w{ --sopt=xyz }
-        @sopt_value.should eq 'xyz'
+        should eq 'xyz'
       end
 
-      it "ignores a missing optional argument" do
+      it "ignores a missing argument" do
         process %w{ --sopt }
-        @sopt_value.should be_nil
+        should be_nil
       end
 
-      it "optional ignores a following --xyz option" do
+      it "ignores a following --xyz option" do
         process %w{ --sopt --xyz }
-        @sopt_value.should be_nil
+        should be_nil
       end
 
-      it "optional ignores a following -x option" do
+      it "ignores a following -x option" do
         process %w{ --sopt -x }
-        @sopt_value.should be_nil
+        should be_nil
       end
     end
   end
 
   describe "integer option" do
-    before :each do
-      optdata = Array.new
+    describe "required (implicit)" do
 
-      @integer_value = nil
-      optdata << {
-        :tags => %w{ --int },
-        :arg  => [ :integer ],
-        :set  => Proc.new { |v| @integer_value = v }
-      }
+      before do
+        optdata = Array.new
 
-      @iopt_value = nil
-      optdata << {
-        :tags => %w{ --iopt },
-        :arg  => [ :integer, :optional ],
-        :set  => Proc.new { |v| @iopt_value = v }
-      }
-      
-      create_set optdata
+        @integer_value = nil
+        optdata << {
+          :tags => %w{ --int },
+          :arg  => [ :integer ],
+          :set  => Proc.new { |v| @integer_value = v }
+        }
+        
+        create_set optdata
+      end
+
+      subject { @integer_value }
+
+      it "takes an argument" do
+        process %w{ --int 1 }
+        should eq 1
+      end
+
+      it "rejects a non-integer" do
+        args = %w{ --int 1.0 }
+        expect { process args }.to raise_error(RuntimeError, "invalid argument '1.0' for option: --int")
+        should be_nil
+      end
+
+      it "rejects a non-integer as =" do
+        args = %w{ --int=1.0 }
+        expect { process args }.to raise_error(RuntimeError, "invalid argument '1.0' for option: --int")
+        should be_nil
+      end
     end
 
-    it "takes a required argument" do
-      process %w{ --int 1 }
-      @integer_value.should eq 1
-    end
+    describe "optional" do
+      before do
+        optdata = Array.new
 
-    it "rejects a non-integer" do
-      args = %w{ --int 1.0 }
-      expect { process args }.to raise_error(RuntimeError, "invalid argument '1.0' for option: --int")
-      @integer_value.should be_nil
-    end
+        @iopt_value = nil
+        optdata << {
+          :tags => %w{ --iopt },
+          :arg  => [ :integer, :optional ],
+          :set  => Proc.new { |v| @iopt_value = v }
+        }
+        
+        create_set optdata
+      end
 
-    it "rejects a non-integer as =" do
-      args = %w{ --int=1.0 }
-      expect { process args }.to raise_error(RuntimeError, "invalid argument '1.0' for option: --int")
-      @integer_value.should be_nil
-    end
+      subject { @iopt_value }
 
-    it "takes an optional argument" do
-      process %w{ --iopt 1 }
-      @iopt_value.should eq 1
-    end
+      it "takes an argument" do
+        process %w{ --iopt 1 }
+        should eq 1
+      end
 
-    it "takes an optional argument as =" do
-      process %w{ --iopt=1 }
-      @iopt_value.should eq 1
-    end
+      it "takes an argument as =" do
+        process %w{ --iopt=1 }
+        should eq 1
+      end
 
-    it "ignores a missing optional argument" do
-      process %w{ --iopt }
-      @iopt_value.should be_nil
-    end
+      it "ignores a missing argument" do
+        process %w{ --iopt }
+        should be_nil
+      end
 
-    it "optional argument rejects a non-integer" do
-      args = %w{ --iopt 1.0 }
-      expect { process args }.to raise_error(RuntimeError, "invalid argument '1.0' for option: --iopt")
-      @iopt_value.should be_nil
-    end
+      it "rejects a non-integer argument" do
+        args = %w{ --iopt 1.0 }
+        expect { process args }.to raise_error(RuntimeError, "invalid argument '1.0' for option: --iopt")
+        should be_nil
+      end
 
-    it "optional argument rejects a non-integer as =" do
-      args = %w{ --iopt=1.0 }
-      expect { process args }.to raise_error(RuntimeError, "invalid argument '1.0' for option: --iopt")
-      @iopt_value.should be_nil
+      it "rejects a non-integer argument as =" do
+        args = %w{ --iopt=1.0 }
+        expect { process args }.to raise_error(RuntimeError, "invalid argument '1.0' for option: --iopt")
+        should be_nil
+      end
     end
   end
 
   describe "float option" do
-    before :each do
+    before do
       optdata = Array.new
 
       @float_value = nil
@@ -174,14 +222,16 @@ describe OptProc::Option do
       create_set optdata
     end
 
+    subject { @float_value }
+
     it "takes a required argument" do
       process %w{ --flt 3.1415 }
-      @float_value.should eq 3.1415
+      should eq 3.1415
     end
 
     it "takes a required integer argument" do
       process %w{ --flt 3 }
-      @float_value.should eq 3
+      should eq 3
     end
 
     it "rejects a non-float string" do
@@ -206,7 +256,7 @@ describe OptProc::Option do
   end
   
   describe "boolean option" do
-    before :each do
+    before do
       optdata = Array.new
 
       @boolean_value = nil
@@ -219,20 +269,19 @@ describe OptProc::Option do
       create_set optdata
     end
 
-    def test_boolean exp, args
-      process args
-      @boolean_value.should eq exp
-    end
+    subject { @boolean_value }
     
     %w{ true yes on }.each do |val|
       it "takes #{val} as true" do
-        test_boolean true, [ '--bool', val ]
+        process [ '--bool', val ]
+        should eq true
       end
     end
     
     %w{ false no off }.each do |val|
       it "takes #{val} as false" do
-        test_boolean false, [ '--bool', val ]
+        process [ '--bool', val ]
+        should eq false
       end
     end
 
@@ -248,7 +297,7 @@ describe OptProc::Option do
   end
 
   describe "option with argument :none" do
-    before :each do
+    before do
       optdata = Array.new
 
       @none_value = nil
@@ -257,6 +306,23 @@ describe OptProc::Option do
         :arg  => [ :none ],
         :set  => Proc.new { |x| @none_value = 'wasset' }
       }
+
+      create_set optdata
+    end
+
+    subject { @none_value }
+
+    it "can take :none as argument" do
+      args = %w{ --none xyz }
+      process args
+      should eql 'wasset'
+      args.should have(1).items
+    end
+  end
+
+  describe "option without argument type" do
+    before do
+      optdata = Array.new
 
       @undefn_value = nil
       optdata << {
@@ -267,94 +333,84 @@ describe OptProc::Option do
       create_set optdata
     end
 
-    it "can take :none as argument" do
-      args = %w{ --none xyz }
-      process args
-      @none_value.should eql 'wasset'
-      args.should have(1).items
-    end
+    subject { @undefn_value }
 
     it "defaults to :none" do
       args = %w{ --undefn xyz }
       process args
-      @undefn_value.should eql 'setitwas'
+      should eql 'setitwas'
       args.should have(1).items
     end
   end
 
-  describe "option with argument :required" do
-    before :each do
-      optdata = Array.new
-
-      @str_value = nil
-      optdata << {
-        :tags => %w{ --str },
-        :arg  => [ :string, :required ],
-        :set  => Proc.new { |x| @str_value = x }
-      }
-
-      create_set optdata
-    end
-
-    it "takes the argument" do
-      args = %w{ --str foo }
-      process args
-      @str_value.should eql 'foo'
-      args.should have(0).items
-    end
-
-    it "expects a required argument" do
-      args = %w{ --str }
-      expect { process args }.to raise_error(RuntimeError, "value expected for option: --str")
-    end
-  end
-
   describe "regexp option" do
-    before :each do
-      optdata = Array.new
+    describe "with integer type" do
+      before do
+        optdata = Array.new
 
-      @integer_value = nil
-      optdata << {
-        :regexp => %r{ ^ - (1\d*) $ }x,
-        :arg    => [ :integer ],
-        :set    => Proc.new { |val| @integer_value = val },
-      }
+        @integer_value = nil
+        optdata << {
+          :regexp => %r{ ^ - (1\d*) $ }x,
+          :arg    => [ :integer ],
+          :set    => Proc.new { |val| @integer_value = val },
+        }
+        
+        create_set optdata
+      end
 
-      @string_value = nil
-      optdata << {
-        :regexp => %r{ ^ - (2\d*) $ }x,
-        :arg    => [ :string ],
-        :set    => Proc.new { |val| @string_value = val },
-      }
+      subject { @integer_value }
 
-      @regexp_value = nil
-      optdata << {
-        :regexp => %r{ ^ -- (x[yz]+) $ }x,
-        :set    => Proc.new { |val| @regexp_value = val },
-      }
-      
-      create_set optdata
+      it "converts value" do
+        process %w{ -123 }
+        should eq 123
+      end
     end
 
-    it "converts integer" do
-      process %w{ -123 }
-      @integer_value.should eq 123
+    describe "with string type" do
+      before do
+        optdata = Array.new
+
+        @string_value = nil
+        optdata << {
+          :regexp => %r{ ^ - (2\d*) $ }x,
+          :arg    => [ :string ],
+          :set    => Proc.new { |val| @string_value = val },
+        }
+
+        create_set optdata
+      end
+
+      subject { @string_value }
+
+      it "converts value" do
+        process %w{ -234 }
+        should eq '234'
+      end
     end
 
-    it "converts string" do
-      process %w{ -234 }
-      @string_value.should eq '234'
-    end
+    describe "with regexp type" do
+      before do
+        optdata = Array.new
 
-    it "does not convert regexp" do
-      process %w{ --xy }
-      @regexp_value.should be_kind_of(MatchData)
-      @regexp_value[1].should eql 'xy'
+        @regexp_value = nil
+        optdata << {
+          :regexp => %r{ ^ -- (x[yz]+) $ }x,
+          :set    => Proc.new { |val| @regexp_value = val },
+        }
+        
+        create_set optdata
+      end
+
+      it "does not convert value" do
+        process %w{ --xy }
+        @regexp_value.should be_kind_of(MatchData)
+        @regexp_value[1].should eql 'xy'
+      end
     end
   end
 
-  describe "option without arg type" do
-    before :each do
+  describe "option with required argument, without type" do
+    before do
       optdata = Array.new
 
       @xyz_value = nil
@@ -367,9 +423,11 @@ describe OptProc::Option do
       create_set optdata
     end
 
-    it "takes a required argument" do
+    subject { @xyz_value }
+
+    it "takes an argument" do
       process %w{ --xyz abc }
-      @xyz_value.should eq 'abc'
+      should eq 'abc'
     end
   end
 end
