@@ -58,6 +58,6 @@ module OptProc
   ARG_TYPES = Hash.new
   [ IntegerValue, FloatValue, StringValue, BooleanValue ].each do |cls|
     sym = cls.to_s.sub(%r{^.*::}, '').sub(%r{Value$}, '').downcase.intern
-    ARG_TYPES[sym] = [ cls.const_get('REGEXP'), cls ]
+    ARG_TYPES[sym] = cls
   end
 end

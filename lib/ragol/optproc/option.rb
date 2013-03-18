@@ -28,8 +28,7 @@ module OptProc
         
         if opttype
           reqtype ||= RequiredOptionArgument
-          args[:valuere] = OptProc::ARG_TYPES[opttype][0]
-          args[:opttype] = OptProc::ARG_TYPES[opttype][1]
+          args[:opttype] = OptProc::ARG_TYPES[opttype]
         end
         
         args[:reqtype] = reqtype
@@ -48,12 +47,12 @@ module OptProc
       
       @setter = blk || args[:set]
       
-      valuere    = args[:valuere]
       opttypecls = args[:opttype]
       optargcls  = args[:reqtype]
 
       @optvalue = opttypecls && opttypecls.new
-      @optarg = optargcls && optargcls.new(valuere)
+      re = opttypecls && opttypecls.const_get('REGEXP')
+      @optarg = optargcls && optargcls.new(re)
     end
 
     def match_rc? field
