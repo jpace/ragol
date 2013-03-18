@@ -32,91 +32,65 @@ describe OptProc::Option do
         create_set optdata
       end
 
-      it "takes a required argument" do
+      it "takes an argument" do
         process %w{ --str xyz }
         @string_value.should eq 'xyz'
       end
 
-      it "takes a required argument with =" do
+      it "takes an argument with =" do
         process %w{ --str=xyz }
         @string_value.should eq 'xyz'
       end
 
-      it "takes a required argument matching tag" do
+      it "takes an argument matching tag" do
         process %w{ --str -foo }
         @string_value.should eq '-foo'
       end
 
-      it "expects a required argument" do
+      it "expects an argument" do
         args = %w{ --str }
         expect { process args }.to raise_error(RuntimeError, "value expected for option: --str")
       end
-
     end
 
-    before :each do
-      optdata = Array.new
+    describe "optional" do
+      before :each do
+        optdata = Array.new
 
-      @string_value = nil
-      optdata << {
-        :tags => %w{ --str },
-        :arg  => [ :string ],
-        :set  => Proc.new { |v| @string_value = v }
-      }
+        @sopt_value = nil
+        optdata << {
+          :tags => %w{ --sopt },
+          :arg  => [ :string, :optional ],
+          :set  => Proc.new { |v| @sopt_value = v }
+        }
 
-      @sopt_value = nil
-      optdata << {
-        :tags => %w{ --sopt },
-        :arg  => [ :string, :optional ],
-        :set  => Proc.new { |v| @sopt_value = v }
-      }
+        create_set optdata
+      end
 
-      create_set optdata
-    end
+      it "takes an optional argument" do
+        process %w{ --sopt xyz }
+        @sopt_value.should eq 'xyz'
+      end
 
-    it "takes a required argument" do
-      process %w{ --str xyz }
-      @string_value.should eq 'xyz'
-    end
+      it "takes an optional argument with =" do
+        process %w{ --sopt=xyz }
+        @sopt_value.should eq 'xyz'
+      end
 
-    it "takes a required argument with =" do
-      process %w{ --str=xyz }
-      @string_value.should eq 'xyz'
-    end
+      it "ignores a missing optional argument" do
+        process %w{ --sopt }
+        @sopt_value.should be_nil
+      end
 
-    it "takes a required argument matching tag" do
-      process %w{ --str -foo }
-      @string_value.should eq '-foo'
-    end
+      it "optional ignores a following --xyz option" do
+        process %w{ --sopt --xyz }
+        @sopt_value.should be_nil
+      end
 
-    it "expects a required argument" do
-      args = %w{ --str }
-      expect { process args }.to raise_error(RuntimeError, "value expected for option: --str")
-    end
-
-    it "takes an optional argument" do
-      process %w{ --sopt xyz }
-      @sopt_value.should eq 'xyz'
-    end
-
-    it "takes an optional argument with =" do
-      process %w{ --sopt=xyz }
-      @sopt_value.should eq 'xyz'
-    end
-
-    it "ignores a missing optional argument" do
-      process %w{ --sopt }
-      @sopt_value.should be_nil
-    end
-
-    it "optional ignores a following --xyz option" do
-      process %w{ --sopt --xyz }
-      @sopt_value.should be_nil
-    end
-
-    it "optional ignores a following -x option" do
-      process %w{ --sopt -x }
-      @sopt_value.should be_nil
+      it "optional ignores a following -x option" do
+        process %w{ --sopt -x }
+        @sopt_value.should be_nil
+      end
     end
   end
 
