@@ -2,14 +2,14 @@
 # -*- ruby -*-
 
 module OptProc
-  class OptionValue
+  class OptionType
     def convert md
       return unless val = md && md[1]
       convert_value val
     end
   end
 
-  class BooleanValue < OptionValue
+  class BooleanType < OptionType
     TRUE = %w{ yes true on }
     FALSE = %w{ no false off }
     
@@ -24,7 +24,7 @@ module OptProc
     end
   end
 
-  class StringValue < OptionValue
+  class StringType < OptionType
     REGEXP = %r{^ [\"\']? (.*?) [\"\']? $ }x
     
     def convert_value val
@@ -32,7 +32,7 @@ module OptProc
     end
   end
 
-  class IntegerValue < OptionValue
+  class IntegerType < OptionType
     REGEXP = %r{^ ([\-\+]?\d+) $ }x
     
     def convert_value val
@@ -40,7 +40,7 @@ module OptProc
     end
   end
 
-  class FloatValue < OptionValue
+  class FloatType < OptionType
     REGEXP = %r{^ ([\-\+]?\d* (?:\.\d+)?) $ }x
     
     def convert_value val
@@ -48,7 +48,7 @@ module OptProc
     end
   end
 
-  class RegexpValue < OptionValue
+  class RegexpType < OptionType
     # not implemented
     def convert md
       md
@@ -56,8 +56,8 @@ module OptProc
   end
 
   ARG_TYPES = Hash.new
-  [ IntegerValue, FloatValue, StringValue, BooleanValue ].each do |cls|
-    sym = cls.to_s.sub(%r{^.*::}, '').sub(%r{Value$}, '').downcase.intern
+  [ IntegerType, FloatType, StringType, BooleanType ].each do |cls|
+    sym = cls.to_s.sub(%r{^.*::}, '').sub(%r{Type$}, '').downcase.intern
     ARG_TYPES[sym] = cls
   end
 end

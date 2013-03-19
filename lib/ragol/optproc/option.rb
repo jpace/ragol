@@ -3,7 +3,7 @@
 
 require 'logue/loggable'
 require 'riel/enumerable'
-require 'ragol/optproc/value'
+require 'ragol/optproc/type'
 require 'ragol/optproc/argument'
 
 module OptProc
@@ -50,7 +50,7 @@ module OptProc
       opttypecls = args[:opttype]
       optargcls  = args[:reqtype]
 
-      @optvalue = opttypecls && opttypecls.new
+      @opttype = opttypecls && opttypecls.new
       re = opttypecls && opttypecls.const_get('REGEXP')
       @optarg = optargcls && optargcls.new(re)
     end
@@ -69,7 +69,7 @@ module OptProc
     def set_value args
       opt = args.shift
       md = take_value opt, args      
-      value = @optvalue ? @optvalue.convert(md) : md
+      value = @opttype ? @opttype.convert(md) : md
 
       ary = [ value, opt, args ]
       ary.extend RIEL::EnumerableExt
