@@ -28,31 +28,41 @@ module OptProc
         val
       end
     end
+
+    def take_eq_value opt
+      val = opt.split('=', 2)[1]
+      val && do_match(val)
+    end
+
+    def take_value opt, args
+      take_eq_value(opt) || match_next_value(args) || argument_missing
+    end
   end
 
   class RequiredOptionArgument < OptionArgument
-    def take_value opt, args
-      val = opt.split('=', 2)[1] || args.shift
-      raise MissingExpectedArgument.new unless val
-      do_match val
+    def match_next_value args
+      val = args.shift
+      val && do_match(val)
+    end
+
+    def argument_missing
+      raise MissingExpectedArgument.new
     end
   end
 
   class OptionalOptionArgument < OptionArgument
-    def take_next_value args
-      return if args.empty? || args[0][0] == '-'
-      if md = do_match(args[0])
-        args.shift
-        md
+    def match_next_value args
+      return unless val = args.shift
+      
+      if val[0] == '-'
+        args.unshift val
+        nil
+      else
+        do_match val
       end
     end
 
-    def take_value opt, args
-      if val = opt.split('=', 2)[1]
-        do_match val
-      else
-        take_next_value args
-      end
+    def argument_missing
     end
   end
 end
