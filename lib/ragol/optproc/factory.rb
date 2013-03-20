@@ -5,6 +5,8 @@ require 'logue/loggable'
 require 'riel/enumerable'
 require 'ragol/optproc/type'
 require 'ragol/optproc/argument'
+require 'ragol/optproc/tag_option'
+require 'ragol/optproc/regexp_option'
 require 'singleton'
 
 module OptProc
