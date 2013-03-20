@@ -3,6 +3,8 @@
 
 require 'ragol/optproc/optproc'
 
+Logue::Log.level = Logue::Log::INFO
+
 describe OptProc::Option do
   before :all do
     # ignore what they have in ENV[HOME]    
@@ -313,6 +315,10 @@ describe OptProc::Option do
   end
 
   describe "regexp option" do
+    before do
+      pending "still working out the functionality"
+    end
+
     describe "with integer type" do
       def create_option_data optdata
         @integer_value = nil
@@ -349,7 +355,25 @@ describe OptProc::Option do
       end
     end
 
-    describe "with regexp type" do
+    describe "with required string argument" do
+      def create_option_data optdata
+        @opt_value = nil
+        optdata << {
+          :regexp => %r{^--(foo)}x,
+          :arg    => [ :string, :required ],
+          :set    => Proc.new { |val| @opt_value = val },
+        }
+      end
+
+      subject { @opt_value }
+
+      it "takes required argument" do
+        process %w{ --foo xyz }
+        should eq 'xyz'
+      end
+    end
+
+    describe "with no argument type" do
       def create_option_data optdata
         @regexp_value = nil
         optdata << {
@@ -361,6 +385,7 @@ describe OptProc::Option do
       it "does not convert value" do
         process %w{ --xy }
         @regexp_value.should be_kind_of(MatchData)
+        @regexp_value[0].should eql '--xy'
         @regexp_value[1].should eql 'xy'
       end
     end

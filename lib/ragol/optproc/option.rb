@@ -5,6 +5,7 @@ require 'logue/loggable'
 require 'riel/enumerable'
 require 'ragol/optproc/type'
 require 'ragol/optproc/argument'
+require 'ragol/optproc/factory'
 
 module OptProc
   class Option
@@ -13,41 +14,8 @@ module OptProc
     class << self
       alias_method :old_new, :new
       def new args = Hash.new, &blk
-        optargs = [ args[:arg] ].flatten.compact
-
-        reqtype = case
-                  when optargs.include?(:required)
-                    RequiredOptionArgument
-                  when optargs.include?(:optional)
-                    OptionalOptionArgument
-                  when optargs.include?(:none)
-                    nil
-                  end
-        
-        opttype = [ (OptProc::ARG_TYPES.keys & optargs) ].flatten.compact[0]
-        
-        if opttype
-          reqtype ||= RequiredOptionArgument
-          mod = OptProc::ARG_TYPES[opttype]
-          re = mod.const_get('REGEXP')
-          args[:value_regexp] = re
-        end
-        
-        args[:reqtype] = reqtype
-
-        if args[:regexps] || args[:regexp] || args[:res]
-          opt = RegexpOption.old_new args, &blk
-          if mod = OptProc::ARG_TYPES[opttype]
-            opt.send :extend, mod
-          end
-          opt
-        else
-          opt = TagOption.old_new args, &blk
-          if mod = OptProc::ARG_TYPES[opttype]
-            opt.send :extend, mod
-          end
-          opt
-        end
+        factory = OptionFactory.instance
+        factory.create args, &blk
       end
     end
 

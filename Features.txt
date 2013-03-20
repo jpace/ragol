@@ -42,3 +42,8 @@ Mon Mar 18 19:25:34 2013
 Tue Mar 19 20:03:57 2013
 
   Rewrote tests for brevity and clarity.
+
+Wed Mar 20 19:32:44 2013
+
+  Marked regexp option tests as pending.
+  Added option factory and tests.
