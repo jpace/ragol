@@ -28,15 +28,25 @@ module OptProc
         
         if opttype
           reqtype ||= RequiredOptionArgument
-          args[:opttype] = OptProc::ARG_TYPES[opttype]
+          mod = OptProc::ARG_TYPES[opttype]
+          re = mod.const_get('REGEXP')
+          args[:value_regexp] = re
         end
         
         args[:reqtype] = reqtype
-        
+
         if args[:regexps] || args[:regexp] || args[:res]
-          RegexpOption.old_new args, &blk
+          opt = RegexpOption.old_new args, &blk
+          if mod = OptProc::ARG_TYPES[opttype]
+            opt.send :extend, mod
+          end
+          opt
         else
-          TagOption.old_new args, &blk
+          opt = TagOption.old_new args, &blk
+          if mod = OptProc::ARG_TYPES[opttype]
+            opt.send :extend, mod
+          end
+          opt
         end
       end
     end
@@ -47,12 +57,13 @@ module OptProc
       
       @setter = blk || args[:set]
       
-      opttypecls = args[:opttype]
-      optargcls  = args[:reqtype]
+      optargcls = args[:reqtype]
 
-      @opttype = opttypecls && opttypecls.new
-      re = opttypecls && opttypecls.const_get('REGEXP')
-      @optarg = optargcls && optargcls.new(re)
+      @optarg = optargcls && optargcls.new(args[:value_regexp])
+    end
+
+    def convert md
+      md
     end
 
     def match_rc? field
@@ -69,7 +80,7 @@ module OptProc
     def set_value args
       opt = args.shift
       md = take_value opt, args      
-      value = @opttype ? @opttype.convert(md) : md
+      value = convert md
 
       ary = [ value, opt, args ]
       ary.extend RIEL::EnumerableExt

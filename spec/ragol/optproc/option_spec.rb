@@ -17,19 +17,21 @@ describe OptProc::Option do
     @set.process_option args
   end
 
+  before do
+    optdata = Array.new
+    create_option_data optdata
+    create_set optdata
+  end
+
   describe "string option" do
     describe "required (implicit)" do
-      before do
-        optdata = Array.new
-
+      def create_option_data optdata
         @string_value = nil
         optdata << {
           :tags => %w{ --str },
           :arg  => [ :string ],
           :set  => Proc.new { |v| @string_value = v }
         }
-
-        create_set optdata
       end
 
       subject { @string_value }
@@ -56,17 +58,13 @@ describe OptProc::Option do
     end
 
     describe "required (explicit)" do
-      before do
-        optdata = Array.new
-
+      def create_option_data optdata
         @str_value = nil
         optdata << {
           :tags => %w{ --str },
           :arg  => [ :string, :required ],
           :set  => Proc.new { |x| @str_value = x }
         }
-
-        create_set optdata
       end
 
       subject { @str_value }
@@ -85,17 +83,13 @@ describe OptProc::Option do
     end
 
     describe "optional" do
-      before do
-        optdata = Array.new
-
+      def create_option_data optdata
         @sopt_value = nil
         optdata << {
           :tags => %w{ --sopt },
           :arg  => [ :string, :optional ],
           :set  => Proc.new { |v| @sopt_value = v }
         }
-
-        create_set optdata
       end
 
       subject { @sopt_value }
@@ -129,18 +123,13 @@ describe OptProc::Option do
 
   describe "integer option" do
     describe "required (implicit)" do
-
-      before do
-        optdata = Array.new
-
+      def create_option_data optdata
         @integer_value = nil
         optdata << {
           :tags => %w{ --int },
           :arg  => [ :integer ],
           :set  => Proc.new { |v| @integer_value = v }
         }
-        
-        create_set optdata
       end
 
       subject { @integer_value }
@@ -164,17 +153,13 @@ describe OptProc::Option do
     end
 
     describe "optional" do
-      before do
-        optdata = Array.new
-
+      def create_option_data optdata
         @iopt_value = nil
         optdata << {
           :tags => %w{ --iopt },
           :arg  => [ :integer, :optional ],
           :set  => Proc.new { |v| @iopt_value = v }
         }
-        
-        create_set optdata
       end
 
       subject { @iopt_value }
@@ -209,17 +194,13 @@ describe OptProc::Option do
   end
 
   describe "float option" do
-    before do
-      optdata = Array.new
-
+    def create_option_data optdata
       @float_value = nil
       optdata << {
         :tags => %w{ --flt },
         :arg  => [ :float ],
         :set  => Proc.new { |val| @float_value = val }
       }
-      
-      create_set optdata
     end
 
     subject { @float_value }
@@ -256,17 +237,13 @@ describe OptProc::Option do
   end
   
   describe "boolean option" do
-    before do
-      optdata = Array.new
-
+    def create_option_data optdata
       @boolean_value = nil
       optdata << {
         :tags => %w{ --bool },
         :arg  => [ :boolean ],
         :set  => Proc.new { |val| @boolean_value = val }
-      }
-      
-      create_set optdata
+      }      
     end
 
     subject { @boolean_value }
@@ -297,17 +274,13 @@ describe OptProc::Option do
   end
 
   describe "option with argument :none" do
-    before do
-      optdata = Array.new
-
+    def create_option_data optdata
       @none_value = nil
       optdata << {
         :tags => %w{ --none },
         :arg  => [ :none ],
         :set  => Proc.new { |x| @none_value = 'wasset' }
       }
-
-      create_set optdata
     end
 
     subject { @none_value }
@@ -321,16 +294,12 @@ describe OptProc::Option do
   end
 
   describe "option without argument type" do
-    before do
-      optdata = Array.new
-
+    def create_option_data optdata
       @undefn_value = nil
       optdata << {
         :tags => %w{ --undefn },
         :set  => Proc.new { |x| @undefn_value = 'setitwas' }
       }
-
-      create_set optdata
     end
 
     subject { @undefn_value }
@@ -345,17 +314,13 @@ describe OptProc::Option do
 
   describe "regexp option" do
     describe "with integer type" do
-      before do
-        optdata = Array.new
-
+      def create_option_data optdata
         @integer_value = nil
         optdata << {
           :regexp => %r{ ^ - (1\d*) $ }x,
           :arg    => [ :integer ],
           :set    => Proc.new { |val| @integer_value = val },
         }
-        
-        create_set optdata
       end
 
       subject { @integer_value }
@@ -367,17 +332,13 @@ describe OptProc::Option do
     end
 
     describe "with string type" do
-      before do
-        optdata = Array.new
-
+      def create_option_data optdata
         @string_value = nil
         optdata << {
           :regexp => %r{ ^ - (2\d*) $ }x,
           :arg    => [ :string ],
           :set    => Proc.new { |val| @string_value = val },
         }
-
-        create_set optdata
       end
 
       subject { @string_value }
@@ -389,16 +350,12 @@ describe OptProc::Option do
     end
 
     describe "with regexp type" do
-      before do
-        optdata = Array.new
-
+      def create_option_data optdata
         @regexp_value = nil
         optdata << {
           :regexp => %r{ ^ -- (x[yz]+) $ }x,
           :set    => Proc.new { |val| @regexp_value = val },
         }
-        
-        create_set optdata
       end
 
       it "does not convert value" do
@@ -410,17 +367,13 @@ describe OptProc::Option do
   end
 
   describe "option with required argument, without type" do
-    before do
-      optdata = Array.new
-
+    def create_option_data optdata
       @xyz_value = nil
       optdata << {
         :tags => %w{ --xyz },
         :arg  => [ :required ],
         :set  => Proc.new { |v| @xyz_value = v }
       }
-      
-      create_set optdata
     end
 
     subject { @xyz_value }

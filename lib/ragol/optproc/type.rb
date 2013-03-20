@@ -2,14 +2,16 @@
 # -*- ruby -*-
 
 module OptProc
-  class OptionType
+  module OptionType
     def convert md
       return unless val = md && md[1]
       convert_value val
     end
   end
 
-  class BooleanType < OptionType
+  module BooleanType
+    include OptionType
+    
     TRUE = %w{ yes true on }
     FALSE = %w{ no false off }
     
@@ -24,7 +26,9 @@ module OptProc
     end
   end
 
-  class StringType < OptionType
+  module StringType
+    include OptionType
+    
     REGEXP = %r{^ [\"\']? (.*?) [\"\']? $ }x
     
     def convert_value val
@@ -32,7 +36,9 @@ module OptProc
     end
   end
 
-  class IntegerType < OptionType
+  module IntegerType 
+    include OptionType
+
     REGEXP = %r{^ ([\-\+]?\d+) $ }x
     
     def convert_value val
@@ -40,7 +46,9 @@ module OptProc
     end
   end
 
-  class FloatType < OptionType
+  module FloatType
+    include OptionType
+    
     REGEXP = %r{^ ([\-\+]?\d* (?:\.\d+)?) $ }x
     
     def convert_value val
@@ -48,7 +56,9 @@ module OptProc
     end
   end
 
-  class RegexpType < OptionType
+  module RegexpType
+    include OptionType
+    
     # not implemented
     def convert md
       md
