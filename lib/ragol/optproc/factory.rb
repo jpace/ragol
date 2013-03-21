@@ -2,7 +2,6 @@
 # -*- ruby -*-
 
 require 'logue/loggable'
-require 'riel/enumerable'
 require 'ragol/optproc/type'
 require 'ragol/optproc/argument'
 require 'ragol/optproc/tag_option'

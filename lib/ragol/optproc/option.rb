@@ -31,6 +31,8 @@ module OptProc
       optargcls = optargs[:reqtype]
 
       @optarg = optargcls && optargcls.new(optargs[:value_regexp])
+
+      ###$$$ an option can have both a regexp and tags; see glark --context/-14
     end
 
     def convert md

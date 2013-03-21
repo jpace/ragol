@@ -8,7 +8,7 @@ module OptProc
     end
 
     def match_tag_score opt
-      return 1.0 if @regexps.find { |re| re.match(opt) }
+      @regexps.find { |re| re.match(opt) } && 1.0
     end
 
     def match opt
