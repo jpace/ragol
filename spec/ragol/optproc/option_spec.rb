@@ -2,6 +2,7 @@
 # -*- ruby -*-
 
 require 'ragol/optproc/optproc'
+require 'ragol/optproc/factory'
 
 Logue::Log.level = Logue::Log::INFO
 
@@ -19,6 +20,8 @@ describe OptProc::Option do
     @set.process_option args
   end
 
+  subject { @value }
+
   before do
     optdata = Array.new
     create_option_data optdata
@@ -27,16 +30,22 @@ describe OptProc::Option do
 
   describe "string option" do
     describe "required (implicit)" do
-      def create_option_data optdata
-        @string_value = nil
-        optdata << {
+      before do
+        @value = nil
+        optdata = {
           :tags => %w{ --str },
           :arg  => [ :string ],
-          :set  => Proc.new { |v| @string_value = v }
+          :set  => Proc.new { |v| @value = v }
         }
+        @option = OptProc::OptionFactory.instance.create optdata
+      end
+      
+      def process args
+        @option.set_value args
       end
 
-      subject { @string_value }
+      def create_option_data optdata
+      end
 
       it "takes an argument" do
         process %w{ --str xyz }
@@ -61,15 +70,13 @@ describe OptProc::Option do
 
     describe "required (explicit)" do
       def create_option_data optdata
-        @str_value = nil
+        @value = nil
         optdata << {
           :tags => %w{ --str },
           :arg  => [ :string, :required ],
-          :set  => Proc.new { |x| @str_value = x }
+          :set  => Proc.new { |x| @value = x }
         }
       end
-
-      subject { @str_value }
 
       it "takes the argument" do
         args = %w{ --str foo }
@@ -86,15 +93,13 @@ describe OptProc::Option do
 
     describe "optional" do
       def create_option_data optdata
-        @sopt_value = nil
+        @value = nil
         optdata << {
           :tags => %w{ --sopt },
           :arg  => [ :string, :optional ],
-          :set  => Proc.new { |v| @sopt_value = v }
+          :set  => Proc.new { |v| @value = v }
         }
       end
-
-      subject { @sopt_value }
 
       it "takes an argument" do
         process %w{ --sopt xyz }
@@ -126,15 +131,13 @@ describe OptProc::Option do
   describe "integer option" do
     describe "required (implicit)" do
       def create_option_data optdata
-        @integer_value = nil
+        @value = nil
         optdata << {
           :tags => %w{ --int },
           :arg  => [ :integer ],
-          :set  => Proc.new { |v| @integer_value = v }
+          :set  => Proc.new { |v| @value = v }
         }
       end
-
-      subject { @integer_value }
 
       it "takes an argument" do
         process %w{ --int 1 }
@@ -156,15 +159,13 @@ describe OptProc::Option do
 
     describe "optional" do
       def create_option_data optdata
-        @iopt_value = nil
+        @value = nil
         optdata << {
           :tags => %w{ --iopt },
           :arg  => [ :integer, :optional ],
-          :set  => Proc.new { |v| @iopt_value = v }
+          :set  => Proc.new { |v| @value = v }
         }
       end
-
-      subject { @iopt_value }
 
       it "takes an argument" do
         process %w{ --iopt 1 }
@@ -197,15 +198,13 @@ describe OptProc::Option do
 
   describe "float option" do
     def create_option_data optdata
-      @float_value = nil
+      @value = nil
       optdata << {
         :tags => %w{ --flt },
         :arg  => [ :float ],
-        :set  => Proc.new { |val| @float_value = val }
+        :set  => Proc.new { |val| @value = val }
       }
     end
-
-    subject { @float_value }
 
     it "takes a required argument" do
       process %w{ --flt 3.1415 }
@@ -240,16 +239,14 @@ describe OptProc::Option do
   
   describe "boolean option" do
     def create_option_data optdata
-      @boolean_value = nil
+      @value = nil
       optdata << {
         :tags => %w{ --bool },
         :arg  => [ :boolean ],
-        :set  => Proc.new { |val| @boolean_value = val }
+        :set  => Proc.new { |val| @value = val }
       }      
     end
 
-    subject { @boolean_value }
-    
     %w{ true yes on }.each do |val|
       it "takes #{val} as true" do
         process [ '--bool', val ]
@@ -277,15 +274,13 @@ describe OptProc::Option do
 
   describe "option with argument :none" do
     def create_option_data optdata
-      @none_value = nil
+      @value = nil
       optdata << {
         :tags => %w{ --none },
         :arg  => [ :none ],
-        :set  => Proc.new { |x| @none_value = 'wasset' }
+        :set  => Proc.new { |x| @value = 'wasset' }
       }
     end
-
-    subject { @none_value }
 
     it "can take :none as argument" do
       args = %w{ --none xyz }
@@ -297,14 +292,12 @@ describe OptProc::Option do
 
   describe "option without argument type" do
     def create_option_data optdata
-      @undefn_value = nil
+      @value = nil
       optdata << {
         :tags => %w{ --undefn },
-        :set  => Proc.new { |x| @undefn_value = 'setitwas' }
+        :set  => Proc.new { |x| @value = 'setitwas' }
       }
     end
-
-    subject { @undefn_value }
 
     it "defaults to :none" do
       args = %w{ --undefn xyz }
@@ -314,94 +307,15 @@ describe OptProc::Option do
     end
   end
 
-  describe "regexp option" do
-    before do
-      pending "still working out the functionality"
-    end
-
-    describe "with integer type" do
-      def create_option_data optdata
-        @integer_value = nil
-        optdata << {
-          :regexp => %r{ ^ - (1\d*) $ }x,
-          :arg    => [ :integer ],
-          :set    => Proc.new { |val| @integer_value = val },
-        }
-      end
-
-      subject { @integer_value }
-
-      it "converts value" do
-        process %w{ -123 }
-        should eq 123
-      end
-    end
-
-    describe "with string type" do
-      def create_option_data optdata
-        @string_value = nil
-        optdata << {
-          :regexp => %r{ ^ - (2\d*) $ }x,
-          :arg    => [ :string ],
-          :set    => Proc.new { |val| @string_value = val },
-        }
-      end
-
-      subject { @string_value }
-
-      it "converts value" do
-        process %w{ -234 }
-        should eq '234'
-      end
-    end
-
-    describe "with required string argument" do
-      def create_option_data optdata
-        @opt_value = nil
-        optdata << {
-          :regexp => %r{^--(foo)}x,
-          :arg    => [ :string, :required ],
-          :set    => Proc.new { |val| @opt_value = val },
-        }
-      end
-
-      subject { @opt_value }
-
-      it "takes required argument" do
-        process %w{ --foo xyz }
-        should eq 'xyz'
-      end
-    end
-
-    describe "with no argument type" do
-      def create_option_data optdata
-        @regexp_value = nil
-        optdata << {
-          :regexp => %r{ ^ -- (x[yz]+) $ }x,
-          :set    => Proc.new { |val| @regexp_value = val },
-        }
-      end
-
-      it "does not convert value" do
-        process %w{ --xy }
-        @regexp_value.should be_kind_of(MatchData)
-        @regexp_value[0].should eql '--xy'
-        @regexp_value[1].should eql 'xy'
-      end
-    end
-  end
-
   describe "option with required argument, without type" do
     def create_option_data optdata
-      @xyz_value = nil
+      @value = nil
       optdata << {
         :tags => %w{ --xyz },
         :arg  => [ :required ],
-        :set  => Proc.new { |v| @xyz_value = v }
+        :set  => Proc.new { |v| @value = v }
       }
     end
-
-    subject { @xyz_value }
 
     it "takes an argument" do
       process %w{ --xyz abc }

@@ -59,7 +59,7 @@ module OptProc
       if bestopts.size == 1
         set_option_value bestopts[0], args
       else
-        optstr = bestopts.collect { |y| '(' + y.tags.join(', ').to_s + ')' }.join(', ')
+        optstr = bestopts.collect { |y| '(' + y.tags.to_s + ')' }.join(', ')
         raise "ambiguous match of '#{args[0]}'; matches options: #{optstr}"
       end
     end

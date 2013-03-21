@@ -1,25 +1,26 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'logue/loggable'
 require 'ragol/optproc/option'
+require 'ragol/optproc/regexps'
 
 module OptProc
   class RegexpOption < Option
     attr_reader :regexps
     
-    def initialize args = Hash.new, &blk
-      @regexps = args[:regexps] || args[:regexp] || args[:res]
-      @regexps = [ @regexps ].flatten
+    def initialize(*args, &blk)
+      optargs = args[0]
+      regexps = optargs[:regexps] || optargs[:regexp] || optargs[:res]
+      @regexps = Regexps.new([ regexps ].flatten)
       super
     end
 
     def match_tag_score opt
-      return 1.0 if @regexps.find { |re| re.match(opt) }
+      @regexps.match_tag_score opt
     end
 
     def take_value opt, args
-      @regexps.collect { |re| re.match(opt) }.detect { |x| x }
+      @regexps.match opt
     end
   end
 end

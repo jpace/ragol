@@ -12,23 +12,25 @@ module OptProc
 
     class << self
       alias_method :old_new, :new
-      def new args = Hash.new, &blk
+      def new(*args, &blk)
         require 'ragol/optproc/factory'
         
         factory = OptionFactory.instance
-        factory.create args, &blk
+        factory.create(*args, &blk)
       end
     end
 
-    def initialize args = Hash.new, &blk
-      @rcfield = args[:rcfield] || args[:rc]
+    def initialize(*args, &blk)
+      optargs = args[0]
+      
+      @rcfield = optargs[:rcfield] || optargs[:rc]
       @rcfield = [ @rcfield ].flatten if @rcfield
       
-      @setter = blk || args[:set]
+      @setter = blk || optargs[:set]
       
-      optargcls = args[:reqtype]
+      optargcls = optargs[:reqtype]
 
-      @optarg = optargcls && optargcls.new(args[:value_regexp])
+      @optarg = optargcls && optargcls.new(optargs[:value_regexp])
     end
 
     def convert md
@@ -43,6 +45,7 @@ module OptProc
       return if args.empty?
       opt = args[0]
       return unless opt && opt[0] == '-'
+      
       match_tag_score opt
     end
 
@@ -55,24 +58,6 @@ module OptProc
       ary.extend RIEL::EnumerableExt
       setargs = ary.select_with_index { |x, i| i < @setter.arity }
       @setter.call(*setargs)
-    end
-  end
-
-  class RegexpOption < Option
-    attr_reader :regexps
-    
-    def initialize args = Hash.new, &blk
-      @regexps = args[:regexps] || args[:regexp] || args[:res]
-      @regexps = [ @regexps ].flatten
-      super
-    end
-
-    def match_tag_score opt
-      return 1.0 if @regexps.find { |re| re.match(opt) }
-    end
-
-    def take_value opt, args
-      @regexps.collect { |re| re.match(opt) }.detect { |x| x }
     end
   end
 end

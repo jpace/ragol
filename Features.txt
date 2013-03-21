@@ -47,3 +47,7 @@ Wed Mar 20 19:32:44 2013
 
   Marked regexp option tests as pending.
   Added option factory and tests.
+
+Thu Mar 21 19:08:46 2013
+
+  Simplified and clarified tests.

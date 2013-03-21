@@ -37,14 +37,16 @@ module OptProc
       
       args[:reqtype] = reqtype
 
-      if args[:regexps] || args[:regexp] || args[:res]
-        create_regexp_option opttype, args, &blk
+      regexps = args[:regexps] || args[:regexp] || args[:res]
+
+      if regexps
+        create_regexp_option regexps, opttype, args, &blk
       else
         create_tag_option opttype, args, &blk
       end
     end
     
-    def create_regexp_option opttype, args, &blk
+    def create_regexp_option regexps, opttype, args, &blk
       opt = RegexpOption.old_new args, &blk
       if mod = OptProc::ARG_TYPES[opttype]
         opt.send :extend, mod

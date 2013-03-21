@@ -1,12 +1,9 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'rubygems'
-require 'riel'
-
 module OptProc
   class Tags
-    def initialize tags = Array.new
+    def initialize tags
       @tags = tags
     end
 
@@ -21,6 +18,10 @@ module OptProc
       else
         tag.length.to_f * 0.01
       end
+    end
+
+    def to_s
+      @tags.join(', ')
     end
   end
 end
