@@ -14,8 +14,6 @@ module OptProc
     def initialize(*args, &blk)
       optargs = args[0]
       @tags = Tags.new(optargs[:tags] || Array.new)
-      optargcls = optargs[:reqtype]
-      # @optarg = optargcls && optargcls.new(optargs[:value_regexp])
       super
     end
 
