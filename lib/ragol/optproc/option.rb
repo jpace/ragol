@@ -5,6 +5,7 @@ require 'logue/loggable'
 require 'ragol/optproc/errors'
 require 'ragol/optproc/regexps'
 require 'ragol/optproc/tags'
+require 'ragol/optproc/args'
 
 module OptProc
   class Option
@@ -13,30 +14,24 @@ module OptProc
     class << self
       alias_method :old_new, :new
       def new(*args, &blk)
-        require 'ragol/optproc/factory'
-        require 'ragol/optproc/args'
-        
-        factory = OptionFactory.instance
-        factory.create(*args, &blk)
-
         optargs = OptionArguments.new(*args)
         optcls = optargs.option_class
-        optcls.old_new(optargs.tags, optargs.regexps, optargs.required, *args, &blk)
+        optcls.old_new(optargs, args, &blk)
       end
     end
 
-    def initialize(tags, regexps, required, *args, &blk)
-      optargs = args[0]
+    def initialize(optargs, args, &blk)
+      oldargs = args[0]
       
-      @rcfield = optargs[:rcfield] || optargs[:rc]
+      @rcfield = oldargs[:rcfield] || oldargs[:rc]
       @rcfield = [ @rcfield ].flatten if @rcfield
       
-      @setter = blk || optargs[:set]
+      @setter = blk || oldargs[:set]
 
-      @argreqtype = required
+      @argreqtype = optargs.required
 
-      @regexps = regexps && Regexps.new([ regexps ].flatten)
-      @tags = tags && Tags.new(tags)
+      @regexps = optargs.regexps && Regexps.new([ optargs.regexps ].flatten)
+      @tags = optargs.tags && Tags.new(optargs.tags)
     end
 
     def value_regexp
@@ -152,7 +147,7 @@ module OptProc
   end
 
   class StringOption < DefaultOption
-    REGEXP = %r{^ [\"\']? (.*?) [\"\']? $ }x
+    REGEXP = Regexp.new '^ [\"\']? (.*?) [\"\']? $ ', Regexp::EXTENDED
     
     def value_regexp
       REGEXP
@@ -164,7 +159,7 @@ module OptProc
   end
 
   class IntegerOption < DefaultOption
-    REGEXP = %r{^ ([\-\+]?\d+) $ }x
+    REGEXP = Regexp.new '^ ([\-\+]?\d+) $ ', Regexp::EXTENDED
     
     def value_regexp
       REGEXP
@@ -176,7 +171,7 @@ module OptProc
   end
 
   class FloatOption < DefaultOption
-    REGEXP = %r{^ ([\-\+]?\d* (?:\.\d+)?) $ }x
+    REGEXP = Regexp.new '^ ([\-\+]?\d* (?:\.\d+)?) $ ', Regexp::EXTENDED
     
     def value_regexp
       REGEXP
@@ -187,7 +182,7 @@ module OptProc
     end
   end
 
-  class RegexpOption < DefaultOption
+  class RegexpOption < Option
     def value_regexp
       nil
     end

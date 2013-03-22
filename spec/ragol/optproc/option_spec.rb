@@ -2,7 +2,6 @@
 # -*- ruby -*-
 
 require 'ragol/optproc/optproc'
-require 'ragol/optproc/factory'
 
 Logue::Log.level = Logue::Log::INFO
 
@@ -37,7 +36,7 @@ describe OptProc::Option do
           :arg  => [ :string ],
           :set  => Proc.new { |v| @value = v }
         }
-        @option = OptProc::OptionFactory.instance.create optdata
+        @option = OptProc::Option.new optdata
       end
       
       def process args
