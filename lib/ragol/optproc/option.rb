@@ -14,13 +14,18 @@ module OptProc
       alias_method :old_new, :new
       def new(*args, &blk)
         require 'ragol/optproc/factory'
+        require 'ragol/optproc/args'
         
         factory = OptionFactory.instance
         factory.create(*args, &blk)
+
+        optargs = OptionArguments.new(*args)
+        optcls = optargs.option_class
+        optcls.old_new(optargs.tags, optargs.regexps, optargs.required, *args, &blk)
       end
     end
 
-    def initialize(tags, regexps, *args, &blk)
+    def initialize(tags, regexps, required, *args, &blk)
       optargs = args[0]
       
       @rcfield = optargs[:rcfield] || optargs[:rc]
@@ -28,7 +33,7 @@ module OptProc
       
       @setter = blk || optargs[:set]
 
-      @argreqtype = optargs[:required]
+      @argreqtype = required
 
       @regexps = regexps && Regexps.new([ regexps ].flatten)
       @tags = tags && Tags.new(tags)
