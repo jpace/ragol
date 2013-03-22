@@ -2,7 +2,6 @@
 # -*- ruby -*-
 
 require 'logue/loggable'
-require 'ragol/optproc/type'
 require 'ragol/optproc/errors'
 require 'ragol/optproc/regexps'
 require 'ragol/optproc/tags'
@@ -21,7 +20,7 @@ module OptProc
       end
     end
 
-    def initialize(tags, regexps, opttype, *args, &blk)
+    def initialize(tags, regexps, *args, &blk)
       optargs = args[0]
       
       @rcfield = optargs[:rcfield] || optargs[:rc]
@@ -29,13 +28,13 @@ module OptProc
       
       @setter = blk || optargs[:set]
 
-      @valuere = optargs[:value_regexp]
       @argreqtype = optargs[:required]
 
       @regexps = regexps && Regexps.new([ regexps ].flatten)
       @tags = tags && Tags.new(tags)
+    end
 
-      @opttype = opttype
+    def value_regexp
     end
 
     def convert md
@@ -55,8 +54,9 @@ module OptProc
     end
 
     def do_match val
-      if @valuere
-        unless md = @valuere.match(val)
+      valuere = value_regexp
+      if valuere
+        unless md = valuere.match(val)
           raise InvalidArgument.new val
         end
         md
@@ -119,10 +119,8 @@ module OptProc
       @regexps.to_s
     end
   end
-end
 
-module OptProc
-  class DefaultOption
+  class DefaultOption < Option
     def convert md
       return unless val = md && md[1]
       convert_value val
@@ -134,6 +132,10 @@ module OptProc
     FALSE = %w{ no false off }
     
     REGEXP = Regexp.new('^(' + (TRUE | FALSE).join('|') + ')$', Regexp::IGNORECASE)
+
+    def value_regexp
+      REGEXP
+    end
     
     def convert_value val
       to_boolean val
@@ -147,6 +149,10 @@ module OptProc
   class StringOption < DefaultOption
     REGEXP = %r{^ [\"\']? (.*?) [\"\']? $ }x
     
+    def value_regexp
+      REGEXP
+    end
+    
     def convert_value val
       val
     end
@@ -154,6 +160,10 @@ module OptProc
 
   class IntegerOption < DefaultOption
     REGEXP = %r{^ ([\-\+]?\d+) $ }x
+    
+    def value_regexp
+      REGEXP
+    end
     
     def convert_value val
       val.to_i
@@ -163,12 +173,20 @@ module OptProc
   class FloatOption < DefaultOption
     REGEXP = %r{^ ([\-\+]?\d* (?:\.\d+)?) $ }x
     
+    def value_regexp
+      REGEXP
+    end
+    
     def convert_value val
       val.to_f
     end
   end
 
   class RegexpOption < DefaultOption
+    def value_regexp
+      nil
+    end
+    
     # not implemented
     def convert md
       md

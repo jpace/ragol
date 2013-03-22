@@ -2,7 +2,6 @@
 # -*- ruby -*-
 
 require 'logue/loggable'
-require 'ragol/optproc/type'
 require 'ragol/optproc/option'
 require 'singleton'
 
@@ -10,8 +9,16 @@ module OptProc
   class OptionFactory
     include Logue::Loggable, Singleton
 
+    TYPES_TO_CLASSES = {
+      :boolean => BooleanOption,
+      :string  => StringOption,
+      :float   => FloatOption,
+      :integer => IntegerOption,
+      :regexp  => RegexpOption
+    }
+
     def create args = Hash.new, &blk
-      optargs = [ args[:arg] ].flatten.compact
+      optargs = args[:arg] || Array.new
 
       required = case 
                  when optargs.include?(:required)
@@ -24,26 +31,29 @@ module OptProc
 
       args[:required] = required
       
-      opttype = [ (OptProc::ARG_TYPES.keys & optargs) ].flatten.compact[0]
-      debug "opttype: #{opttype}"
-      
-      if opttype
+      if opttype = (TYPES_TO_CLASSES.keys & optargs)[0]
         args[:required] ||= :required
-        mod = OptProc::ARG_TYPES[opttype]
-        re = mod.const_get('REGEXP')
-        args[:value_regexp] = re
       end
       
       regexps = args[:regexps] || args[:regexp] || args[:res]
       tags = args[:tags]
 
-      optntype = nil
+      optcls = case opttype
+               when :boolean
+                 BooleanOption
+               when :string
+                 StringOption
+               when :float
+                 FloatOption
+               when :integer
+                 IntegerOption
+               when :regexp
+                 RegexpOption
+               else
+                 Option
+               end
 
-      opt = Option.old_new tags, regexps, optntype, args, &blk
-      if mod = OptProc::ARG_TYPES[opttype]
-        opt.send :extend, mod
-      end
-      opt
+      optcls.old_new tags, regexps, args, &blk
     end
   end
 end
