@@ -3,9 +3,7 @@
 
 require 'logue/loggable'
 require 'ragol/optproc/type'
-require 'ragol/optproc/argument'
-require 'ragol/optproc/tag_option'
-require 'ragol/optproc/regexp_option'
+require 'ragol/optproc/option'
 require 'singleton'
 
 module OptProc
@@ -15,46 +13,33 @@ module OptProc
     def create args = Hash.new, &blk
       optargs = [ args[:arg] ].flatten.compact
 
-      reqtype = case
-                when optargs.include?(:required)
-                  RequiredOptionArgument
-                when optargs.include?(:optional)
-                  OptionalOptionArgument
-                when optargs.include?(:none)
-                  nil
-                end
+      required = case 
+                 when optargs.include?(:required)
+                   :required
+                 when optargs.include?(:optional)
+                   :optional
+                 when optargs.include?(:none)
+                   nil
+                 end
+
+      args[:required] = required
       
       opttype = [ (OptProc::ARG_TYPES.keys & optargs) ].flatten.compact[0]
       debug "opttype: #{opttype}"
       
       if opttype
-        reqtype ||= RequiredOptionArgument
+        args[:required] ||= :required
         mod = OptProc::ARG_TYPES[opttype]
         re = mod.const_get('REGEXP')
         args[:value_regexp] = re
       end
       
-      args[:reqtype] = reqtype
-
       regexps = args[:regexps] || args[:regexp] || args[:res]
+      tags = args[:tags]
 
-      if regexps
-        create_regexp_option regexps, opttype, args, &blk
-      else
-        create_tag_option opttype, args, &blk
-      end
-    end
-    
-    def create_regexp_option regexps, opttype, args, &blk
-      opt = RegexpOption.old_new args, &blk
-      if mod = OptProc::ARG_TYPES[opttype]
-        opt.send :extend, mod
-      end
-      opt
-    end
+      optntype = nil
 
-    def create_tag_option opttype, args, &blk
-      opt = TagOption.old_new args, &blk
+      opt = Option.old_new tags, regexps, optntype, args, &blk
       if mod = OptProc::ARG_TYPES[opttype]
         opt.send :extend, mod
       end

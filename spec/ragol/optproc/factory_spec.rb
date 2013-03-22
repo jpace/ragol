@@ -19,7 +19,7 @@ describe OptProc::OptionFactory do
 
     subject { @option }
 
-    it { should be_a_kind_of(OptProc::RegexpOption) }
+    it { should be_a_kind_of(OptProc::Option) }
   end
 
   describe "tag option" do
@@ -33,6 +33,6 @@ describe OptProc::OptionFactory do
 
     subject { @option }
 
-    it { should be_a_kind_of(OptProc::TagOption) }
+    it { should be_a_kind_of(OptProc::Option) }
   end
 end

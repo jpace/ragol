@@ -322,4 +322,32 @@ describe OptProc::Option do
       should eq 'abc'
     end
   end
+
+  describe "option with both tags and regexps" do
+    def create_option_data optdata
+      @value = nil
+      optdata << {
+        :tags => %w{ -C --context },
+        :res  => %r{ ^ - ([1-9]\d*) $ }x,
+        :arg  => [ :optional, :integer ],
+        :set  => Proc.new { |val, opt, args| @value = val || 2 },
+        :rc   => %w{ context },
+      }
+    end
+
+    it "takes a tag argument" do
+      process %w{ --context 17 }
+      should eq 17
+    end
+
+    it "ignore missing tag argument" do
+      process %w{ --context }
+      should eq 2
+    end
+
+    it "takes the regexp value (not argument)" do
+      process %w{ -17 }
+      should eq 17
+    end
+  end
 end

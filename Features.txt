@@ -51,3 +51,8 @@ Wed Mar 20 19:32:44 2013
 Thu Mar 21 19:08:46 2013
 
   Simplified and clarified tests.
+
+Fri Mar 22 19:16:44 2013
+
+  Added test for option with tags and regexps.
+

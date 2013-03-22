@@ -5,7 +5,7 @@ require 'ragol/optproc/optproc'
 
 Logue::Log.level = Logue::Log::INFO
 
-describe OptProc::RegexpOption do
+describe "regexp option" do
   before :all do
     # ignore what they have in ENV[HOME]    
     ENV['HOME'] = '/this/should/not/exist'
