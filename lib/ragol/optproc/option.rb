@@ -120,68 +120,6 @@ module OptProc
     end
   end
 
-  class DefaultOption < Option
-    def convert md
-      return unless val = md && md[1]
-      convert_value val
-    end
-  end
-
-  class BooleanOption < DefaultOption
-    TRUE = %w{ yes true on }
-    FALSE = %w{ no false off }
-    
-    REGEXP = Regexp.new('^(' + (TRUE | FALSE).join('|') + ')$', Regexp::IGNORECASE)
-
-    def value_regexp
-      REGEXP
-    end
-    
-    def convert_value val
-      to_boolean val
-    end
-
-    def to_boolean val
-      TRUE.include? val.downcase
-    end
-  end
-
-  class StringOption < DefaultOption
-    REGEXP = Regexp.new '^ [\"\']? (.*?) [\"\']? $ ', Regexp::EXTENDED
-    
-    def value_regexp
-      REGEXP
-    end
-    
-    def convert_value val
-      val
-    end
-  end
-
-  class IntegerOption < DefaultOption
-    REGEXP = Regexp.new '^ ([\-\+]?\d+) $ ', Regexp::EXTENDED
-    
-    def value_regexp
-      REGEXP
-    end
-    
-    def convert_value val
-      val.to_i
-    end
-  end
-
-  class FloatOption < DefaultOption
-    REGEXP = Regexp.new '^ ([\-\+]?\d* (?:\.\d+)?) $ ', Regexp::EXTENDED
-    
-    def value_regexp
-      REGEXP
-    end
-    
-    def convert_value val
-      val.to_f
-    end
-  end
-
   class RegexpOption < Option
     def value_regexp
       nil

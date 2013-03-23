@@ -15,13 +15,20 @@ module OptProc
     @@types_to_classes = nil
 
     def initialize args = Hash.new
+      require 'ragol/optproc/boolean_option'
+      require 'ragol/optproc/fixnum_option'
+      require 'ragol/optproc/float_option'
+      require 'ragol/optproc/regexp_option'
+      require 'ragol/optproc/string_option'
+
       optargs = args[:arg] || Array.new
 
       @@types_to_classes ||= {
         :boolean => BooleanOption,
         :string  => StringOption,
         :float   => FloatOption,
-        :integer => IntegerOption,
+        :integer => FixnumOption,
+        :fixnum  => FixnumOption,
         :regexp  => RegexpOption
       }
 
