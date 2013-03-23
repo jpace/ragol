@@ -107,7 +107,7 @@ describe OptProc::OptionSet do
       end
     end
 
-    describe "two options xyzined" do
+    describe "two options defined" do
       def option_set_data
         optdata = Array.new
         optdata << {
@@ -249,20 +249,32 @@ describe OptProc::OptionSet do
         optdata
       end
 
+      def abc
+        @abc_executed
+      end
+
+      def abcdef
+        @abcdef_executed
+      end
+
+      def ghi
+        @ghi_executed
+      end
+
       it "uses full unambiguous option" do
         args = %w{ --abc }
         process args
-        @abc_executed.should be_true
-        @abcdef_executed.should be_false
-        @ghi_executed.should be_false
+        abc.should be_true
+        abcdef.should be_false
+        ghi.should be_false
       end
 
       it "uses short unambiguous option" do
         args = %w{ --gh }
         process args
-        @abc_executed.should be_false
-        @abcdef_executed.should be_false
-        @ghi_executed.should be_true
+        abc.should be_false
+        abcdef.should be_false
+        ghi.should be_true
       end
 
       it "uses ambiguous option" do
