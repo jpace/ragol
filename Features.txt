@@ -55,3 +55,7 @@ Thu Mar 21 19:08:46 2013
 Fri Mar 22 19:16:44 2013
 
   Added test for option with tags and regexps.
+
+Sat Mar 23 09:30:02 2013
+
+  Refined tests.
