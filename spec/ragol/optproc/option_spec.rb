@@ -64,7 +64,6 @@ describe OptProc::Option do
         :res  => %r{ ^ - ([1-9]\d*) $ }x,
         :arg  => [ :optional, :integer ],
         :set  => Proc.new { |val, opt, args| @value = val || 2 },
-        :rc   => %w{ context },
       }
     end
 
@@ -73,7 +72,7 @@ describe OptProc::Option do
       should eq 17
     end
 
-    it "ignore missing tag argument" do
+    it "ignores missing tag argument" do
       process %w{ --context }
       should eq 2
     end
