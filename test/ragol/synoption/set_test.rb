@@ -3,7 +3,7 @@
 
 require 'tc'
 require 'ragol/synoption/set'
-require 'ragol/synoption/base_option'
+require 'ragol/synoption/option'
 
 module Synoption
   class SetTestCase < TestCase
@@ -14,9 +14,9 @@ module Synoption
     end
 
     def setup
-      @xyz = BaseOption.new :xyz, '-x', "blah blah xyz",    nil
-      @abc = BaseOption.new :abc, '-a', "abc yadda yadda",  nil
-      @tnt = BaseOption.new :tnt, '-t', "tnt and so forth", nil
+      @xyz = Option.new :xyz, '-x', "blah blah xyz",    nil
+      @abc = Option.new :abc, '-a', "abc yadda yadda",  nil
+      @tnt = Option.new :tnt, '-t', "tnt and so forth", nil
       
       @optset = TestOptionSet.new [ @xyz, @abc, @tnt ]
     end

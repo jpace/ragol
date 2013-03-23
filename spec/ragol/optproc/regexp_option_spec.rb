@@ -11,10 +11,6 @@ describe "regexp option" do
     ENV['HOME'] = '/this/should/not/exist'
   end
 
-  before do
-    pending "still working out the functionality"
-  end
-
   def create_set optdata
     @set = OptProc::OptionSet.new optdata
   end
@@ -78,6 +74,7 @@ describe "regexp option" do
     subject { @opt_value }
 
     it "takes required argument" do
+      pending "not implemented"
       process %w{ --foo xyz }
       should eq 'xyz'
     end

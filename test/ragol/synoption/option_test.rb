@@ -2,7 +2,7 @@
 # -*- ruby -*-
 
 require 'tc'
-require 'ragol/synoption/base_option'
+require 'ragol/synoption/option'
 require 'stringio'
 
 module Synoption
