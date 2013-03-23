@@ -1,36 +1,17 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/optproc/optproc'
+require 'ragol/optproc/option'
+require 'ragol/optproc/common'
 
 Logue::Log.level = Logue::Log::INFO
 
 describe OptProc::Option do
-  before :all do
-    # ignore what they have in ENV[HOME]    
-    ENV['HOME'] = '/this/should/not/exist'
-  end
+  include_context "common option"
 
-  def create_set optdata
-    @set = OptProc::OptionSet.new optdata
-  end
-
-  def process args
-    @set.process_option args
-  end
-
-  subject { @value }
-
-  before do
-    optdata = Array.new
-    create_option_data optdata
-    create_set optdata
-  end
-  
   describe "option with argument :none" do
-    def create_option_data optdata
-      @value = nil
-      optdata << {
+    def option_data
+      {
         :tags => %w{ --none },
         :arg  => [ :none ],
         :set  => Proc.new { |x| @value = 'wasset' }
@@ -46,9 +27,8 @@ describe OptProc::Option do
   end
 
   describe "option without argument type" do
-    def create_option_data optdata
-      @value = nil
-      optdata << {
+    def option_data
+      {
         :tags => %w{ --undefn },
         :set  => Proc.new { |x| @value = 'setitwas' }
       }
@@ -63,9 +43,8 @@ describe OptProc::Option do
   end
 
   describe "option with required argument, without type" do
-    def create_option_data optdata
-      @value = nil
-      optdata << {
+    def option_data
+      {
         :tags => %w{ --xyz },
         :arg  => [ :required ],
         :set  => Proc.new { |v| @value = v }
@@ -79,9 +58,8 @@ describe OptProc::Option do
   end
 
   describe "option with both tags and regexps" do
-    def create_option_data optdata
-      @value = nil
-      optdata << {
+    def option_data
+      {
         :tags => %w{ -C --context },
         :res  => %r{ ^ - ([1-9]\d*) $ }x,
         :arg  => [ :optional, :integer ],
