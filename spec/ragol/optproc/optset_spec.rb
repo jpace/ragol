@@ -10,245 +10,286 @@ describe OptProc::OptionSet do
   end
 
   describe "initializes" do
-    before :each do
-      @optdata = Array.new
-      @optdata << {
-        :tags => %w{ -a --abc },
-        :arg  => [ :string ],
-        :set  => Proc.new { |x| }
-      }
+    let(:optset) do
+      optdata = option_set_data
+      OptProc::OptionSet.new optdata
+    end
+    
+    subject { optset }
+    
+    describe "with one option" do
+      def option_set_data
+        optdata = Array.new
+        optdata << {
+          :tags => %w{ -a --abc },
+          :set  => Proc.new { |x| }
+        }
+        optdata
+      end
+      
+      it "with one passed option" do
+        should have(1).options
+      end
     end
 
-    it "with one passed option" do
-      set = OptProc::OptionSet.new @optdata
-      set.should have(1).options
-    end
+    describe "with two options" do
+      def option_set_data
+        optdata = Array.new
+        optdata << {
+          :tags => %w{ -a --abc },
+          :set  => Proc.new { |x| }
+        }
 
-    it "with two passed options" do
-      @optdata << {
-        :tags => %w{ -d --def },
-        :arg  => [ :string ],
-        :set  => Proc.new { |x| }
-      }
-      set = OptProc::OptionSet.new @optdata
-      set.should have(2).options
-    end
-  end
+        optdata << {
+          :tags => %w{ -d --def },
+          :set  => Proc.new { |x| }
+        }
 
-  describe "processes one option" do
-    before :each do
-      @executed = false
-      optdata = Array.new
-      optdata << {
-        :tags => %w{ -a --abc },
-        :set  => Proc.new { @executed = true }
-      }
-      @set = OptProc::OptionSet.new optdata
-    end
+        optdata
+      end
 
-    it "uses long arg" do
-      @set.process_option %w{ --abc }
-      @executed.should be_true
-    end  
-
-    it "uses short arg" do
-      @set.process_option %w{ -a }
-      @executed.should be_true
-    end
-
-    it "ignores invalid long arg" do
-      @set.process_option %w{ --def }
-      @executed.should be_false
-    end
-
-    it "ignores invalid short arg" do
-      @set.process_option %w{ -d }
-      @executed.should be_false
-    end
-
-    it "leaves one unprocessed argument" do
-      args = %w{ -a something }
-      @set.process_option args
-      args.should have(1).items
-      args[0].should eql 'something'
+      it "with two passed options" do
+        should have(2).options
+      end
     end
   end
 
-  describe "processes two options" do
-    before :each do
-      @abc_executed = false
-      optdata = Array.new
-      optdata << {
-        :tags => %w{ -a --abc },
-        :set  => Proc.new { @abc_executed = true }
-      }
-      @def_executed = false
-      optdata << {
-        :tags => %w{ -d --def },
-        :set  => Proc.new { @def_executed = true }
-      }
-      @set = OptProc::OptionSet.new optdata
+  describe "processing options" do
+    let(:optset) do
+      optdata = option_set_data
+      OptProc::OptionSet.new optdata
     end
+    
+    subject { optset }
+    
+    def process args
+      optset.process_option args
+    end
+    
+    describe "one option defined" do
+      def option_set_data
+        @executed = false
+        optdata = Array.new
+        optdata << {
+          :tags => %w{ -a --abc },
+          :set  => Proc.new { @executed = true }
+        }
+        optdata
+      end
 
-    describe "first option" do
+      subject { @executed }
+
       it "uses long arg" do
-        @set.process_option %w{ --abc }
-        @abc_executed.should be_true
-        @def_executed.should be_false
+        process %w{ --abc }
+        should be_true
       end  
 
       it "uses short arg" do
-        @set.process_option %w{ -a }
-        @abc_executed.should be_true
-        @def_executed.should be_false
+        process %w{ -a }
+        should be_true
+      end
+
+      it "ignores invalid long arg" do
+        process %w{ --def }
+        should be_false
+      end
+
+      it "ignores invalid short arg" do
+        process %w{ -d }
+        should be_false
+      end
+
+      it "leaves one unprocessed argument" do
+        args = %w{ -a something }
+        process args
+        args.should have(1).items
+        args[0].should eql 'something'
       end
     end
 
-    describe "second option" do
-      it "uses long arg" do
-        @set.process_option %w{ --def }
+    describe "two options xyzined" do
+      def option_set_data
+        optdata = Array.new
+        optdata << {
+          :tags => %w{ -a --abc },
+          :set  => Proc.new { @abc = true }
+        }
+        @xyz = false
+        optdata << {
+          :tags => %w{ -x --xyz },
+          :set  => Proc.new { @xyz = true }
+        }
+        optdata
+      end
+
+      def abc
+        @abc
+      end
+
+      def xyz
+        @xyz
+      end
+
+      describe "first option" do
+        it "uses long arg" do
+          process %w{ --abc }
+          abc.should be_true
+          xyz.should be_false
+        end  
+
+        it "uses short arg" do
+          process %w{ -a }
+          abc.should be_true
+          xyz.should be_false
+        end
+      end
+
+      describe "second option" do
+        it "uses long arg" do
+          process %w{ --xyz }
+          abc.should be_false
+          xyz.should be_true
+        end  
+
+        it "uses short arg" do
+          process %w{ -x }
+          abc.should be_false
+          xyz.should be_true
+        end
+      end
+
+      describe "both options" do
+        it "uses long arg for both options" do
+          args = %w{ --abc --xyz }
+          process args
+          abc.should be_true
+          xyz.should be_false
+          args.should have(1).items
+
+          process args
+          abc.should be_true
+          xyz.should be_true
+          args.should be_empty
+        end  
+
+        it "uses short arg for both options" do
+          args = %w{ -a -x }
+          process args
+          abc.should be_true
+          xyz.should be_false
+          args.should have(1).items
+
+          process args
+          abc.should be_true
+          xyz.should be_true
+          args.should be_empty
+        end  
+
+        it "uses long arg for first, short for second" do
+          args = %w{ --abc -x }
+          process args
+          abc.should be_true
+          xyz.should be_false
+          args.should have(1).items
+
+          process args
+          abc.should be_true
+          xyz.should be_true
+          args.should be_empty
+        end  
+
+        it "uses short arg for first, long for second" do
+          args = %w{ -a --xyz }
+          process args
+          abc.should be_true
+          xyz.should be_false
+          args.should have(1).items
+
+          process args
+          abc.should be_true
+          xyz.should be_true
+          args.should be_empty
+        end  
+
+        it "splits short args" do
+          args = %w{ -ax }
+          process args
+          abc.should be_true
+          xyz.should be_false
+
+          # not necessarily: we might change this to process both at once.
+          args.should have(1).items
+
+          process args
+          abc.should be_true
+          xyz.should be_true
+          args.should be_empty
+        end
+      end
+    end
+
+    describe "processes incomplete options" do
+      def option_set_data
+        @abc_executed = false
+        optdata = Array.new
+        optdata << {
+          :tags => %w{ --abc },
+          :set  => Proc.new { @abc_executed = true }
+        }
+        @abcdef_executed = false
+        optdata << {
+          :tags => %w{ --abcdef },
+          :set  => Proc.new { @abcdef_executed = true }
+        }
+        @ghi_executed = false
+        optdata << {
+          :tags => %w{ --ghi },
+          :set  => Proc.new { @ghi_executed = true }
+        }
+        optdata
+      end
+
+      it "uses full unambiguous option" do
+        args = %w{ --abc }
+        process args
+        @abc_executed.should be_true
+        @abcdef_executed.should be_false
+        @ghi_executed.should be_false
+      end
+
+      it "uses short unambiguous option" do
+        args = %w{ --gh }
+        process args
         @abc_executed.should be_false
-        @def_executed.should be_true
-      end  
+        @abcdef_executed.should be_false
+        @ghi_executed.should be_true
+      end
 
-      it "uses short arg" do
-        @set.process_option %w{ -d }
-        @abc_executed.should be_false
-        @def_executed.should be_true
+      it "uses ambiguous option" do
+        args = %w{ --ab }
+        expect { process(args) }.to raise_error(RuntimeError, "ambiguous match of '--ab'; matches options: (--abc), (--abcdef)")
       end
     end
 
-    describe "both options" do
-      it "uses long arg for both options" do
-        args = %w{ --abc --def }
-        @set.process_option args
-        @abc_executed.should be_true
-        @def_executed.should be_false
-        args.should have(1).items
-
-        @set.process_option args
-        @abc_executed.should be_true
-        @def_executed.should be_true
-        args.should be_empty
-      end  
-
-      it "uses short arg for both options" do
-        args = %w{ -a -d }
-        @set.process_option args
-        @abc_executed.should be_true
-        @def_executed.should be_false
-        args.should have(1).items
-
-        @set.process_option args
-        @abc_executed.should be_true
-        @def_executed.should be_true
-        args.should be_empty
-      end  
-
-      it "uses long arg for first, short for second" do
-        args = %w{ --abc -d }
-        @set.process_option args
-        @abc_executed.should be_true
-        @def_executed.should be_false
-        args.should have(1).items
-
-        @set.process_option args
-        @abc_executed.should be_true
-        @def_executed.should be_true
-        args.should be_empty
-      end  
-
-      it "uses short arg for first, long for second" do
-        args = %w{ -a --def }
-        @set.process_option args
-        @abc_executed.should be_true
-        @def_executed.should be_false
-        args.should have(1).items
-
-        @set.process_option args
-        @abc_executed.should be_true
-        @def_executed.should be_true
-        args.should be_empty
-      end  
-
-      it "splits short args" do
-        args = %w{ -ad }
-        @set.process_option args
-        @abc_executed.should be_true
-        @def_executed.should be_false
-
-        # not necessarily: we might change this to process both at once.
-        args.should have(1).items
-
-        @set.process_option args
-        @abc_executed.should be_true
-        @def_executed.should be_true
-        args.should be_empty
+    describe "as regexp" do
+      def option_set_data
+        @abc_value = nil
+        optdata = Array.new
+        optdata << {
+          :res => %r{ ^ - ([1-9]\d*) $ }x,
+          :set => Proc.new { |val| @abc_value = val },
+        }
+        optdata
       end
-    end
-  end
 
-  describe "processes incomplete options" do
-    before :each do
-      @abc_executed = false
-      optdata = Array.new
-      optdata << {
-        :tags => %w{ --abc },
-        :set  => Proc.new { @abc_executed = true }
-      }
-      @abcdef_executed = false
-      optdata << {
-        :tags => %w{ --abcdef },
-        :set  => Proc.new { @abcdef_executed = true }
-      }
-      @ghi_executed = false
-      optdata << {
-        :tags => %w{ --ghi },
-        :set  => Proc.new { @ghi_executed = true }
-      }
-      @set = OptProc::OptionSet.new optdata
-    end
+      subject { @abc_value }
 
-    it "uses full unambiguous option" do
-      args = %w{ --abc }
-      @set.process_option args
-      @abc_executed.should be_true
-      @abcdef_executed.should be_false
-      @ghi_executed.should be_false
-    end
-
-    it "uses short unambiguous option" do
-      args = %w{ --gh }
-      @set.process_option args
-      @abc_executed.should be_false
-      @abcdef_executed.should be_false
-      @ghi_executed.should be_true
-    end
-
-    it "uses ambiguous option" do
-      args = %w{ --ab }
-      expect { @set.process_option(args) }.to raise_error(RuntimeError, "ambiguous match of '--ab'; matches options: (--abc), (--abcdef)")
-    end
-  end
-
-  describe "as regexp" do
-    before :each do
-      optdata = Array.new
-
-      @abc_value = nil
-      optdata << {
-        :res => %r{ ^ - ([1-9]\d*) $ }x,
-        :set => Proc.new { |val| @abc_value = val },
-      }
-
-      @set = OptProc::OptionSet.new optdata
-    end
-
-    it "matches" do
-      args = %w{ -123 }
-      @set.process_option args
-      @abc_value.should be_a_kind_of(MatchData)
-      @abc_value[1].should eql '123'
+      it "matches" do
+        args = %w{ -123 }
+        process args
+        should be_a_kind_of(MatchData)
+        @abc_value[1].should eql '123'
+      end
     end
   end
 end

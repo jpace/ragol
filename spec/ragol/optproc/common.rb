@@ -9,13 +9,9 @@ shared_context "common option" do
 
   subject { @value }
 
-  before do
-    @value = nil
-    optdata = option_data
-    @option = OptProc::Option.new optdata
-  end
+  let(:option) { OptProc::Option.new option_data }
   
   def process args
-    @option.set_value args
+    option.set_value args
   end
 end
