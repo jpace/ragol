@@ -16,11 +16,11 @@ module Synoption
   class OptionExactMatch < OptionMatch
     def initialize tag, name
       @tag = tag
-      @name = name
+      @name = name.to_s.gsub('_', '-')
     end
 
     def match? arg
-      arg == @tag || arg == '--' + @name.to_s
+      arg == @tag || arg == '--' + @name
     end
   end
 

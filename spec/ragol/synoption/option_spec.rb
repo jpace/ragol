@@ -229,4 +229,16 @@ describe Synoption::Option do
       end
     end
   end
+  
+  describe "name match" do
+    let(:option) do
+      Synoption::Option.new :max_limit, '-m', "the maximum", nil
+    end
+
+    subject { option }
+
+    it "should convert underscores and dashes" do
+      option.exact_match?('--max-limit').should be_true
+    end
+  end
 end
