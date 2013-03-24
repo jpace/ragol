@@ -39,15 +39,15 @@ module Synoption
     end
 
     def exact_match? arg
-      @matchers.exact.match? arg
+      @matchers.exact_match? arg
     end
 
     def negative_match? arg
-      @matchers.negative and @matchers.negative.match? arg
+      @matchers.negative_match? arg
     end
 
     def regexp_match? arg
-      @matchers.regexp and @matchers.regexp.match? arg
+      @matchers.regexp_match? arg
     end
 
     def unset
@@ -73,16 +73,16 @@ module Synoption
     end
 
     def process args
-      if @matchers.exact.match? args[0]
+      if exact_match? args[0]
         args.shift
         val = takes_value? ? next_argument(args) : true
         set_value val
         true
-      elsif @matchers.negative && @matchers.negative.match?(args[0])
+      elsif negative_match?(args[0])
         arg = args.shift
         set_value false
         true
-      elsif @matchers.regexp && (md = @matchers.regexp.match?(args[0]))
+      elsif md = regexp_match?(args[0])
         arg = args.shift
         set_value md[0]
         true

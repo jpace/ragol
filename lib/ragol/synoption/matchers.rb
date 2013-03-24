@@ -18,5 +18,17 @@ module Synoption
       @negative = negate && OptionNegativeMatch.new(negate)
       @regexp = regexp && OptionRegexpMatch.new(regexp)
     end
+
+    def exact_match? arg
+      @exact.match? arg
+    end
+
+    def negative_match? arg
+      @negative and @negative.match? arg
+    end
+
+    def regexp_match? arg
+      @regexp and @regexp.match? arg
+    end
   end
 end
