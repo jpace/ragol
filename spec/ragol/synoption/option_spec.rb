@@ -143,7 +143,7 @@ describe Synoption::Option do
 
     it "raises error without required argument" do
       args = %w{ --xyz }
-      expect { process(args) }.to raise_error(RuntimeError)
+      expect { process(args) }.to raise_error(RuntimeError, "option xyz expects following argument")
     end
   end
 

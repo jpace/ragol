@@ -95,7 +95,7 @@ module Synoption
     end
 
     def next_argument args
-      raise "ERROR: option #{name} expecting following argument" if args.empty?
+      raise "option #{name} expects following argument" if args.empty?
       args.shift
     end
 

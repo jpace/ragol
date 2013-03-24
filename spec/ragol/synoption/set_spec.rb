@@ -39,7 +39,7 @@ describe Synoption::OptionSet do
 
     context "invalid arguments" do
       it "throws error for bad option" do
-        expect { @optset.process %w{ -y foo } }.to raise_error(Synoption::OptionException)
+        expect { @optset.process %w{ -y foo } }.to raise_error(Synoption::OptionException, "error: option: -y invalid for testing")
       end
     end
 
