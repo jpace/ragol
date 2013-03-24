@@ -14,13 +14,17 @@ module Synoption
   end
 
   class OptionExactMatch < OptionMatch
+    attr_reader :tag
+    attr_reader :name
+    
     def initialize tag, name
       @tag = tag
-      @name = name.to_s.gsub('_', '-')
+      @name = name
+      @long_tag = name.to_s.gsub('_', '-')
     end
 
     def match? arg
-      arg == @tag || arg == '--' + @name
+      arg == @tag || arg == '--' + @long_tag
     end
   end
 

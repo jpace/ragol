@@ -11,31 +11,30 @@ module Synoption
   class Option
     include Logue::Loggable
 
-    attr_reader :name
-    attr_reader :tag
     attr_reader :description
     attr_reader :default
-
     attr_reader :matchers
 
     def initialize name, tag, description, default, options = Hash.new
-      @name = name
-      @tag = tag
       @description = description
 
       @value = @default = default
 
-      @matchers = Matchers.new @tag, @name, options[:negate], options[:regexp]
+      @matchers = Matchers.new tag, name, options[:negate], options[:regexp]
       
       @unsets = options[:unsets]
     end
 
-    def takes_value?
-      true
+    def tag
+      @matchers.exact.tag
     end
 
-    def to_s
-      [ @name, @tag ].join(", ")
+    def name
+      @matchers.exact.name
+    end
+
+    def takes_value?
+      true
     end
 
     def exact_match? arg
@@ -73,17 +72,17 @@ module Synoption
     end
 
     def process args
-      if exact_match? args[0]
+      if exact_match?(args[0])
         args.shift
         val = takes_value? ? next_argument(args) : true
         set_value val
         true
       elsif negative_match?(args[0])
-        arg = args.shift
+        args.shift
         set_value false
         true
       elsif md = regexp_match?(args[0])
-        arg = args.shift
+        args.shift
         set_value md[0]
         true
       else
