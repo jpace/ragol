@@ -25,6 +25,8 @@ module Synoption
   end
 
   class OptionNegativeMatch < OptionMatch
+    attr_reader :negopts
+
     def initialize *negopts
       # in case this gets passed an array as an element:
       @negopts = Array.new(negopts).flatten

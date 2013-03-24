@@ -11,9 +11,5 @@ module Synoption
     def takes_value?
       false
     end
-
-    def to_command_line
-      super && [ tag ]
-    end
   end
 end

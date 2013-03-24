@@ -28,7 +28,7 @@ module Synoption
 
     def to_doc_negate
       doc = nil
-      @option.negate.each do |neg|
+      @option.matchers.negative.negopts.each do |neg|
         str = if neg.kind_of? Regexp
                 str = re_to_string neg
               else
@@ -65,11 +65,11 @@ module Synoption
         io.puts to_doc_line "", "  default: #{defval}"
       end
 
-      if re = @option.regexp
+      if re = @option.matchers.regexp
         io.puts to_doc_line re_to_string(re), "same as above", ":"
       end
 
-      if @option.negate
+      if @option.matchers.negative
         lhs = to_doc_negate
         io.puts to_doc_line lhs, "", ""
       end

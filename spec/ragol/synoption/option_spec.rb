@@ -29,23 +29,42 @@ describe Synoption::Option do
   end
 
   describe "documentation" do
-    let(:option) do
-      Synoption::Option.new :limit, '-l', "the number of log entries", 777, :negate => [ %r{^--no-?limit} ]
+    context "no negatives" do
+      let(:option) do
+        Synoption::Option.new :limit, '-l', "the number of log entries", 777
+      end
+
+      subject { option }
+
+      it "should show documentation" do
+        sio = StringIO.new
+        option.to_doc sio
+        exp = String.new
+        exp << "  -l [--limit] ARG         : the number of log entries\n"
+        exp << "                               default: 777\n"
+        sio.string.should eql exp
+      end
     end
 
-    subject { option }
+    context "with negatives" do
+      let(:option) do
+        Synoption::Option.new :limit, '-l', "the number of log entries", 777, :negate => [ %r{^--no-?limit} ]
+      end
 
-    it "should show documentation" do
-      sio = StringIO.new
-      option.to_doc sio
-      exp = String.new
-      exp << "  -l [--limit] ARG         : the number of log entries\n"
-      exp << "                               default: 777\n"
-      exp << "  --no-limit                 \n"
-      sio.string.should eql exp
+      subject { option }
+
+      it "should show documentation" do
+        sio = StringIO.new
+        option.to_doc sio
+        exp = String.new
+        exp << "  -l [--limit] ARG         : the number of log entries\n"
+        exp << "                               default: 777\n"
+        exp << "  --no-limit                 \n"
+        sio.string.should eql exp
+      end
     end
   end
-
+  
   describe "exact match" do
     let(:option) do
       Synoption::Option.new :limit, '-l', "the number of log entries", 3

@@ -21,16 +21,6 @@ module Synoption
       find_by_name name
     end
 
-    def to_command_line
-      cmdline = Array.new
-      @options.each do |opt|
-        if cl = opt.to_command_line
-          cmdline.concat cl
-        end
-      end
-      cmdline
-    end
-
     def << option
       add option
     end
