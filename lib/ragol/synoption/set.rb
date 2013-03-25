@@ -78,6 +78,7 @@ module Synoption
 
         options.each do |opt|
           if opt.process @unprocessed
+            debug "opt: #{opt.inspect}"
             processed = true
             options_processed << opt
           end

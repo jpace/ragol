@@ -63,3 +63,7 @@ Sat Mar 23 09:30:02 2013
 Sun Mar 24 09:54:19 2013
 
   Migrated Synoption tests to RSpec.
+
+Mon Mar 25 19:20:12 2013
+
+  Added tests for Synoption set.
