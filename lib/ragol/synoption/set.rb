@@ -6,25 +6,16 @@ require 'logue/loggable'
 require 'ragol/synoption/option'
 require 'ragol/synoption/exception'
 require 'ragol/synoption/list'
+require 'ragol/synoption/builder'
 
 module Synoption
   class OptionSet < OptionList
     include Logue::Loggable
 
-    # maps from the option set class to the valid options for that class.
-    @@options_for_class = Hash.new { |h, k| h[k] = Array.new }
-
     attr_reader :unprocessed
 
     def self.has_option name, optcls, optargs = Hash.new
-      @@options_for_class[self] << { :name => name, :class => optcls, :args => optargs }
-
-      define_method name do
-        instance_eval do
-          opt = instance_variable_get '@' + name.to_s          
-          opt.value
-        end
-      end
+      Builder.add_has_option self, name, optcls, optargs
     end
 
     attr_reader :options
@@ -40,7 +31,7 @@ module Synoption
     end
 
     def add_options_for_class cls
-      opts = @@options_for_class[cls]
+      opts = Builder.options_for_class(cls)
 
       opts.each do |option|
         name = option[:name]
