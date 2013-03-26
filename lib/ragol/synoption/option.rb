@@ -11,17 +11,14 @@ module Synoption
   class Option
     include Logue::Loggable
 
-    attr_reader :description
     attr_reader :default
+    attr_reader :description
     attr_reader :matchers
 
     def initialize name, tag, description, default, options = Hash.new
       @description = description
-
       @value = @default = default
-
       @matchers = Matchers.new tag, name, options[:negate], options[:regexp]
-      
       @unsets = options[:unsets]
     end
 

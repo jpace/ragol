@@ -17,12 +17,13 @@ module Synoption
     def self.has_option name, optcls, optargs = Hash.new
       Builder.add_has_option self, name, optcls, optargs
     end
-
-    attr_reader :options
     
     def initialize options = Array.new
       super 
+      add_all_options
+    end
 
+    def add_all_options
       cls = self.class
       while cls != OptionSet
         add_options_for_class cls
@@ -88,7 +89,7 @@ module Synoption
     def check_for_valid_options 
       @unprocessed.each do |opt|
         if opt.start_with? '-'
-          raise OptionException.new "error: option: #{opt} invalid for #{name}"
+          raise OptionException.new "option '#{opt}' invalid for #{name}"
         end
       end
     end

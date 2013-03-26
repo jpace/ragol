@@ -47,13 +47,23 @@ describe Synoption::OptionSet do
       @xyz.value
     end
 
-    context "when options are isolated" do
+    shared_examples "OptionSet#find_by_name" do
       describe "#find_by_name" do
-        it { @optset.find_by_name(:abc).should be_true }
-        it { @optset.find_by_name(:tnt).should be_true }
-        it { @optset.find_by_name(:xyz).should be_true }
-        it { @optset.find_by_name(:bfd).should be_nil }
+        valid = [ :abc, :tnt, :xyz ]
+        valid.each do |field|
+          it "returns true for #{field}" do
+            @optset.find_by_name(field).should be_true
+          end
+        end
+
+        it "returns nil for bfd" do
+          @optset.find_by_name(:bfd).should be_nil
+        end
       end
+    end
+
+    context "when options are isolated" do
+      include_examples "OptionSet#find_by_name"
 
       describe "#process" do
         context "when arguments are valid" do
@@ -77,7 +87,7 @@ describe Synoption::OptionSet do
 
         context "when arguments are invalid" do
           it "throws error for bad option" do
-            expect { process %w{ -y foo } }.to raise_error(Synoption::OptionException, "error: option: -y invalid for testing")
+            expect { process %w{ -y foo } }.to raise_error(Synoption::OptionException, "option '-y' invalid for testing")
           end
         end
 
@@ -203,28 +213,19 @@ describe Synoption::OptionSet do
     end
 
     context "when options are not interlinked" do
-      def find_by_name what
-        @optset.find_by_name what
-      end
+      include_examples "OptionSet#find_by_name"
 
-      describe "#find_by_name" do
+      context "accessor methods added" do
         valid = [ :abc, :tnt, :xyz ]
         valid.each do |field|
-          it "returns true for #{field}" do
-            @optset.find_by_name(field).should be_true
+          it "has method #{field}" do
+            @optset.method(field).should be_true
           end
         end
 
-        it "returns nil for bfd" do
-          @optset.find_by_name(:bfd).should be_nil
+        it "does not have method bfd" do
+          expect { @optset.method(:bfd) }.to raise_error(NameError)
         end
-      end
-
-      context "accessor methods added" do
-        it { @optset.method(:abc).should be_true }
-        it { @optset.method(:tnt).should be_true }
-        it { @optset.method(:xyz).should be_true }
-        it { expect { @optset.method(:bfd) }.to raise_error(NameError) }
       end
 
       describe "#process" do
