@@ -7,7 +7,9 @@ require 'ragol/synoption/option'
 Logue::Log.level = Logue::Log::INFO
 
 describe Synoption::OptionSet do
-  context "default constructor" do
+  include Logue::Loggable
+  
+  describe "#new" do
     before do
       @xyz = Synoption::Option.new :xyz, '-x', "blah blah xyz",    nil, xyz_options
       @abc = Synoption::Option.new :abc, '-a', "abc yadda yadda",  nil, abc_options
@@ -45,37 +47,41 @@ describe Synoption::OptionSet do
       @xyz.value
     end
 
-    context "isolated options" do
-      describe "find by name" do
+    context "when options are isolated" do
+      describe "#find_by_name" do
         it { @optset.find_by_name(:abc).should be_true }
         it { @optset.find_by_name(:tnt).should be_true }
         it { @optset.find_by_name(:xyz).should be_true }
         it { @optset.find_by_name(:bfd).should be_nil }
       end
 
-      describe "process" do
-        context "valid arguments" do
+      describe "#process" do
+        context "when arguments are valid" do
           before do
-            process %w{ -x foo }
+            process %w{ -x foo bar baz }
           end
           
-          it "sets an option" do
+          it "sets option xyz" do
             xyz.should eql 'foo'
           end
           
-          it "ignores other options" do
+          it "ignores options abc and tnt" do
             abc.should be_nil
             tnt.should be_nil
           end
+
+          it "leaves unprocessed arguments" do
+            @optset.unprocessed.should eql %w{ bar baz }
+          end
         end
 
-        context "invalid arguments" do
+        context "when arguments are invalid" do
           it "throws error for bad option" do
             expect { process %w{ -y foo } }.to raise_error(Synoption::OptionException, "error: option: -y invalid for testing")
           end
         end
 
-        context "stops on double dash" do
+        context "when argument is double dash" do
           before do
             process %w{ -a abc -- -x foo }
           end
@@ -84,7 +90,7 @@ describe Synoption::OptionSet do
             abc.should eql 'abc'
           end
 
-          it "ignores other option" do
+          it "ignores unspecified option" do
             tnt.should be_nil
           end
 
@@ -95,13 +101,13 @@ describe Synoption::OptionSet do
       end
     end
 
-    context "integrated options" do
+    context "when options are interlinked" do
       def tnt_options
         { :unsets => :xyz }
       end
 
-      describe "process" do
-        describe "no option to unset" do
+      describe "#process" do
+        context "when there is no option to unset" do
           before do
             process %w{ -x foo }
           end
@@ -116,7 +122,7 @@ describe Synoption::OptionSet do
           end
         end
 
-        describe "unsets option, not set" do
+        context "when there is only an option to unset" do
           before do
             process %w{ -t bar }
           end
@@ -130,7 +136,7 @@ describe Synoption::OptionSet do
           end
         end
 
-        describe "unsets option, set -t, -x" do
+        context "when the option order is the unset option, then the option to be unset" do
           before do
             process %w{ -t bar -x foo }
           end
@@ -144,7 +150,7 @@ describe Synoption::OptionSet do
           end
         end
 
-        describe "unsets option, set -x, -t" do
+        context "when the option order is the option to be unset, then the unset option" do
           before do
             process %w{ -x foo -t bar }
           end
@@ -161,7 +167,7 @@ describe Synoption::OptionSet do
     end
   end
 
-  context "has_option" do
+  context ":has_option" do
     before :all do
       class XyzOption < Synoption::Option
         def initialize
@@ -196,23 +202,33 @@ describe Synoption::OptionSet do
       @optset.process args
     end
 
-    context "isolated options" do
-      describe "find by name" do
-        it { @optset.find_by_name(:abc).should be_true }
-        it { @optset.find_by_name(:tnt).should be_true }
-        it { @optset.find_by_name(:xyz).should be_true }
-        it { @optset.find_by_name(:bfd).should be_nil }
+    context "when options are not interlinked" do
+      def find_by_name what
+        @optset.find_by_name what
       end
 
-      describe "adds accessor method" do
+      describe "#find_by_name" do
+        valid = [ :abc, :tnt, :xyz ]
+        valid.each do |field|
+          it "returns true for #{field}" do
+            @optset.find_by_name(field).should be_true
+          end
+        end
+
+        it "returns nil for bfd" do
+          @optset.find_by_name(:bfd).should be_nil
+        end
+      end
+
+      context "accessor methods added" do
         it { @optset.method(:abc).should be_true }
         it { @optset.method(:tnt).should be_true }
         it { @optset.method(:xyz).should be_true }
         it { expect { @optset.method(:bfd) }.to raise_error(NameError) }
       end
 
-      describe "process" do
-        context "valid arguments" do
+      describe "#process" do
+        context "when arguments are valid" do
           before :all do
             process %w{ -x foo }
           end
@@ -225,6 +241,20 @@ describe Synoption::OptionSet do
             @optset.abc.should be_nil
             @optset.tnt.should be_nil
           end
+        end
+
+        it "resets options on multiple invocations of #process" do
+          pending "not supported with current implementation"
+
+          @optset.process %w{ -x foo }
+          @optset.xyz.should eql 'foo'
+          @optset.abc.should be_nil
+          @optset.tnt.should be_nil
+          
+          @optset.process %w{ -t bar }
+          @optset.xyz.should be_nil
+          @optset.abc.should be_nil
+          @optset.tnt.should eql 'bar'
         end
       end
     end

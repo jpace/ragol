@@ -8,13 +8,14 @@ Logue::Log.level = Logue::Log::INFO
 describe Synoption::Option do
   describe "option defaults" do
     let(:option) do
-      Synoption::Option.new :limit, '-l', "the number of log entries", nil
+      Synoption::Option.new :limit, '-l', "the number of log entries", 15
     end
 
     subject { option }
 
     it { option.name.should eql :limit }
     it { option.tag.should eql '-l' }
+    it { option.value.should eql 15 }
     it { option.description.should eql 'the number of log entries' }
   end
 

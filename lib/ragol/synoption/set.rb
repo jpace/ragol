@@ -29,7 +29,7 @@ module Synoption
         cls = cls.superclass
       end
     end
-
+    
     def add_options_for_class cls
       opts = Builder.options_for_class(cls)
 
