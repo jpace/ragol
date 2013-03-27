@@ -45,7 +45,8 @@ module Synoption
       @matchers.regexp_match? arg
     end
 
-    def unset
+    def unset results
+      debug "results: #{results}"
       @value = nil
     end
 
@@ -87,15 +88,15 @@ module Synoption
       end
     end
 
-    def post_process option_set, unprocessed
-      resolve_value option_set, unprocessed
+    def post_process option_set, results, unprocessed
+      resolve_value option_set, results, unprocessed
 
       if @unsets
-        option_set.unset @unsets
+        option_set.unset results, @unsets
       end
     end
 
-    def resolve_value option_set, unprocessed
+    def resolve_value option_set, results, unprocessed
     end
   end
 end

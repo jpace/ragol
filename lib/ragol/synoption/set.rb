@@ -46,9 +46,9 @@ module Synoption
       end
     end
 
-    def unset key
+    def unset results, key
       opt = find_by_name key
-      opt && opt.unset
+      opt && opt.unset(results)
     end
 
     def process args
@@ -101,7 +101,7 @@ module Synoption
 
     def post_process_all results, options_processed
       options_processed.each do |opt|
-        opt.post_process self, results.unprocessed
+        opt.post_process self, results, results.unprocessed
       end
     end
   end
