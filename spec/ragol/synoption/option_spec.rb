@@ -2,6 +2,7 @@
 # -*- ruby -*-
 
 require 'ragol/synoption/option'
+require 'ragol/synoption/results'
 
 Logue::Log.level = Logue::Log::INFO
 
@@ -130,35 +131,69 @@ describe Synoption::Option do
     let(:option) do
       Synoption::Option.new :xyz, '-x', "the blah blah blah", nil, Hash.new
     end
-
+    
     subject { option }
 
     def process args
-      option.process args
+      results = Synoption::Results.new
+      option.process results, args
     end
 
-    it "should not process non-matching tag" do
-      args = %w{ --baz foo }
-      pr = process args
-      pr.should be_false
-      option.value.should be_nil
-      args.size.should == 2
+    context "when it has no matching tag" do
+      before do
+        @args = %w{ --baz foo }
+        @pr = process @args
+      end
+      
+      it "should not be processed" do
+        @pr.should be_false
+      end
+      
+      it "should not change the option value" do
+        option.value.should be_nil
+      end
+
+      it "should not change the option value" do
+        @args.size.should == 2
+      end
     end
 
-    it "takes argument" do
-      args = %w{ --xyz foo }
-      pr = process args
-      pr.should be_true
-      option.value.should eql 'foo'
-      args.should be_empty
+    context "when it has matching tag and no following arguments" do
+      before do
+        @args = %w{ --xyz foo }
+        @pr = process @args
+      end
+      
+      it "should be processed" do
+        @pr.should be_true
+      end
+
+      it "should change the option value" do
+        option.value.should eql 'foo'
+      end
+
+      it "should take the arguments" do
+        @args.should be_empty
+      end
     end
 
-    it "takes argument and leaves one" do
-      args = %w{ --xyz foo bar }
-      pr = process args
-      pr.should be_true
-      option.value.should eql 'foo'
-      args.should eql [ 'bar' ]
+    context "when it has matching tag and a following argument" do
+      before do
+        @args = %w{ --xyz foo bar }
+        @pr = process @args
+      end
+      
+      it "should be processed" do
+        @pr.should be_true
+      end
+
+      it "should change the option value" do
+        option.value.should eql 'foo'
+      end
+
+      it "should leave the remaining argument" do
+        @args.should eql [ 'bar' ]
+      end
     end
 
     it "raises error without required argument" do
@@ -176,7 +211,8 @@ describe Synoption::Option do
     subject { option }
 
     def process args
-      option.process args
+      results = Synoption::Results.new
+      option.process results, args
     end
 
     %w{ -X --no-xyz --noxyz }.each do |val|
@@ -207,7 +243,8 @@ describe Synoption::Option do
     subject { option }
 
     def process args
-      option.process args
+      results = Synoption::Results.new
+      option.process results, args
     end
 
     %w{ -1 +123 }.each do |val|

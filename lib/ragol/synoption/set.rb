@@ -7,12 +7,11 @@ require 'ragol/synoption/option'
 require 'ragol/synoption/exception'
 require 'ragol/synoption/list'
 require 'ragol/synoption/builder'
+require 'ragol/synoption/results'
 
 module Synoption
   class OptionSet < OptionList
     include Logue::Loggable
-
-    attr_reader :unprocessed
 
     def self.has_option name, optcls, optargs = Hash.new
       Builder.add_has_option self, name, optcls, optargs
@@ -32,6 +31,7 @@ module Synoption
     end
     
     def add_options_for_class cls
+      debug "cls: #{cls}"
       opts = Builder.options_for_class(cls)
 
       opts.each do |option|
@@ -39,6 +39,7 @@ module Synoption
         cls = option[:class]
         args = option[:args]
         opt = cls.new(*args)
+        debug "opt: #{opt}"
         
         add opt
         instance_variable_set '@' + name.to_s, opt
@@ -51,17 +52,19 @@ module Synoption
     end
 
     def process args
+      debug "args: #{args}"
+      results = Results.new args
+      
       options_processed = Array.new
 
       debug "args: #{args.inspect}"
-      @unprocessed = args
-      debug "@unprocessed: #{@unprocessed.inspect}"
+      debug "results.unprocessed: #{results.unprocessed.inspect}"
 
       aborted = false
       
-      while !@unprocessed.empty?
-        if @unprocessed[0] == '--'
-          @unprocessed.delete_at 0
+      while !results.unprocessed.empty?
+        if results.unprocessed[0] == '--'
+          results.unprocessed.delete_at 0
           aborted = true
           break
         end
@@ -69,7 +72,7 @@ module Synoption
         processed = false
 
         options.each do |opt|
-          if opt.process @unprocessed
+          if opt.process results, results.unprocessed
             debug "opt: #{opt.inspect}"
             processed = true
             options_processed << opt
@@ -80,23 +83,25 @@ module Synoption
       end
 
       unless aborted
-        check_for_valid_options 
+        check_for_valid_options results
       end
 
-      post_process_all options_processed
+      post_process_all results, options_processed
+
+      results
     end
 
-    def check_for_valid_options 
-      @unprocessed.each do |opt|
+    def check_for_valid_options results
+      results.unprocessed.each do |opt|
         if opt.start_with? '-'
           raise OptionException.new "option '#{opt}' invalid for #{name}"
         end
       end
     end
 
-    def post_process_all options_processed
+    def post_process_all results, options_processed
       options_processed.each do |opt|
-        opt.post_process self, @unprocessed
+        opt.post_process self, results.unprocessed
       end
     end
   end

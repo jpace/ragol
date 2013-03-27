@@ -4,7 +4,6 @@
 require 'rubygems'
 require 'logue/loggable'
 require 'ragol/synoption/doc'
-require 'ragol/synoption/match'
 require 'ragol/synoption/matchers'
 
 module Synoption
@@ -50,7 +49,8 @@ module Synoption
       @value = nil
     end
 
-    def set_value val
+    def set_value results, val
+      debug "results: #{results}"
       @value = val
     end
 
@@ -68,19 +68,19 @@ module Synoption
       args.shift
     end
 
-    def process args
+    def process results, args
       if exact_match?(args[0])
         args.shift
         val = takes_value? ? next_argument(args) : true
-        set_value val
+        set_value results, val
         true
       elsif negative_match?(args[0])
         args.shift
-        set_value false
+        set_value results, false
         true
       elsif md = regexp_match?(args[0])
         args.shift
-        set_value md[0]
+        set_value results, md[0]
         true
       else
         false

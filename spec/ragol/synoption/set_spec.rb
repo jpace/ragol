@@ -8,6 +8,18 @@ Logue::Log.level = Logue::Log::INFO
 
 describe Synoption::OptionSet do
   include Logue::Loggable
+
+  def has_methods(optset, *methnames)
+    methnames.each do |field|
+      it("has method #{field}") { optset.method(field).should be_true }
+    end
+  end
+  
+  def has_no_methods(optset, *methnames)
+    methnames.each do |field|
+      it("does not have method #{field}") { optset.method(field).should be_nil }
+    end
+  end
   
   describe "#new" do
     before do
@@ -68,7 +80,7 @@ describe Synoption::OptionSet do
       describe "#process" do
         context "when arguments are valid" do
           before do
-            process %w{ -x foo bar baz }
+            @results = process %w{ -x foo bar baz }
           end
           
           it "sets option xyz" do
@@ -81,7 +93,7 @@ describe Synoption::OptionSet do
           end
 
           it "leaves unprocessed arguments" do
-            @optset.unprocessed.should eql %w{ bar baz }
+            @results.unprocessed.should eql %w{ bar baz }
           end
         end
 
@@ -178,84 +190,199 @@ describe Synoption::OptionSet do
   end
 
   context ":has_option" do
-    before :all do
-      class XyzOption < Synoption::Option
-        def initialize
-          super :xyz, '-x', "blah blah xyz", nil
-        end
-      end
-
-      class AbcOption < Synoption::Option
-        def initialize 
-          super :abc, '-a', "abc yadda yadda",  nil
-        end
-      end
-      
-      class TntOption < Synoption::Option
-        def initialize 
-          super :tnt, '-t', "tnt and so forth", nil
-        end
-      end
-      
-      class TestOptionSet < Synoption::OptionSet
-        has_option :xyz, XyzOption
-        has_option :abc, AbcOption
-        has_option :tnt, TntOption
-
-        def name; 'testing'; end
-      end
-
-      @optset = TestOptionSet.new
-    end
-
-    def process args
-      @optset.process args
-    end
-
-    context "when options are not interlinked" do
-      include_examples "OptionSet#find_by_name"
-
-      context "accessor methods added" do
-        valid = [ :abc, :tnt, :xyz ]
-        valid.each do |field|
-          it "has method #{field}" do
-            @optset.method(field).should be_true
+    context "when direct subclass of OptionSet" do
+      before :all do
+        class XyzOption < Synoption::Option
+          def initialize
+            super :xyz, '-x', "blah blah xyz", nil
           end
         end
 
-        it "does not have method bfd" do
-          expect { @optset.method(:bfd) }.to raise_error(NameError)
+        class AbcOption < Synoption::Option
+          def initialize 
+            super :abc, '-a', "abc yadda yadda",  nil
+          end
         end
+        
+        class TntOption < Synoption::Option
+          def initialize 
+            super :tnt, '-t', "tnt and so forth", nil
+          end
+        end
+        
+        class TestOptionSet < Synoption::OptionSet
+          has_option :xyz, XyzOption
+          has_option :abc, AbcOption
+          has_option :tnt, TntOption
+
+          def name; 'testing'; end
+        end
+
+        @optset = TestOptionSet.new
       end
 
-      describe "#process" do
-        context "when arguments are valid" do
-          before :all do
-            process %w{ -x foo }
+      def process args
+        @optset.process args
+      end
+
+      context "when options are not interlinked" do
+        include_examples "OptionSet#find_by_name"
+
+        context "accessor methods added" do
+          valid = [ :abc, :tnt, :xyz ]
+          valid.each do |field|
+            it "has method #{field}" do
+              @optset.method(field).should be_true
+            end
           end
-          
-          it "sets an option" do
+
+          it "does not have method bfd" do
+            expect { @optset.method(:bfd) }.to raise_error(NameError)
+          end
+        end
+
+        describe "#process" do
+          context "when arguments are valid" do
+            before :all do
+              process %w{ -x foo }
+            end
+            
+            it "sets an option" do
+              @optset.xyz.should eql 'foo'
+            end
+            
+            it "ignores other options" do
+              @optset.abc.should be_nil
+              @optset.tnt.should be_nil
+            end
+          end
+
+          it "resets options on multiple invocations of #process" do
+            pending "not supported with current implementation"
+
+            @optset.process %w{ -x foo }
             @optset.xyz.should eql 'foo'
-          end
-          
-          it "ignores other options" do
             @optset.abc.should be_nil
             @optset.tnt.should be_nil
+            
+            @optset.process %w{ -t bar }
+            @optset.xyz.should be_nil
+            @optset.abc.should be_nil
+            @optset.tnt.should eql 'bar'
+          end
+        end
+      end
+    end
+
+    context "when multiple subclasses of OptionSet" do
+      before :all do
+        class AbcOption < Synoption::Option
+          def initialize
+            super :abc, '-a', "aye bee see", nil
           end
         end
 
-        it "resets options on multiple invocations of #process" do
-          pending "not supported with current implementation"
+        class UghOption < Synoption::Option
+          def initialize
+            super :ugh, '-u', "you gee ache", nil
+          end
+        end
+        
+        class CommonTestOptionSet < Synoption::OptionSet
+          has_option :abc, AbcOption
+          has_option :ugh, UghOption
 
-          @optset.process %w{ -x foo }
-          @optset.xyz.should eql 'foo'
-          @optset.abc.should be_nil
-          @optset.tnt.should be_nil
-          
-          @optset.process %w{ -t bar }
-          @optset.xyz.should be_nil
-          @optset.abc.should be_nil
-          @optset.tnt.should eql 'bar'
+          def name; 'common'; end
+        end
+
+        @commonoptset = CommonTestOptionSet.new
+
+        class XyzOption < Synoption::Option
+          def initialize
+            super :xyz, '-x', "ecks why zee", nil
+          end
+        end
+
+        class GhiOption < Synoption::Option
+          def initialize
+            super :ghi, '-g', "gee ache eye", nil
+          end
+        end
+        
+        class AbcTestOptionSet < CommonTestOptionSet
+          has_option :xyz, XyzOption
+          has_option :ghi, GhiOption
+
+          def name; 'testing'; end
+        end
+
+        @abcoptset = AbcTestOptionSet.new
+      end
+
+      def process args
+        @abcoptset.process args
+      end
+
+      context "when options are not interlinked" do
+        describe "accessor methods added" do
+          context "when option set is subclass" do
+            valid = [ :abc, :ugh, :xyz, :ghi ]
+            valid.each do |field|
+              it("has method #{field}") { @abcoptset.method(field).should be_true }
+            end
+
+            it "does not have method bfd" do
+              expect { @abcoptset.method(:bfd) }.to raise_error(NameError)
+            end
+          end
+
+          context "when option set is common" do
+            valid = [ :abc, :ugh ]
+            valid.each do |field|
+              it "has method #{field}" do
+                @commonoptset.method(field).should be_true
+              end
+            end
+
+            invalid = [ :xyz, :ghi, :bfd ]
+            invalid.each do |field|
+              it "has does not have method #{field}" do
+                expect { @commonoptset.method(field) }.to raise_error(NameError)
+              end
+            end
+          end
+        end
+
+        describe "#process" do
+          context "when arguments are valid" do
+            before :all do
+              process %w{ -x foo }
+            end
+            
+            it "sets an option" do
+              @abcoptset.xyz.should eql 'foo'
+            end
+            
+            it "ignores other options" do
+              @abcoptset.abc.should be_nil
+              @abcoptset.ghi.should be_nil
+              @abcoptset.ugh.should be_nil
+            end
+          end
+
+          it "resets options on multiple invocations of #process" do
+            pending "not supported with current implementation"
+
+            @abcoptset.process %w{ -x foo }
+            @abcoptset.xyz.should eql 'foo'
+            @abcoptset.abc.should be_nil
+            @abcoptset.tnt.should be_nil
+            
+            @abcoptset.process %w{ -t bar }
+            @abcoptset.xyz.should be_nil
+            @abcoptset.abc.should be_nil
+            @abcoptset.tnt.should eql 'bar'
+          end
         end
       end
     end
