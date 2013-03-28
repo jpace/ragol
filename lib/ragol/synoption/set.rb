@@ -48,12 +48,15 @@ module Synoption
 
     def unset results, key
       opt = find_by_name key
-      opt && opt.unset(results)
+      if opt
+        opt.unset(results)
+        results.unset_value opt.name
+      end
     end
 
     def process args
       debug "args: #{args}"
-      results = Results.new args
+      results = Results.new self.class, args
       
       options_processed = Array.new
 

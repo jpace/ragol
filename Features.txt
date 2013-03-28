@@ -75,3 +75,8 @@ Tue Mar 26 19:03:16 2013
 Wed Mar 27 18:55:56 2013
 
   Refined tests.
+
+Thu Mar 28 19:06:00 2013
+
+  Updated tests for the new Results class.
+

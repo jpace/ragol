@@ -356,7 +356,7 @@ describe Synoption::OptionSet do
         describe "#process" do
           context "when arguments are valid" do
             before :all do
-              process %w{ -x foo }
+              @results = process %w{ -x foo }
             end
             
             it "sets an option" do
@@ -364,9 +364,9 @@ describe Synoption::OptionSet do
             end
             
             it "ignores other options" do
-              @abcoptset.abc.should be_nil
-              @abcoptset.ghi.should be_nil
-              @abcoptset.ugh.should be_nil
+              @results.abc.should be_nil
+              @results.value(:ghi).should be_nil
+              @results.value(:ugh).should be_nil
             end
           end
 

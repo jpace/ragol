@@ -2,6 +2,7 @@
 # -*- ruby -*-
 
 require 'ragol/synoption/option'
+require 'ragol/synoption/set'
 require 'ragol/synoption/results'
 
 Logue::Log.level = Logue::Log::INFO
@@ -135,7 +136,7 @@ describe Synoption::Option do
     subject { option }
 
     def process args
-      results = Synoption::Results.new
+      results = Synoption::Results.new nil
       option.process results, args
     end
 
@@ -211,7 +212,7 @@ describe Synoption::Option do
     subject { option }
 
     def process args
-      results = Synoption::Results.new
+      results = Synoption::Results.new nil
       option.process results, args
     end
 
@@ -243,7 +244,7 @@ describe Synoption::Option do
     subject { option }
 
     def process args
-      results = Synoption::Results.new
+      results = Synoption::Results.new nil
       option.process results, args
     end
 
