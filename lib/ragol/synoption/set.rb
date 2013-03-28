@@ -35,20 +35,23 @@ module Synoption
       opts = Builder.options_for_class(cls)
 
       opts.each do |option|
-        name = option[:name]
-        cls = option[:class]
-        args = option[:args]
-        opt = cls.new(*args)
-        debug "opt: #{opt}"
-        
-        add opt
-        instance_variable_set '@' + name.to_s, opt
+        add_option option
       end
     end
 
+    def add_option option
+      name = option[:name]
+      cls = option[:class]
+      args = option[:args]
+      opt = cls.new(*args)
+      debug "opt: #{opt}"
+      
+      add opt
+      instance_variable_set '@' + name.to_s, opt
+    end
+    
     def unset results, key
-      opt = find_by_name key
-      if opt
+      if opt = find_by_name(key)
         opt.unset(results)
         results.unset_value opt.name
       end

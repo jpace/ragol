@@ -136,8 +136,8 @@ describe Synoption::Option do
     subject { option }
 
     def process args
-      results = Synoption::Results.new nil
-      option.process results, args
+      @results = Synoption::Results.new nil
+      option.process @results, args
     end
 
     context "when it has no matching tag" do
@@ -150,11 +150,9 @@ describe Synoption::Option do
         @pr.should be_false
       end
       
-      it "should not change the option value" do
-        option.value.should be_nil
-      end
+      its(:value) { should be_nil }
 
-      it "should not change the option value" do
+      it "should not take any arguments" do
         @args.size.should == 2
       end
     end
