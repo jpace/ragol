@@ -80,3 +80,6 @@ Thu Mar 28 19:06:00 2013
 
   Updated tests for the new Results class.
 
+Fri Mar 29 18:37:18 2013
+
+  Began migrating low-level option tests to set spec.

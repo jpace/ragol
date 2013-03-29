@@ -136,37 +136,18 @@ describe Synoption::Option do
     subject { option }
 
     def process args
-      @results = Synoption::Results.new nil
-      option.process @results, args
-    end
-
-    context "when it has no matching tag" do
-      before do
-        @args = %w{ --baz foo }
-        @pr = process @args
-      end
-      
-      it "should not be processed" do
-        @pr.should be_false
-      end
-      
-      its(:value) { should be_nil }
-
-      it "should not take any arguments" do
-        @args.size.should == 2
-      end
+      @optset = Synoption::OptionSet.new
+      @optset.add option
+      def @optset.name; 'testing'; end
+      @results = @optset.process args
     end
 
     context "when it has matching tag and no following arguments" do
       before do
         @args = %w{ --xyz foo }
-        @pr = process @args
+        process @args
       end
       
-      it "should be processed" do
-        @pr.should be_true
-      end
-
       it "should change the option value" do
         option.value.should eql 'foo'
       end
@@ -180,10 +161,6 @@ describe Synoption::Option do
       before do
         @args = %w{ --xyz foo bar }
         @pr = process @args
-      end
-      
-      it "should be processed" do
-        @pr.should be_true
       end
 
       it "should change the option value" do

@@ -4,7 +4,7 @@
 require 'ragol/synoption/set'
 require 'ragol/synoption/option'
 
-Logue::Log.level = Logue::Log::INFO
+# Logue::Log.level = Logue::Log::INFO
 
 describe Synoption::OptionSet do
   include Logue::Loggable
@@ -23,8 +23,8 @@ describe Synoption::OptionSet do
   
   describe "#new" do
     before do
-      @xyz = Synoption::Option.new :xyz, '-x', "blah blah xyz",    nil, xyz_options
-      @abc = Synoption::Option.new :abc, '-a', "abc yadda yadda",  nil, abc_options
+      @xyz = Synoption::Option.new :xyz, '-x', "blah blah xyz",    nil
+      @abc = Synoption::Option.new :abc, '-a', "abc yadda yadda",  nil
       @tnt = Synoption::Option.new :tnt, '-t', "tnt and so forth", nil, tnt_options
       
       @optset = Synoption::OptionSet.new [ @xyz, @abc, @tnt ]
@@ -35,15 +35,7 @@ describe Synoption::OptionSet do
       @optset.process args
     end
 
-    def abc_options
-      Hash.new
-    end
-
     def tnt_options
-      Hash.new
-    end
-
-    def xyz_options
       Hash.new
     end
 
@@ -98,8 +90,12 @@ describe Synoption::OptionSet do
         end
 
         context "when arguments are invalid" do
-          it "throws error for bad option" do
+          it "throws error for bad -o" do
             expect { process %w{ -y foo } }.to raise_error(Synoption::OptionException, "option '-y' invalid for testing")
+          end
+
+          it "throws error for bad --option" do
+            expect { process %w{ --bar foo } }.to raise_error(Synoption::OptionException, "option '--bar' invalid for testing")
           end
         end
 
@@ -116,9 +112,7 @@ describe Synoption::OptionSet do
             tnt.should be_nil
           end
 
-          it "ignored option following --" do
-            xyz.should be_nil
-          end
+          it("ignores option following --") { xyz.should be_nil }
         end
       end
     end
