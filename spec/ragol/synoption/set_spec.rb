@@ -3,36 +3,30 @@
 
 require 'ragol/synoption/set'
 require 'ragol/synoption/option'
+require 'support/option_sets'
 
 # Logue::Log.level = Logue::Log::INFO
 
 describe Synoption::OptionSet do
-  include Logue::Loggable
+  include Logue::Loggable, Synoption::OptionTestSets
 
-  def has_methods(optset, *methnames)
-    methnames.each do |field|
-      it("has method #{field}") { optset.method(field).should be_true }
+  shared_examples "defined methods" do |valid_methods, invalid_methods|
+    valid_methods.each do |methname|
+      it("has method #{methname}") { optset.method(methname).should be_true }
     end
-  end
-  
-  def has_no_methods(optset, *methnames)
-    methnames.each do |field|
-      it("does not have method #{field}") { optset.method(field).should be_nil }
+
+    invalid_methods.each do |methname|
+      it("does not have method #{methname}") { expect { optset.method(methname) }.to raise_error(NameError) }
     end
   end
   
   describe "#new" do
     before do
-      @xyz = Synoption::Option.new :xyz, '-x', "blah blah xyz",    nil
-      @abc = Synoption::Option.new :abc, '-a', "abc yadda yadda",  nil
-      @tnt = Synoption::Option.new :tnt, '-t', "tnt and so forth", nil, tnt_options
-      
-      @optset = Synoption::OptionSet.new [ @xyz, @abc, @tnt ]
-      def @optset.name; 'testing'; end
+      @optset = create_abc_tnt_xyz tnt_options
     end
 
     def process args
-      @optset.process args
+      @results = @optset.process args
     end
 
     def tnt_options
@@ -51,23 +45,29 @@ describe Synoption::OptionSet do
       @xyz.value
     end
 
-    shared_examples "OptionSet#find_by_name" do
+    shared_examples "OptionSet#find_by_name" do |valid_methods, invalid_methods|
       describe "#find_by_name" do
-        valid = [ :abc, :tnt, :xyz ]
-        valid.each do |field|
-          it "returns true for #{field}" do
-            @optset.find_by_name(field).should be_true
+        valid_methods.each do |methname|
+          it "returns true for #{methname}" do
+            @optset.find_by_name(methname).should be_true
           end
         end
 
-        it "returns nil for bfd" do
-          @optset.find_by_name(:bfd).should be_nil
+        invalid_methods.each do |methname|
+          it "returns nil for #{methname}" do
+            @optset.find_by_name(methname).should be_nil
+          end
         end
       end
     end
 
     context "when options are isolated" do
-      include_examples "OptionSet#find_by_name"
+      valid_methods = [ :abc, :tnt, :xyz ]
+      invalid_methods = [ :bfd ]
+      
+      let(:optset) { @optset }
+
+      include_examples "OptionSet#find_by_name", valid_methods, invalid_methods
 
       describe "#process" do
         context "when arguments are valid" do
@@ -220,19 +220,14 @@ describe Synoption::OptionSet do
       end
 
       context "when options are not interlinked" do
-        include_examples "OptionSet#find_by_name"
-
         context "accessor methods added" do
-          valid = [ :abc, :tnt, :xyz ]
-          valid.each do |field|
-            it "has method #{field}" do
-              @optset.method(field).should be_true
-            end
-          end
+          valid_methods = [ :abc, :tnt, :xyz ]
+          invalid_methods = [ :bfd ]
 
-          it "does not have method bfd" do
-            expect { @optset.method(:bfd) }.to raise_error(NameError)
-          end
+          let(:optset) { @optset }
+
+          it_behaves_like "defined methods", valid_methods, invalid_methods
+          include_examples "OptionSet#find_by_name", valid_methods, invalid_methods
         end
 
         describe "#process" do
@@ -320,30 +315,20 @@ describe Synoption::OptionSet do
       context "when options are not interlinked" do
         describe "accessor methods added" do
           context "when option set is subclass" do
-            valid = [ :abc, :ugh, :xyz, :ghi ]
-            valid.each do |field|
-              it("has method #{field}") { @abcoptset.method(field).should be_true }
-            end
+            let(:optset) { @abcoptset }
 
-            it "does not have method bfd" do
-              expect { @abcoptset.method(:bfd) }.to raise_error(NameError)
-            end
+            valid_methods = [ :abc, :ugh, :xyz, :ghi ]
+            invalid_methods = [ :bfd ]
+
+            it_behaves_like "defined methods", valid_methods, invalid_methods
           end
 
           context "when option set is common" do
-            valid = [ :abc, :ugh ]
-            valid.each do |field|
-              it "has method #{field}" do
-                @commonoptset.method(field).should be_true
-              end
-            end
+            let(:optset) { @commonoptset }
 
-            invalid = [ :xyz, :ghi, :bfd ]
-            invalid.each do |field|
-              it "has does not have method #{field}" do
-                expect { @commonoptset.method(field) }.to raise_error(NameError)
-              end
-            end
+            valid_methods = [ :abc, :ugh ]
+            invalid_methods = [ :xyz, :ghi, :bfd ]
+            it_behaves_like "defined methods", valid_methods, invalid_methods
           end
         end
 
@@ -359,8 +344,8 @@ describe Synoption::OptionSet do
             
             it "ignores other options" do
               @results.abc.should be_nil
-              @results.value(:ghi).should be_nil
-              @results.value(:ugh).should be_nil
+              @results.ghi.should be_nil
+              @results.ugh.should be_nil
             end
           end
 
