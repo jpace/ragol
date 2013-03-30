@@ -33,29 +33,11 @@ describe Synoption::OptionSet do
       Hash.new
     end
 
-    shared_examples "OptionSet#find_by_name" do |valid_methods, invalid_methods|
-      describe "#find_by_name" do
-        valid_methods.each do |methname|
-          it "returns true for #{methname}" do
-            @optset.find_by_name(methname).should be_true
-          end
-        end
-
-        invalid_methods.each do |methname|
-          it "returns nil for #{methname}" do
-            @optset.find_by_name(methname).should be_nil
-          end
-        end
-      end
-    end
-
     context "when options are isolated" do
       valid_methods = [ :abc, :tnt, :xyz ]
       invalid_methods = [ :bfd ]
       
       let(:optset) { @optset }
-
-      include_examples "OptionSet#find_by_name", valid_methods, invalid_methods
 
       describe "#process" do
         context "when arguments are valid" do
@@ -213,11 +195,6 @@ describe Synoption::OptionSet do
       context "when options are not interlinked" do
         valid_methods = [ :abc, :tnt, :xyz ]
         invalid_methods = [ :bfd ]
-
-        context "accessor methods added" do
-          let(:optset) { @optset }
-          include_examples "OptionSet#find_by_name", valid_methods, invalid_methods
-        end
 
         describe "#process" do
           context "when arguments are valid" do
