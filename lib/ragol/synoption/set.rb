@@ -48,6 +48,13 @@ module Synoption
       
       add opt
       instance_variable_set '@' + name.to_s, opt
+
+      self.class.define_method name do
+        instance_eval do
+          opt = instance_variable_get '@' + name.to_s
+          opt.value
+        end
+      end
     end
     
     def unset results, key
