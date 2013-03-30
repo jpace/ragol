@@ -22,7 +22,7 @@ describe Synoption::OptionSet do
   
   describe "#new" do
     before do
-      @optset = create_abc_tnt_xyz tnt_options
+      @optset = create_abc_tnt_xyz_option_set tnt_options
     end
 
     def process args
@@ -156,38 +156,14 @@ describe Synoption::OptionSet do
   context ":has_option" do
     context "when direct subclass of OptionSet" do
       before :all do
-        class XyzOption < Synoption::Option
-          def initialize
-            super :xyz, '-x', "blah blah xyz", nil
-          end
-        end
-
-        class AbcOption < Synoption::Option
-          def initialize 
-            super :abc, '-a', "abc yadda yadda",  nil
-          end
-        end
-        
-        class TntOption < Synoption::Option
-          def initialize 
-            super :tnt, '-t', "tnt and so forth", nil
-          end
-        end
-        
-        class TestOptionSet < Synoption::OptionSet
-          has_option :xyz, XyzOption
-          has_option :abc, AbcOption
-          has_option :tnt, TntOption
-
-          def name; 'testing'; end
-        end
-
-        @optset = TestOptionSet.new
+        @optset = create_abc_tnt_xyz_option_set_subclass
       end
 
       def process args
         @results = @optset.process args
       end
+
+      subject { @results }
 
       context "when options are not interlinked" do
         valid_methods = [ :abc, :tnt, :xyz ]
@@ -196,34 +172,37 @@ describe Synoption::OptionSet do
         describe "#process" do
           context "when arguments are valid" do
             before :each do
-              @results = process %w{ -x foo }
+              process %w{ -x foo }
             end
-
+            
             let(:results) { @results }
             it_behaves_like "defined methods", valid_methods, invalid_methods
 
-            subject { results }
-            
-            it "sets an option" do
-              @results.xyz.should eql 'foo'
-            end
-            
-            it "ignores other options" do
-              @results.abc.should be_nil
-              @results.tnt.should be_nil
-            end
+            its(:xyz) { should eql 'foo' }
+            its(:abc) { should be_nil }
+            its(:tnt) { should be_nil }
           end
 
-          it "resets options on multiple invocations of #process" do
-            process %w{ -x foo }
-            @results.xyz.should eql 'foo'
-            @results.abc.should be_nil
-            @results.tnt.should be_nil
+          describe "multiple invocations" do
+            context "first invocation" do
+              before :all do
+                process %w{ -x foo }
+              end
+              
+              its(:xyz) { should eql 'foo' }
+              its(:abc) { should be_nil }
+              its(:tnt) { should be_nil }
+            end
             
-            process %w{ -t bar }
-            @results.xyz.should be_nil
-            @results.abc.should be_nil
-            @results.tnt.should eql 'bar'
+            context "second invocation" do
+              before :all do
+                process %w{ -t bar }
+              end
+              
+              its(:xyz) { should be_nil }
+              its(:abc) { should be_nil }
+              its(:tnt) { should eql 'bar' }
+            end
           end
         end
       end
