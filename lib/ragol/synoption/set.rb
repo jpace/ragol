@@ -18,7 +18,18 @@ module Synoption
     end
     
     def initialize options = Array.new
-      super 
+      super
+
+      options.each do |option|
+        instance_variable_set '@' + option.name.to_s, option
+        singleton_class.define_method option.name do
+          instance_eval do
+            opt = instance_variable_get '@' + option.name.to_s
+            opt.value
+          end
+        end
+      end
+      
       add_all_options
     end
 
@@ -31,7 +42,6 @@ module Synoption
     end
     
     def add_options_for_class cls
-      debug "cls: #{cls}"
       opts = Builder.options_for_class(cls)
 
       opts.each do |option|
@@ -49,7 +59,7 @@ module Synoption
       add opt
       instance_variable_set '@' + name.to_s, opt
 
-      self.class.define_method name do
+      singleton_class.define_method name do
         instance_eval do
           opt = instance_variable_get '@' + name.to_s
           opt.value
@@ -66,7 +76,7 @@ module Synoption
 
     def process args
       debug "args: #{args}"
-      results = Results.new self.class, args
+      results = Results.new options, args
       
       options_processed = Array.new
 

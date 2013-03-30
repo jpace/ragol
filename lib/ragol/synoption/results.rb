@@ -4,7 +4,6 @@
 require 'rubygems'
 require 'logue/loggable'
 require 'ragol/synoption/option'
-require 'ragol/synoption/builder'
 
 module Synoption
   class Results
@@ -13,20 +12,14 @@ module Synoption
     attr_reader :options
     attr_accessor :unprocessed
     
-    def initialize cls, args = Array.new
+    def initialize options, args = Array.new
       @unprocessed = args
       @values = Hash.new
 
-      if cls
-        options = Builder.all_options_for_set cls
-        info "options: #{options}"
-        options.each do |opt|
-          @values[opt[:name]] = nil
-
-          self.class.define_method opt[:name] do
-            instance_eval do
-              @values[opt[:name]]
-            end
+      options.each do |option|
+        singleton_class.define_method option.name do
+          instance_eval do
+            @values[option.name]
           end
         end
       end

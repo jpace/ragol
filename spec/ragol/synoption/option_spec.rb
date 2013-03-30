@@ -5,7 +5,7 @@ require 'ragol/synoption/option'
 require 'ragol/synoption/set'
 require 'ragol/synoption/results'
 
-Logue::Log.level = Logue::Log::INFO
+# Logue::Log.level = Logue::Log::INFO
 
 describe Synoption::Option do
   describe "option defaults" do
@@ -187,7 +187,7 @@ describe Synoption::Option do
     subject { option }
 
     def process args
-      results = Synoption::Results.new nil
+      results = Synoption::Results.new [ option ]
       option.process results, args
     end
 
@@ -219,7 +219,7 @@ describe Synoption::Option do
     subject { option }
 
     def process args
-      results = Synoption::Results.new nil
+      results = Synoption::Results.new [ option ]
       option.process results, args
     end
 

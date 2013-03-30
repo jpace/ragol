@@ -69,6 +69,8 @@ describe Synoption::OptionSet do
 
       include_examples "OptionSet#find_by_name", valid_methods, invalid_methods
 
+      it_behaves_like "defined methods", valid_methods, invalid_methods
+
       describe "#process" do
         context "when arguments are valid" do
           before do
@@ -76,7 +78,7 @@ describe Synoption::OptionSet do
           end
           
           it "sets option xyz" do
-            xyz.should eql 'foo'
+            @results.xyz.should eql 'foo'
           end
           
           it "ignores options abc and tnt" do
