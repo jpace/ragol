@@ -12,11 +12,11 @@ describe Synoption::OptionSet do
 
   shared_examples "defined methods" do |valid_methods, invalid_methods|
     valid_methods.each do |methname|
-      it("has method #{methname}") { results.method(methname).should be_true }
+      it("has method #{methname}") { subject.method(methname).should be_true }
     end
 
     invalid_methods.each do |methname|
-      it("does not have method #{methname}") { expect { results.method(methname) }.to raise_error(NameError) }
+      it("does not have method #{methname}") { expect { subject.method(methname) }.to raise_error(NameError) }
     end
   end
   
@@ -47,19 +47,16 @@ describe Synoption::OptionSet do
 
           let(:results) { @results }
           it_behaves_like "defined methods", valid_methods, invalid_methods
-          
-          it "sets option xyz" do
-            @results.xyz.should eql 'foo'
-          end
-          
-          it "ignores options abc and tnt" do
-            @results.abc.should be_nil
-            @results.tnt.should be_nil
+
+          subject { @results }
+
+          its(:xyz) { should eql 'foo' }
+
+          [ :abc, :tnt ].each do |opt|
+            its(opt) { should be_nil }
           end
 
-          it "leaves unprocessed arguments" do
-            @results.unprocessed.should eql %w{ bar baz }
-          end
+          its(:unprocessed) { should eql %w{ bar baz } }
         end
 
         context "when arguments are invalid" do
@@ -204,6 +201,8 @@ describe Synoption::OptionSet do
 
             let(:results) { @results }
             it_behaves_like "defined methods", valid_methods, invalid_methods
+
+            subject { results }
             
             it "sets an option" do
               @results.xyz.should eql 'foo'
@@ -289,11 +288,15 @@ describe Synoption::OptionSet do
 
             let(:results) { @abcoptset.process [] }
 
+            subject { results }
+
             it_behaves_like "defined methods", valid_methods, invalid_methods
           end
 
           context "when option set is common" do
             let(:optset) { @commonoptset }
+
+            subject { results }
 
             valid_methods = [ :abc, :ugh ]
             invalid_methods = [ :xyz, :ghi, :bfd ]
