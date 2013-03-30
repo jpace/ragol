@@ -74,15 +74,17 @@ describe Synoption::OptionSet do
             process %w{ -a abc -- -x foo }
           end
 
+          subject { @results }
+
           it "sets option preceding --" do
-            @results.abc.should eql 'abc'
+            subject.abc.should eql 'abc'
           end
 
           it "ignores unspecified option" do
-            @results.tnt.should be_nil
+            subject.tnt.should be_nil
           end
 
-          it("ignores option following --") { @results.xyz.should be_nil }
+          it("ignores option following --") { subject.xyz.should be_nil }
         end
       end
     end
@@ -97,14 +99,16 @@ describe Synoption::OptionSet do
           before do
             process %w{ -x foo }
           end
-          
+
+          subject { @results }
+
           it "sets the option" do
-            @results.xyz.should eql 'foo'
+            subject.xyz.should eql 'foo'
           end
           
           it "ignores other options" do
-            @results.abc.should be_nil
-            @results.tnt.should be_nil
+            subject.abc.should be_nil
+            subject.tnt.should be_nil
           end
         end
 
@@ -112,13 +116,15 @@ describe Synoption::OptionSet do
           before do
             process %w{ -t bar }
           end
+
+          subject { @results }
           
           it "sets the option" do
-            @results.tnt.should eql 'bar'
+            subject.tnt.should eql 'bar'
           end
           
           it "unsets the other option" do
-            @results.xyz.should be_nil
+            subject.xyz.should be_nil
           end
         end
 
@@ -254,15 +260,17 @@ describe Synoption::OptionSet do
             end
 
             let(:results) { @results }
+
+            subject { @results }
             
             it "sets an option" do
-              @results.xyz.should eql 'foo'
+              subject.xyz.should eql 'foo'
             end
             
             it "ignores other options" do
-              @results.abc.should be_nil
-              @results.ghi.should be_nil
-              @results.ugh.should be_nil
+              subject.abc.should be_nil
+              subject.ghi.should be_nil
+              subject.ugh.should be_nil
             end
           end
 
