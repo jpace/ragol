@@ -33,18 +33,6 @@ describe Synoption::OptionSet do
       Hash.new
     end
 
-    def abc
-      @abc.value
-    end
-
-    def tnt
-      @tnt.value
-    end
-
-    def xyz
-      @xyz.value
-    end
-
     shared_examples "OptionSet#find_by_name" do |valid_methods, invalid_methods|
       describe "#find_by_name" do
         valid_methods.each do |methname|
@@ -83,8 +71,8 @@ describe Synoption::OptionSet do
           end
           
           it "ignores options abc and tnt" do
-            abc.should be_nil
-            tnt.should be_nil
+            @results.abc.should be_nil
+            @results.tnt.should be_nil
           end
 
           it "leaves unprocessed arguments" do
@@ -108,14 +96,14 @@ describe Synoption::OptionSet do
           end
 
           it "sets option preceding --" do
-            abc.should eql 'abc'
+            @results.abc.should eql 'abc'
           end
 
           it "ignores unspecified option" do
-            tnt.should be_nil
+            @results.tnt.should be_nil
           end
 
-          it("ignores option following --") { xyz.should be_nil }
+          it("ignores option following --") { @results.xyz.should be_nil }
         end
       end
     end
@@ -132,12 +120,12 @@ describe Synoption::OptionSet do
           end
           
           it "sets the option" do
-            xyz.should eql 'foo'
+            @results.xyz.should eql 'foo'
           end
           
           it "ignores other options" do
-            abc.should be_nil
-            tnt.should be_nil
+            @results.abc.should be_nil
+            @results.tnt.should be_nil
           end
         end
 
@@ -147,11 +135,11 @@ describe Synoption::OptionSet do
           end
           
           it "sets the option" do
-            tnt.should eql 'bar'
+            @results.tnt.should eql 'bar'
           end
           
           it "unsets the other option" do
-            xyz.should be_nil
+            @results.xyz.should be_nil
           end
         end
 
@@ -161,11 +149,11 @@ describe Synoption::OptionSet do
           end
           
           it "sets the option" do
-            tnt.should eql 'bar'
+            @results.tnt.should eql 'bar'
           end
           
           it "unsets the other option" do
-            xyz.should be_nil
+            @results.xyz.should be_nil
           end
         end
 
@@ -175,11 +163,11 @@ describe Synoption::OptionSet do
           end
           
           it "sets the option" do
-            tnt.should eql 'bar'
+            @results.tnt.should eql 'bar'
           end
           
           it "unsets the other option" do
-            xyz.should be_nil
+            @results.xyz.should be_nil
           end
         end
       end
