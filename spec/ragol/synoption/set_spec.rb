@@ -5,18 +5,18 @@ require 'ragol/synoption/set'
 require 'ragol/synoption/option'
 require 'support/option_sets'
 
-# Logue::Log.level = Logue::Log::INFO
+Logue::Log.level = Logue::Log::INFO
 
 describe Synoption::OptionSet do
   include Logue::Loggable, Synoption::OptionTestSets
 
   shared_examples "defined methods" do |valid_methods, invalid_methods|
     valid_methods.each do |methname|
-      it("has method #{methname}") { optset.method(methname).should be_true }
+      it("has method #{methname}") { results.method(methname).should be_true }
     end
 
     invalid_methods.each do |methname|
-      it("does not have method #{methname}") { expect { optset.method(methname) }.to raise_error(NameError) }
+      it("does not have method #{methname}") { expect { results.method(methname) }.to raise_error(NameError) }
     end
   end
   
@@ -69,13 +69,14 @@ describe Synoption::OptionSet do
 
       include_examples "OptionSet#find_by_name", valid_methods, invalid_methods
 
-      it_behaves_like "defined methods", valid_methods, invalid_methods
-
       describe "#process" do
         context "when arguments are valid" do
           before do
             @results = process %w{ -x foo bar baz }
           end
+
+          let(:results) { @results }
+          it_behaves_like "defined methods", valid_methods, invalid_methods
           
           it "sets option xyz" do
             @results.xyz.should eql 'foo'
@@ -222,21 +223,22 @@ describe Synoption::OptionSet do
       end
 
       context "when options are not interlinked" do
+        valid_methods = [ :abc, :tnt, :xyz ]
+        invalid_methods = [ :bfd ]
+
         context "accessor methods added" do
-          valid_methods = [ :abc, :tnt, :xyz ]
-          invalid_methods = [ :bfd ]
-
           let(:optset) { @optset }
-
-          it_behaves_like "defined methods", valid_methods, invalid_methods
           include_examples "OptionSet#find_by_name", valid_methods, invalid_methods
         end
 
         describe "#process" do
           context "when arguments are valid" do
-            before :all do
-              process %w{ -x foo }
+            before :each do
+              @results = process %w{ -x foo }
             end
+
+            let(:results) { @results }
+            it_behaves_like "defined methods", valid_methods, invalid_methods
             
             it "sets an option" do
               @results.xyz.should eql 'foo'
@@ -320,6 +322,8 @@ describe Synoption::OptionSet do
             valid_methods = [ :abc, :ugh, :xyz, :ghi ]
             invalid_methods = [ :bfd ]
 
+            let(:results) { @abcoptset.process [] }
+
             it_behaves_like "defined methods", valid_methods, invalid_methods
           end
 
@@ -329,6 +333,8 @@ describe Synoption::OptionSet do
             valid_methods = [ :abc, :ugh ]
             invalid_methods = [ :xyz, :ghi, :bfd ]
 
+            let(:results) { @commonoptset.process [] }
+            
             it_behaves_like "defined methods", valid_methods, invalid_methods
           end
         end
@@ -338,6 +344,8 @@ describe Synoption::OptionSet do
             before :all do
               @results = process %w{ -x foo }
             end
+
+            let(:results) { @results }
             
             it "sets an option" do
               @results.xyz.should eql 'foo'

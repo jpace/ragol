@@ -13,15 +13,22 @@ module Synoption
   class OptionSet < OptionList
     include Logue::Loggable
 
+    # maps from an OptionSet class to the valid options for that class.
+    @@options_for_class = Hash.new { |h, k| h[k] = Array.new }
+
     def self.has_option name, optcls, optargs = Hash.new
-      Builder.add_has_option self, name, optcls, optargs
+      @@options_for_class[self] << { :name => name, :class => optcls, :args => optargs }
+    end
+
+    def self.options_for_class cls
+      @@options_for_class[cls]
     end
     
     def initialize options = Array.new
       super
 
       options.each do |option|
-        instance_variable_set '@' + option.name.to_s, option
+        # instance_variable_set '@' + option.name.to_s, option
         singleton_class.define_method option.name do
           instance_eval do
             opt = instance_variable_get '@' + option.name.to_s
@@ -35,14 +42,15 @@ module Synoption
 
     def add_all_options
       cls = self.class
-      while cls != OptionSet
+      while cls
         add_options_for_class cls
         cls = cls.superclass
+        break unless cls <= OptionSet
       end
     end
     
     def add_options_for_class cls
-      opts = Builder.options_for_class(cls)
+      opts = self.class.options_for_class(cls)
 
       opts.each do |option|
         add_option option
@@ -54,7 +62,6 @@ module Synoption
       cls = option[:class]
       args = option[:args]
       opt = cls.new(*args)
-      debug "opt: #{opt}"
       
       add opt
       instance_variable_set '@' + name.to_s, opt
@@ -62,7 +69,7 @@ module Synoption
       singleton_class.define_method name do
         instance_eval do
           opt = instance_variable_get '@' + name.to_s
-          opt.value
+          # opt.value
         end
       end
     end

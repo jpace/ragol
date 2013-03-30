@@ -18,16 +18,5 @@ module Synoption
     def self.options_for_class cls
       @@options_for_class[cls]
     end
-    
-    def self.all_options_for_set setcls
-      options = Array.new
-      while setcls != OptionSet
-        if opts = @@options_for_class[setcls]
-          options.concat opts
-        end
-        setcls = setcls.superclass
-      end
-      options
-    end
   end
 end
