@@ -6,7 +6,6 @@ require 'logue/loggable'
 require 'ragol/synoption/option'
 require 'ragol/synoption/exception'
 require 'ragol/synoption/list'
-require 'ragol/synoption/builder'
 require 'ragol/synoption/results'
 
 module Synoption
@@ -26,17 +25,6 @@ module Synoption
     
     def initialize options = Array.new
       super
-
-      options.each do |option|
-        # instance_variable_set '@' + option.name.to_s, option
-        singleton_class.define_method option.name do
-          instance_eval do
-            opt = instance_variable_get '@' + option.name.to_s
-            opt.value
-          end
-        end
-      end
-      
       add_all_options
     end
 
@@ -64,14 +52,6 @@ module Synoption
       opt = cls.new(*args)
       
       add opt
-      instance_variable_set '@' + name.to_s, opt
-
-      singleton_class.define_method name do
-        instance_eval do
-          opt = instance_variable_get '@' + name.to_s
-          # opt.value
-        end
-      end
     end
     
     def unset results, key
