@@ -210,47 +210,8 @@ describe Synoption::OptionSet do
 
     context "when multiple subclasses of OptionSet" do
       before :all do
-        class AbcOption < Synoption::Option
-          def initialize
-            super :abc, '-a', "aye bee see", nil
-          end
-        end
-
-        class UghOption < Synoption::Option
-          def initialize
-            super :ugh, '-u', "you gee ache", nil
-          end
-        end
-        
-        class CommonTestOptionSet < Synoption::OptionSet
-          has_option :abc, AbcOption
-          has_option :ugh, UghOption
-
-          def name; 'common'; end
-        end
-
-        @commonoptset = CommonTestOptionSet.new
-
-        class XyzOption < Synoption::Option
-          def initialize
-            super :xyz, '-x', "ecks why zee", nil
-          end
-        end
-
-        class GhiOption < Synoption::Option
-          def initialize
-            super :ghi, '-g', "gee ache eye", nil
-          end
-        end
-        
-        class AbcTestOptionSet < CommonTestOptionSet
-          has_option :xyz, XyzOption
-          has_option :ghi, GhiOption
-
-          def name; 'testing'; end
-        end
-
-        @abcoptset = AbcTestOptionSet.new
+        @commonoptset = create_common_option_set
+        @abcoptset = create_abc_test_option_set
       end
 
       def process args
