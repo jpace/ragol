@@ -29,6 +29,8 @@ describe Synoption::OptionSet do
       @results = @optset.process args
     end
 
+    subject { @results }
+    
     def tnt_options
       Hash.new
     end
@@ -42,13 +44,10 @@ describe Synoption::OptionSet do
       describe "#process" do
         context "when arguments are valid" do
           before do
-            @results = process %w{ -x foo bar baz }
+            process %w{ -x foo bar baz }
           end
 
-          let(:results) { @results }
           it_behaves_like "defined methods", valid_methods, invalid_methods
-
-          subject { @results }
 
           its(:xyz) { should eql 'foo' }
 
@@ -74,8 +73,6 @@ describe Synoption::OptionSet do
             process %w{ -a abc -- -x foo }
           end
 
-          subject { @results }
-
           it "sets option preceding --" do
             subject.abc.should eql 'abc'
           end
@@ -100,16 +97,9 @@ describe Synoption::OptionSet do
             process %w{ -x foo }
           end
 
-          subject { @results }
-
-          it "sets the option" do
-            subject.xyz.should eql 'foo'
-          end
-          
-          it "ignores other options" do
-            subject.abc.should be_nil
-            subject.tnt.should be_nil
-          end
+          its(:xyz) { should eql 'foo' }
+          its(:abc) { should be_nil }
+          its(:tnt) { should be_nil }
         end
 
         context "when there is only an option to unset" do
@@ -117,43 +107,26 @@ describe Synoption::OptionSet do
             process %w{ -t bar }
           end
 
-          subject { @results }
-          
-          it "sets the option" do
-            subject.tnt.should eql 'bar'
-          end
-          
-          it "unsets the other option" do
-            subject.xyz.should be_nil
-          end
+          its(:tnt) { should eql 'bar' }
+          its(:xyz) { should be_nil }
         end
 
         context "when the option order is the unset option, then the option to be unset" do
           before do
             process %w{ -t bar -x foo }
           end
-          
-          it "sets the option" do
-            @results.tnt.should eql 'bar'
-          end
-          
-          it "unsets the other option" do
-            @results.xyz.should be_nil
-          end
+
+          its(:tnt) { should eql 'bar' }
+          its(:xyz) { should be_nil }
         end
 
         context "when the option order is the option to be unset, then the unset option" do
           before do
             process %w{ -x foo -t bar }
           end
-          
-          it "sets the option" do
-            @results.tnt.should eql 'bar'
-          end
-          
-          it "unsets the other option" do
-            @results.xyz.should be_nil
-          end
+
+          its(:tnt) { should eql 'bar' }
+          its(:xyz) { should be_nil }
         end
       end
     end
@@ -262,16 +235,11 @@ describe Synoption::OptionSet do
             let(:results) { @results }
 
             subject { @results }
-            
-            it "sets an option" do
-              subject.xyz.should eql 'foo'
-            end
-            
-            it "ignores other options" do
-              subject.abc.should be_nil
-              subject.ghi.should be_nil
-              subject.ugh.should be_nil
-            end
+
+            its(:xyz) { should eql 'foo' }
+            its(:abc) { should be_nil }
+            its(:ghi) { should be_nil }
+            its(:ugh) { should be_nil }
           end
 
           it "resets options on multiple invocations of #process" do
