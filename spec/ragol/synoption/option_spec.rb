@@ -149,7 +149,7 @@ describe Synoption::Option do
       end
       
       it "should change the option value" do
-        option.value.should eql 'foo'
+        @results.xyz.should eql 'foo'
       end
 
       it "should take the arguments" do
@@ -160,11 +160,11 @@ describe Synoption::Option do
     context "when it has matching tag and a following argument" do
       before do
         @args = %w{ --xyz foo bar }
-        @pr = process @args
+        process @args
       end
 
       it "should change the option value" do
-        option.value.should eql 'foo'
+        @results.xyz.should eql 'foo'
       end
 
       it "should leave the remaining argument" do

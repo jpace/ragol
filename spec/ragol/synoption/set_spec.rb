@@ -218,7 +218,7 @@ describe Synoption::OptionSet do
       end
 
       def process args
-        @optset.process args
+        @results = @optset.process args
       end
 
       context "when options are not interlinked" do
@@ -239,27 +239,25 @@ describe Synoption::OptionSet do
             end
             
             it "sets an option" do
-              @optset.xyz.should eql 'foo'
+              @results.xyz.should eql 'foo'
             end
             
             it "ignores other options" do
-              @optset.abc.should be_nil
-              @optset.tnt.should be_nil
+              @results.abc.should be_nil
+              @results.tnt.should be_nil
             end
           end
 
           it "resets options on multiple invocations of #process" do
-            pending "not supported with current implementation"
-
-            @optset.process %w{ -x foo }
-            @optset.xyz.should eql 'foo'
-            @optset.abc.should be_nil
-            @optset.tnt.should be_nil
+            process %w{ -x foo }
+            @results.xyz.should eql 'foo'
+            @results.abc.should be_nil
+            @results.tnt.should be_nil
             
-            @optset.process %w{ -t bar }
-            @optset.xyz.should be_nil
-            @optset.abc.should be_nil
-            @optset.tnt.should eql 'bar'
+            process %w{ -t bar }
+            @results.xyz.should be_nil
+            @results.abc.should be_nil
+            @results.tnt.should eql 'bar'
           end
         end
       end
@@ -330,6 +328,7 @@ describe Synoption::OptionSet do
 
             valid_methods = [ :abc, :ugh ]
             invalid_methods = [ :xyz, :ghi, :bfd ]
+
             it_behaves_like "defined methods", valid_methods, invalid_methods
           end
         end
@@ -341,7 +340,7 @@ describe Synoption::OptionSet do
             end
             
             it "sets an option" do
-              @abcoptset.xyz.should eql 'foo'
+              @results.xyz.should eql 'foo'
             end
             
             it "ignores other options" do
@@ -352,17 +351,17 @@ describe Synoption::OptionSet do
           end
 
           it "resets options on multiple invocations of #process" do
-            pending "not supported with current implementation"
-
-            @abcoptset.process %w{ -x foo }
-            @abcoptset.xyz.should eql 'foo'
-            @abcoptset.abc.should be_nil
-            @abcoptset.tnt.should be_nil
+            @results = process %w{ -x foo }
+            @results.abc.should be_nil
+            @results.ghi.should be_nil
+            @results.ugh.should be_nil
+            @results.xyz.should eql 'foo'
             
-            @abcoptset.process %w{ -t bar }
-            @abcoptset.xyz.should be_nil
-            @abcoptset.abc.should be_nil
-            @abcoptset.tnt.should eql 'bar'
+            @results = process %w{ -g bar }
+            @results.abc.should be_nil
+            @results.ghi.should eql 'bar'
+            @results.ugh.should be_nil
+            @results.xyz.should be_nil
           end
         end
       end

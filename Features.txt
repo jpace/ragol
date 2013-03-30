@@ -83,3 +83,7 @@ Thu Mar 28 19:06:00 2013
 Fri Mar 29 18:37:18 2013
 
   Began migrating low-level option tests to set spec.
+
+Sat Mar 30 09:43:20 2013
+
+  Added support for multiple invocations of process.
