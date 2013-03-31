@@ -44,7 +44,7 @@ describe Synoption::OptionSet do
       describe "#process" do
         context "when arguments are valid" do
           before do
-            process %w{ -x foo bar baz }
+            process %w{ --bravo foo bar baz }
           end
 
           it_behaves_like "defined methods", valid_methods, invalid_methods
@@ -70,7 +70,7 @@ describe Synoption::OptionSet do
 
         context "when argument is double dash" do
           before do
-            process %w{ -a bar -- -x foo }
+            process %w{ --alpha bar -- --charlie foo }
           end
 
           it "sets option preceding --" do
@@ -135,7 +135,7 @@ describe Synoption::OptionSet do
   context ":has_option" do
     context "when direct subclass of OptionSet" do
       before :all do
-        @optset = create_abc_tnt_xyz_option_set_subclass
+        @optset = create_def_option_set
       end
 
       def process args
@@ -145,42 +145,42 @@ describe Synoption::OptionSet do
       subject { @results }
 
       context "when options are not interlinked" do
-        valid_methods = [ :abc, :tnt, :xyz ]
+        valid_methods = [ :delta, :foxtrot, :echo ]
         invalid_methods = [ :bfd ]
 
         describe "#process" do
           context "when arguments are valid" do
             before :each do
-              process %w{ -x foo }
+              process %w{ --echo foo }
             end
             
             let(:results) { @results }
             it_behaves_like "defined methods", valid_methods, invalid_methods
 
-            its(:xyz) { should eql 'foo' }
-            its(:abc) { should be_nil }
-            its(:tnt) { should be_nil }
+            its(:echo) { should eql 'foo' }
+            its(:delta) { should be_nil }
+            its(:foxtrot) { should be_nil }
           end
 
           describe "multiple invocations" do
             context "first invocation" do
               before :all do
-                process %w{ -x foo }
+                process %w{ --echo foo }
               end
               
-              its(:xyz) { should eql 'foo' }
-              its(:abc) { should be_nil }
-              its(:tnt) { should be_nil }
+              its(:echo) { should eql 'foo' }
+              its(:delta) { should be_nil }
+              its(:foxtrot) { should be_nil }
             end
             
             context "second invocation" do
               before :all do
-                process %w{ -t bar }
+                process %w{ --foxtrot bar }
               end
               
-              its(:xyz) { should be_nil }
-              its(:abc) { should be_nil }
-              its(:tnt) { should eql 'bar' }
+              its(:echo) { should be_nil }
+              its(:delta) { should be_nil }
+              its(:foxtrot) { should eql 'bar' }
             end
           end
         end
@@ -202,7 +202,7 @@ describe Synoption::OptionSet do
           context "when option set is subclass" do
             let(:optset) { @abcoptset }
 
-            valid_methods = [ :abc, :ugh, :xyz, :ghi ]
+            valid_methods = [ :delta, :ugh, :echo, :ghi ]
             invalid_methods = [ :bfd ]
 
             let(:results) { @abcoptset.process [] }
@@ -217,8 +217,8 @@ describe Synoption::OptionSet do
 
             subject { results }
 
-            valid_methods = [ :abc, :ugh ]
-            invalid_methods = [ :xyz, :ghi, :bfd ]
+            valid_methods = [ :delta, :ugh ]
+            invalid_methods = [ :echo, :ghi, :bfd ]
 
             let(:results) { @commonoptset.process [] }
             
@@ -229,15 +229,15 @@ describe Synoption::OptionSet do
         describe "#process" do
           context "when arguments are valid" do
             before :all do
-              @results = process %w{ -x foo }
+              @results = process %w{ --echo foo }
             end
 
             let(:results) { @results }
 
             subject { @results }
 
-            its(:xyz) { should eql 'foo' }
-            its(:abc) { should be_nil }
+            its(:echo) { should eql 'foo' }
+            its(:delta) { should be_nil }
             its(:ghi) { should be_nil }
             its(:ugh) { should be_nil }
           end
@@ -245,15 +245,15 @@ describe Synoption::OptionSet do
           describe "multiple invocations" do
             context "first invocation" do
               before :all do
-                @results = process %w{ -x foo }
+                @results = process %w{ --echo foo }
               end
 
               subject { @results }
               
-              its(:abc) { should be_nil }
+              its(:delta) { should be_nil }
               its(:ghi) { should be_nil }
               its(:ugh) { should be_nil }
-              its(:xyz) { should eql 'foo' }
+              its(:echo) { should eql 'foo' }
             end
 
             context "second invocation" do
@@ -263,10 +263,10 @@ describe Synoption::OptionSet do
 
               subject { @results }
               
-              its(:abc) { should be_nil }
+              its(:delta) { should be_nil }
               its(:ghi) { should eql 'bar' }
               its(:ugh) { should be_nil }
-              its(:xyz) { should be_nil }
+              its(:echo) { should be_nil }
             end
           end
         end

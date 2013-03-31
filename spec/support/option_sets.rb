@@ -10,36 +10,36 @@ module Synoption
       optset
     end
 
-    class XyzOption < Synoption::Option
+    class EchoOption < Synoption::Option
       def initialize
-        super :xyz, '-x', "blah blah xyz", nil
+        super :echo, '-e', "blah blah", nil
       end
     end
 
-    class AbcOption < Synoption::Option
+    class DeltaOption < Synoption::Option
       def initialize 
-        super :abc, '-a', "abc yadda yadda",  nil
+        super :delta, '-d', "description of delta",  nil
       end
     end
     
-    class TntOption < Synoption::Option
+    class FoxtrotOption < Synoption::Option
       def initialize 
-        super :tnt, '-t', "tnt and so forth", nil
+        super :foxtrot, '-f', "and so forth", nil
       end
     end
     
-    class TestOptionSet < Synoption::OptionSet
-      has_option :xyz, XyzOption
-      has_option :abc, AbcOption
-      has_option :tnt, TntOption
+    class DefOptionSet < Synoption::OptionSet
+      has_option :echo, EchoOption
+      has_option :delta, DeltaOption
+      has_option :foxtrot, FoxtrotOption
 
       def name
         'testing'
       end
     end
 
-    def create_abc_tnt_xyz_option_set_subclass
-      TestOptionSet.new
+    def create_def_option_set
+      DefOptionSet.new
     end
 
     # -------------------------------------------------------
@@ -51,7 +51,7 @@ module Synoption
     end
     
     class CommonTestOptionSet < Synoption::OptionSet
-      has_option :abc, AbcOption
+      has_option :delta, DeltaOption
       has_option :ugh, UghOption
 
       def name
@@ -72,7 +72,7 @@ module Synoption
     end
     
     class AbcTestOptionSet < CommonTestOptionSet
-      has_option :xyz, XyzOption
+      has_option :echo, EchoOption
       has_option :ghi, GhiOption
 
       def name

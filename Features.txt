@@ -87,3 +87,7 @@ Fri Mar 29 18:37:18 2013
 Sat Mar 30 09:43:20 2013
 
   Added support for multiple invocations of process.
+
+Sun Mar 31 10:42:36 2013
+
+  Refined tests for clarity.
