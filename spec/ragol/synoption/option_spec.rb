@@ -128,10 +128,10 @@ describe Synoption::Option do
     end
 
     def process args
-      @optset = Synoption::OptionSet.new
-      @optset.add option
-      def @optset.name; 'testing'; end
-      @results = @optset.process args
+      optset = Synoption::OptionSet.new
+      optset.add option
+      def optset.name; 'testing'; end
+      @results = optset.process args
     end
 
     context "when it has matching tag and no following arguments" do
