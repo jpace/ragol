@@ -10,6 +10,8 @@ module Synoption
       optset
     end
 
+    # -------------------------------------------------------
+
     class EchoOption < Synoption::Option
       def initialize
         super :echo, '-e', "description description", nil

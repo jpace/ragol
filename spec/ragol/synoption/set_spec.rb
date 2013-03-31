@@ -189,7 +189,6 @@ describe Synoption::OptionSet do
 
     context "when multiple subclasses of OptionSet" do
       before :all do
-        @dgoptset = create_dg_option_set
         @dgehoptset = create_dgeh_option_set
       end
 
@@ -197,77 +196,71 @@ describe Synoption::OptionSet do
         @dgehoptset.process args
       end
 
-      context "when options are not interlinked" do
-        describe "accessor methods added" do
-          context "when option set is subclass" do
-            let(:optset) { @dgehoptset }
+      describe "#method" do
+        context "when option set is subclass" do
+          let(:optset) { @dgehoptset }
 
-            valid_methods = [ :delta, :golf, :echo, :hotel ]
-            invalid_methods = [ :bfd ]
+          valid_methods = [ :delta, :golf, :echo, :hotel ]
+          invalid_methods = [ :bfd ]
 
-            let(:results) { @dgehoptset.process [] }
+          let(:results) { @dgehoptset.process [] }
 
-            subject { results }
+          subject { results }
 
-            it_behaves_like "defined methods", valid_methods, invalid_methods
-          end
-
-          context "when option set is common" do
-            let(:optset) { @dgoptset }
-
-            subject { results }
-
-            valid_methods = [ :delta, :golf ]
-            invalid_methods = [ :echo, :hotel, :bfd ]
-
-            let(:results) { @dgoptset.process [] }
-            
-            it_behaves_like "defined methods", valid_methods, invalid_methods
-          end
+          it_behaves_like "defined methods", valid_methods, invalid_methods
         end
 
-        describe "#process" do
-          context "when arguments are valid" do
+        context "when option set is common" do
+          valid_methods = [ :delta, :golf ]
+          invalid_methods = [ :echo, :hotel, :bfd ]
+
+          subject { create_dg_option_set.process [] }
+          
+          it_behaves_like "defined methods", valid_methods, invalid_methods
+        end
+      end
+
+      describe "#process" do
+        context "when arguments are valid" do
+          before :all do
+            @results = process %w{ --echo foo }
+          end
+
+          let(:results) { @results }
+
+          subject { @results }
+
+          its(:echo) { should eql 'foo' }
+          its(:delta) { should be_nil }
+          its(:hotel) { should be_nil }
+          its(:golf) { should be_nil }
+        end
+
+        describe "multiple invocations" do
+          context "first invocation" do
             before :all do
               @results = process %w{ --echo foo }
             end
 
-            let(:results) { @results }
-
             subject { @results }
-
-            its(:echo) { should eql 'foo' }
+            
             its(:delta) { should be_nil }
             its(:hotel) { should be_nil }
             its(:golf) { should be_nil }
+            its(:echo) { should eql 'foo' }
           end
 
-          describe "multiple invocations" do
-            context "first invocation" do
-              before :all do
-                @results = process %w{ --echo foo }
-              end
-
-              subject { @results }
-              
-              its(:delta) { should be_nil }
-              its(:hotel) { should be_nil }
-              its(:golf) { should be_nil }
-              its(:echo) { should eql 'foo' }
+          context "second invocation" do
+            before :all do
+              @results = process %w{ --hotel bar }
             end
 
-            context "second invocation" do
-              before :all do
-                @results = process %w{ --hotel bar }
-              end
-
-              subject { @results }
-              
-              its(:delta) { should be_nil }
-              its(:hotel) { should eql 'bar' }
-              its(:golf) { should be_nil }
-              its(:echo) { should be_nil }
-            end
+            subject { @results }
+            
+            its(:delta) { should be_nil }
+            its(:hotel) { should eql 'bar' }
+            its(:golf) { should be_nil }
+            its(:echo) { should be_nil }
           end
         end
       end
