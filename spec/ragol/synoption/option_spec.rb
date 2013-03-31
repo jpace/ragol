@@ -69,11 +69,9 @@ describe Synoption::Option do
   end
   
   describe "exact match" do
-    let(:option) do
+    subject(:option) do
       Synoption::Option.new :limit, '-l', "the number of log entries", 3
     end
-
-    subject { option }
 
     [ '-l', '--limit' ].each do |val|
       it "should exactly match #{val}" do
@@ -89,11 +87,9 @@ describe Synoption::Option do
   end
 
   describe "negative match" do
-    let(:option) do
+    subject(:option) do
       Synoption::Option.new :limit, '-l', "the number of log entries", 777, :negate => [ '-L', %r{^--no-?limit} ]
     end
-
-    subject { option }
 
     [ '-L', '--no-limit', '--nolimit' ].each do |val|
       it "should negatively match #{val}" do
@@ -109,11 +105,9 @@ describe Synoption::Option do
   end
 
   describe "regexp match" do
-    let(:option) do
+    subject(:option) do
       Synoption::Option.new :revision, '-r', "the revision", nil, :regexp => Regexp.new('^[\-\+]\d+$')
     end
-
-    subject { option }
 
     [ '-1', '-123', '+99', '+443' ].each do |val|
       it "should regexp match #{val}" do
@@ -129,11 +123,9 @@ describe Synoption::Option do
   end
 
   describe "process positive" do
-    let(:option) do
+    subject(:option) do
       Synoption::Option.new :xyz, '-x', "the blah blah blah", nil, Hash.new
     end
-    
-    subject { option }
 
     def process args
       @optset = Synoption::OptionSet.new
@@ -144,8 +136,7 @@ describe Synoption::Option do
 
     context "when it has matching tag and no following arguments" do
       before do
-        @args = %w{ --xyz foo }
-        process @args
+        process %w{ --xyz foo }
       end
       
       it "should change the option value" do
@@ -153,14 +144,13 @@ describe Synoption::Option do
       end
 
       it "should take the arguments" do
-        @args.should be_empty
+        @results.unprocessed.should be_empty
       end
     end
 
     context "when it has matching tag and a following argument" do
       before do
-        @args = %w{ --xyz foo bar }
-        process @args
+        process %w{ --xyz foo bar }
       end
 
       it "should change the option value" do
@@ -168,7 +158,7 @@ describe Synoption::Option do
       end
 
       it "should leave the remaining argument" do
-        @args.should eql [ 'bar' ]
+        @results.unprocessed.should eql [ 'bar' ]
       end
     end
 
