@@ -30,7 +30,7 @@ describe Synoption::OptionSet do
     end
 
     subject { @results }
-    
+
     describe "#process" do
       valid_methods = [ :alpha, :charlie, :bravo ]
       invalid_methods = [ :bfd ]
@@ -54,16 +54,14 @@ describe Synoption::OptionSet do
       end
 
       context "when arguments are invalid" do
-        it "throws error for bad -o" do
-          expect { process %w{ -y foo } }.to raise_error(Synoption::OptionException, "option '-y' invalid for testing")
-        end
-
-        it "throws error for bad --option" do
-          expect { process %w{ --bar foo } }.to raise_error(Synoption::OptionException, "option '--bar' invalid for testing")
+        %w{ -y --bar }.each do |tag|
+          it "throws error for invalid tag #{tag}" do
+            expect { process [ tag, 'foo' ] }.to raise_error(Synoption::OptionException, "option '#{tag}' invalid for testing")
+          end
         end
       end
 
-      context "when argument is double dash" do
+      context "when arguments contain double dash" do
         before do
           process %w{ --alpha bar -- --charlie foo }
         end
