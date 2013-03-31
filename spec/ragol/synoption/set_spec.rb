@@ -94,7 +94,7 @@ describe Synoption::OptionSet do
       describe "#process" do
         context "when there is no option to unset" do
           before do
-            process %w{ -x foo }
+            process %w{ --bravo foo }
           end
 
           its(:bravo) { should eql 'foo' }
@@ -104,7 +104,7 @@ describe Synoption::OptionSet do
 
         context "when there is only an option to unset" do
           before do
-            process %w{ -t bar }
+            process %w{ --charlie bar }
           end
 
           its(:charlie) { should eql 'bar' }
@@ -113,7 +113,7 @@ describe Synoption::OptionSet do
 
         context "when the option order is the unset option, then the option to be unset" do
           before do
-            process %w{ -t bar -x foo }
+            process %w{ --charlie bar --bravo foo }
           end
 
           its(:charlie) { should eql 'bar' }
@@ -122,7 +122,7 @@ describe Synoption::OptionSet do
 
         context "when the option order is the option to be unset, then the unset option" do
           before do
-            process %w{ -x foo -t bar }
+            process %w{ --bravo foo --charlie bar }
           end
 
           its(:charlie) { should eql 'bar' }
