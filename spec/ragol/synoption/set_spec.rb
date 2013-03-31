@@ -19,6 +19,26 @@ describe Synoption::OptionSet do
       it("does not have method #{methname}") { expect { subject.method(methname) }.to raise_error(NameError) }
     end
   end
+
+  describe "#method" do
+    describe "OptionSet class (not subclass)" do
+      subject { create_abc_option_set.process Array.new }
+
+      valid_methods = [ :alpha, :charlie, :bravo ]
+      invalid_methods = [ :bfd ]
+      
+      it_behaves_like "defined methods", valid_methods, invalid_methods
+    end
+
+    describe "OptionSet subclass" do
+      subject { create_def_option_set.process Array.new }
+
+      valid_methods = [ :delta, :foxtrot, :echo ]
+      invalid_methods = [ :bfd ]
+      
+      it_behaves_like "defined methods", valid_methods, invalid_methods
+    end
+  end
   
   context "when options are isolated" do
     before do
@@ -32,17 +52,12 @@ describe Synoption::OptionSet do
     subject { @results }
 
     describe "#process" do
-      valid_methods = [ :alpha, :charlie, :bravo ]
-      invalid_methods = [ :bfd ]
-      
       let(:optset) { @optset }
 
       context "when arguments are valid" do
         before do
           process %w{ --bravo foo bar baz }
         end
-
-        it_behaves_like "defined methods", valid_methods, invalid_methods
 
         its(:bravo) { should eql 'foo' }
 
@@ -143,17 +158,11 @@ describe Synoption::OptionSet do
       subject { @results }
 
       context "when options are not interlinked" do
-        valid_methods = [ :delta, :foxtrot, :echo ]
-        invalid_methods = [ :bfd ]
-
         describe "#process" do
           context "when arguments are valid" do
             before :each do
               process %w{ --echo foo }
             end
-            
-            let(:results) { @results }
-            it_behaves_like "defined methods", valid_methods, invalid_methods
 
             its(:echo) { should eql 'foo' }
             its(:delta) { should be_nil }
@@ -192,30 +201,6 @@ describe Synoption::OptionSet do
 
       def process args
         @dgehoptset.process args
-      end
-
-      describe "#method" do
-        context "when option set is subclass" do
-          let(:optset) { @dgehoptset }
-
-          valid_methods = [ :delta, :golf, :echo, :hotel ]
-          invalid_methods = [ :bfd ]
-
-          let(:results) { @dgehoptset.process [] }
-
-          subject { results }
-
-          it_behaves_like "defined methods", valid_methods, invalid_methods
-        end
-
-        context "when option set is common" do
-          valid_methods = [ :delta, :golf ]
-          invalid_methods = [ :echo, :hotel, :bfd ]
-
-          subject { create_dg_option_set.process [] }
-          
-          it_behaves_like "defined methods", valid_methods, invalid_methods
-        end
       end
 
       describe "#process" do
