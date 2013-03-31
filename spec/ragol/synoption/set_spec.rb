@@ -129,6 +129,7 @@ describe Synoption::OptionSet do
 
         its(:charlie) { should eql 'bar' }
         its(:bravo) { should be_nil }
+        its(:alpha) { should be_nil }
       end
 
       context "when the option order is the unset option, then the option to be unset" do
@@ -138,6 +139,7 @@ describe Synoption::OptionSet do
 
         its(:charlie) { should eql 'bar' }
         its(:bravo) { should be_nil }
+        its(:alpha) { should be_nil }
       end
 
       context "when the option order is the option to be unset, then the unset option" do
@@ -147,6 +149,7 @@ describe Synoption::OptionSet do
 
         its(:charlie) { should eql 'bar' }
         its(:bravo) { should be_nil }
+        its(:alpha) { should be_nil }
       end
     end
   end
@@ -213,11 +216,11 @@ describe Synoption::OptionSet do
             process %w{ --echo foo }
           end
           
-          its(:echo) { should eql 'foo' }
           its(:delta) { should be_nil }
+          its(:echo) { should eql 'foo' }
           its(:foxtrot) { should be_nil }
-          its(:hotel) { should be_nil }
           its(:golf) { should be_nil }
+          its(:hotel) { should be_nil }
         end
 
         describe "multiple invocations" do
@@ -227,9 +230,10 @@ describe Synoption::OptionSet do
             end
             
             its(:delta) { should be_nil }
-            its(:hotel) { should be_nil }
-            its(:golf) { should be_nil }
             its(:echo) { should eql 'foo' }
+            its(:foxtrot) { should be_nil }
+            its(:golf) { should be_nil }
+            its(:hotel) { should be_nil }
           end
 
           context "second invocation" do
@@ -238,9 +242,10 @@ describe Synoption::OptionSet do
             end
             
             its(:delta) { should be_nil }
-            its(:hotel) { should eql 'bar' }
-            its(:golf) { should be_nil }
             its(:echo) { should be_nil }
+            its(:foxtrot) { should be_nil }
+            its(:golf) { should be_nil }
+            its(:hotel) { should eql 'bar' }
           end
         end
       end
