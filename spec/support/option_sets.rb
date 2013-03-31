@@ -1,6 +1,6 @@
 module Synoption
   module OptionTestSets
-    def create_abc_option_set tnt_options
+    def create_abc_option_set charlie_options = Hash.new
       bravo = Synoption::Option.new :bravo, '-x', "Italian commendations",    nil
       alpha = Synoption::Option.new :alpha, '-a', "first Greek letter",  nil
       charlie = Synoption::Option.new :charlie, '-t', "Charles' nickname", nil, charlie_options

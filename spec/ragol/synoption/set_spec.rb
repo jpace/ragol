@@ -20,9 +20,9 @@ describe Synoption::OptionSet do
     end
   end
   
-  describe "#new" do
+  context "when options are isolated" do
     before do
-      @optset = create_abc_option_set charlie_options
+      @optset = create_abc_option_set
     end
 
     def process args
@@ -31,103 +31,103 @@ describe Synoption::OptionSet do
 
     subject { @results }
     
-    def charlie_options
-      Hash.new
-    end
-
-    context "when options are isolated" do
+    describe "#process" do
       valid_methods = [ :alpha, :charlie, :bravo ]
       invalid_methods = [ :bfd ]
       
       let(:optset) { @optset }
 
-      describe "#process" do
-        context "when arguments are valid" do
-          before do
-            process %w{ --bravo foo bar baz }
-          end
-
-          it_behaves_like "defined methods", valid_methods, invalid_methods
-
-          its(:bravo) { should eql 'foo' }
-
-          [ :alpha, :charlie ].each do |opt|
-            its(opt) { should be_nil }
-          end
-
-          its(:unprocessed) { should eql %w{ bar baz } }
+      context "when arguments are valid" do
+        before do
+          process %w{ --bravo foo bar baz }
         end
 
-        context "when arguments are invalid" do
-          it "throws error for bad -o" do
-            expect { process %w{ -y foo } }.to raise_error(Synoption::OptionException, "option '-y' invalid for testing")
-          end
+        it_behaves_like "defined methods", valid_methods, invalid_methods
 
-          it "throws error for bad --option" do
-            expect { process %w{ --bar foo } }.to raise_error(Synoption::OptionException, "option '--bar' invalid for testing")
-          end
+        its(:bravo) { should eql 'foo' }
+
+        [ :alpha, :charlie ].each do |opt|
+          its(opt) { should be_nil }
         end
 
-        context "when argument is double dash" do
-          before do
-            process %w{ --alpha bar -- --charlie foo }
-          end
+        its(:unprocessed) { should eql %w{ bar baz } }
+      end
 
-          it "sets option preceding --" do
-            subject.alpha.should eql 'bar'
-          end
-
-          it "ignores unspecified option" do
-            subject.charlie.should be_nil
-          end
-
-          it("ignores option following --") { subject.bravo.should be_nil }
+      context "when arguments are invalid" do
+        it "throws error for bad -o" do
+          expect { process %w{ -y foo } }.to raise_error(Synoption::OptionException, "option '-y' invalid for testing")
         end
+
+        it "throws error for bad --option" do
+          expect { process %w{ --bar foo } }.to raise_error(Synoption::OptionException, "option '--bar' invalid for testing")
+        end
+      end
+
+      context "when argument is double dash" do
+        before do
+          process %w{ --alpha bar -- --charlie foo }
+        end
+
+        it "sets option preceding --" do
+          subject.alpha.should eql 'bar'
+        end
+
+        it "ignores unspecified option" do
+          subject.charlie.should be_nil
+        end
+
+        it("ignores option following --") { subject.bravo.should be_nil }
       end
     end
+  end
 
-    context "when options are interlinked" do
-      def charlie_options
-        { :unsets => :bravo }
+  context "when one option unsets another" do
+    before do
+      @optset = create_abc_option_set(:unsets => :bravo)
+    end
+
+    def process args
+      @results = @optset.process args
+    end
+
+    subject { @results }
+    
+    describe "#process" do
+      context "when there is no option to unset" do
+        before do
+          process %w{ --bravo foo }
+        end
+
+        its(:bravo) { should eql 'foo' }
+        its(:alpha) { should be_nil }
+        its(:charlie) { should be_nil }
       end
 
-      describe "#process" do
-        context "when there is no option to unset" do
-          before do
-            process %w{ --bravo foo }
-          end
-
-          its(:bravo) { should eql 'foo' }
-          its(:alpha) { should be_nil }
-          its(:charlie) { should be_nil }
+      context "when there is only an option to unset" do
+        before do
+          process %w{ --charlie bar }
         end
 
-        context "when there is only an option to unset" do
-          before do
-            process %w{ --charlie bar }
-          end
+        its(:charlie) { should eql 'bar' }
+        its(:bravo) { should be_nil }
+      end
 
-          its(:charlie) { should eql 'bar' }
-          its(:bravo) { should be_nil }
+      context "when the option order is the unset option, then the option to be unset" do
+        before do
+          process %w{ --charlie bar --bravo foo }
         end
 
-        context "when the option order is the unset option, then the option to be unset" do
-          before do
-            process %w{ --charlie bar --bravo foo }
-          end
+        its(:charlie) { should eql 'bar' }
+        its(:bravo) { should be_nil }
+      end
 
-          its(:charlie) { should eql 'bar' }
-          its(:bravo) { should be_nil }
+      context "when the option order is the option to be unset, then the unset option" do
+        before do
+          process %w{ --bravo foo --charlie bar }
         end
 
-        context "when the option order is the option to be unset, then the unset option" do
-          before do
-            process %w{ --bravo foo --charlie bar }
-          end
-
-          its(:charlie) { should eql 'bar' }
-          its(:bravo) { should be_nil }
-        end
+        its(:charlie) { should eql 'bar' }
+        its(:bravo) { should be_nil }
       end
     end
   end
