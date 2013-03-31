@@ -91,3 +91,4 @@ Sat Mar 30 09:43:20 2013
 Sun Mar 31 10:42:36 2013
 
   Refined tests for clarity.
+  Added test for unprocessed after --.

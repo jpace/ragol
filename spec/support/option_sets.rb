@@ -6,7 +6,7 @@ module Synoption
       charlie = Synoption::Option.new :charlie, '-t', "Charles' nickname", nil, charlie_options
       
       optset = Synoption::OptionSet.new bravo, alpha, charlie
-      def optset.name; 'testing'; end
+      def optset.name; 'abc'; end
       optset
     end
 

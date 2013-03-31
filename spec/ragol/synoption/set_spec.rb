@@ -41,7 +41,7 @@ describe Synoption::OptionSet do
   end
   
   context "when options are isolated" do
-    before do
+    before :all do
       @optset = create_abc_option_set
     end
 
@@ -55,7 +55,7 @@ describe Synoption::OptionSet do
       let(:optset) { @optset }
 
       context "when arguments are valid" do
-        before do
+        before :all do
           process %w{ --bravo foo bar baz }
         end
 
@@ -71,13 +71,13 @@ describe Synoption::OptionSet do
       context "when arguments are invalid" do
         %w{ -y --bar }.each do |tag|
           it "throws error for invalid tag #{tag}" do
-            expect { process [ tag, 'foo' ] }.to raise_error(Synoption::OptionException, "option '#{tag}' invalid for testing")
+            expect { process [ tag, 'foo' ] }.to raise_error(Synoption::OptionException, "option '#{tag}' invalid for abc")
           end
         end
       end
 
       context "when arguments contain double dash" do
-        before do
+        before :all do
           process %w{ --alpha bar -- --charlie foo }
         end
 
@@ -89,13 +89,19 @@ describe Synoption::OptionSet do
           subject.charlie.should be_nil
         end
 
-        it("ignores option following --") { subject.bravo.should be_nil }
+        it("ignores option following --") do 
+          subject.bravo.should be_nil
+        end
+
+        it "does not include -- in unprocessed" do
+          subject.unprocessed.should eql %w{ --charlie foo }
+        end
       end
     end
   end
 
   context "when one option unsets another" do
-    before do
+    before :all do
       @optset = create_abc_option_set(:unsets => :bravo)
     end
 
@@ -107,7 +113,7 @@ describe Synoption::OptionSet do
     
     describe "#process" do
       context "when there is no option to unset" do
-        before do
+        before :all do
           process %w{ --bravo foo }
         end
 
@@ -117,7 +123,7 @@ describe Synoption::OptionSet do
       end
 
       context "when there is only an option to unset" do
-        before do
+        before :all do
           process %w{ --charlie bar }
         end
 
@@ -126,7 +132,7 @@ describe Synoption::OptionSet do
       end
 
       context "when the option order is the unset option, then the option to be unset" do
-        before do
+        before :all do
           process %w{ --charlie bar --bravo foo }
         end
 
@@ -135,7 +141,7 @@ describe Synoption::OptionSet do
       end
 
       context "when the option order is the option to be unset, then the unset option" do
-        before do
+        before :all do
           process %w{ --bravo foo --charlie bar }
         end
 
@@ -160,7 +166,7 @@ describe Synoption::OptionSet do
       context "when options are not interlinked" do
         describe "#process" do
           context "when arguments are valid" do
-            before :each do
+            before :all do
               process %w{ --echo foo }
             end
 
