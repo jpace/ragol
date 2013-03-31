@@ -52,38 +52,23 @@ module Synoption
       end
     end
     
-    class DgOptionSet < Synoption::OptionSet
-      has_option :delta, DeltaOption
-      has_option :golf, GolfOption
-
-      def name
-        'dg'
-      end
-    end
-    
-    def create_dg_option_set
-      DgOptionSet.new
-    end
-
-    # -------------------------------------------------------
-
     class HotelOption < Synoption::Option
       def initialize
         super :hotel, '-h', "an upscale motel", nil
       end
     end
     
-    class DgEhOptionSet < DgOptionSet
-      has_option :echo, EchoOption
+    class DefghOptionSet < DefOptionSet
+      has_option :golf, GolfOption
       has_option :hotel, HotelOption
 
       def name
-        'dgeh'
+        'defgh'
       end
     end
 
-    def create_dgeh_option_set
-      DgEhOptionSet.new
+    def create_defgh_option_set
+      DefghOptionSet.new
     end
   end
 end

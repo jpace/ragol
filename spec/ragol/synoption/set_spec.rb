@@ -33,7 +33,7 @@ describe Synoption::OptionSet do
     describe "OptionSet subclass" do
       subject { create_def_option_set.process Array.new }
 
-      valid_methods = [ :delta, :foxtrot, :echo ]
+      valid_methods = [ :delta, :echo, :foxtrot ]
       invalid_methods = [ :bfd ]
       
       it_behaves_like "defined methods", valid_methods, invalid_methods
@@ -195,26 +195,21 @@ describe Synoption::OptionSet do
     end
 
     context "when multiple subclasses of OptionSet" do
-      before :all do
-        @dgehoptset = create_dgeh_option_set
+      def process args
+        @results = create_defgh_option_set.process args
       end
 
-      def process args
-        @dgehoptset.process args
-      end
+      subject { @results }
 
       describe "#process" do
         context "when arguments are valid" do
           before :all do
-            @results = process %w{ --echo foo }
+            process %w{ --echo foo }
           end
-
-          let(:results) { @results }
-
-          subject { @results }
-
+          
           its(:echo) { should eql 'foo' }
           its(:delta) { should be_nil }
+          its(:foxtrot) { should be_nil }
           its(:hotel) { should be_nil }
           its(:golf) { should be_nil }
         end
@@ -222,10 +217,8 @@ describe Synoption::OptionSet do
         describe "multiple invocations" do
           context "first invocation" do
             before :all do
-              @results = process %w{ --echo foo }
+              process %w{ --echo foo }
             end
-
-            subject { @results }
             
             its(:delta) { should be_nil }
             its(:hotel) { should be_nil }
@@ -235,10 +228,8 @@ describe Synoption::OptionSet do
 
           context "second invocation" do
             before :all do
-              @results = process %w{ --hotel bar }
+              process %w{ --hotel bar }
             end
-
-            subject { @results }
             
             its(:delta) { should be_nil }
             its(:hotel) { should eql 'bar' }
