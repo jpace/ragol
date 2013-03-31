@@ -195,15 +195,15 @@ describe Synoption::Option do
     end
 
     def process args
-      results = Synoption::Results.new [ option ]
-      option.process results, args
+      @results = Synoption::Results.new [ option ]
+      option.process @results, args
     end
 
     %w{ -1 +123 }.each do |val|
       it "matches #{val} with no following argument" do
         args = [ val ]
         process args
-        option.value.should be_true
+        @results.xyz.should be_true
         args.should be_empty
       end
     end
@@ -212,7 +212,7 @@ describe Synoption::Option do
       it "matches #{val} with following argument" do
         args = [ val, '--foo' ]
         process args
-        option.value.should be_true
+        @results.xyz.should be_true
         args.should eql [ '--foo' ]
       end
     end
