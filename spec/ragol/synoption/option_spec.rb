@@ -167,24 +167,22 @@ describe Synoption::Option do
     end
 
     def process args
-      results = Synoption::Results.new [ option ]
-      option.process results, args
+      @results = Synoption::Results.new [ option ]
+      option.process @results, args
     end
 
     %w{ -X --no-xyz --noxyz }.each do |val|
       it "matches #{val} with no following argument" do
         args = [ val ]
-        pr = process args
-        pr.should be_true
-        option.value.should be_false
+        process args
+        @results.xyz.should == false
         args.should be_empty
       end
 
       it "matches #{val} with following argument" do
         args = [ val, '--abc' ]
-        pr = process args
-        pr.should be_true
-        option.value.should be_false
+        process args
+        @results.xyz.should == false
         args.should eql [ '--abc' ]
       end
     end
@@ -204,8 +202,7 @@ describe Synoption::Option do
     %w{ -1 +123 }.each do |val|
       it "matches #{val} with no following argument" do
         args = [ val ]
-        pr = process args
-        pr.should be_true
+        process args
         option.value.should be_true
         args.should be_empty
       end
@@ -214,8 +211,7 @@ describe Synoption::Option do
     %w{ -1 +123 }.each do |val|
       it "matches #{val} with following argument" do
         args = [ val, '--foo' ]
-        pr = process args
-        pr.should be_true
+        process args
         option.value.should be_true
         args.should eql [ '--foo' ]
       end
