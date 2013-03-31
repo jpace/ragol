@@ -36,7 +36,7 @@ describe Synoption::OptionSet do
     end
 
     context "when options are isolated" do
-      valid_methods = [ :abc, :tnt, :xyz ]
+      valid_methods = [ :alpha, :tnt, :xyz ]
       invalid_methods = [ :bfd ]
       
       let(:optset) { @optset }
@@ -51,7 +51,7 @@ describe Synoption::OptionSet do
 
           its(:xyz) { should eql 'foo' }
 
-          [ :abc, :tnt ].each do |opt|
+          [ :alpha, :tnt ].each do |opt|
             its(opt) { should be_nil }
           end
 
@@ -70,11 +70,11 @@ describe Synoption::OptionSet do
 
         context "when argument is double dash" do
           before do
-            process %w{ -a abc -- -x foo }
+            process %w{ -a bar -- -x foo }
           end
 
           it "sets option preceding --" do
-            subject.abc.should eql 'abc'
+            subject.alpha.should eql 'bar'
           end
 
           it "ignores unspecified option" do
@@ -98,7 +98,7 @@ describe Synoption::OptionSet do
           end
 
           its(:xyz) { should eql 'foo' }
-          its(:abc) { should be_nil }
+          its(:alpha) { should be_nil }
           its(:tnt) { should be_nil }
         end
 
