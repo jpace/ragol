@@ -22,7 +22,7 @@ describe Synoption::OptionSet do
   
   describe "#new" do
     before do
-      @optset = create_abc_tnt_xyz_option_set tnt_options
+      @optset = create_abc_option_set charlie_options
     end
 
     def process args
@@ -31,12 +31,12 @@ describe Synoption::OptionSet do
 
     subject { @results }
     
-    def tnt_options
+    def charlie_options
       Hash.new
     end
 
     context "when options are isolated" do
-      valid_methods = [ :alpha, :tnt, :xyz ]
+      valid_methods = [ :alpha, :charlie, :bravo ]
       invalid_methods = [ :bfd ]
       
       let(:optset) { @optset }
@@ -49,9 +49,9 @@ describe Synoption::OptionSet do
 
           it_behaves_like "defined methods", valid_methods, invalid_methods
 
-          its(:xyz) { should eql 'foo' }
+          its(:bravo) { should eql 'foo' }
 
-          [ :alpha, :tnt ].each do |opt|
+          [ :alpha, :charlie ].each do |opt|
             its(opt) { should be_nil }
           end
 
@@ -78,17 +78,17 @@ describe Synoption::OptionSet do
           end
 
           it "ignores unspecified option" do
-            subject.tnt.should be_nil
+            subject.charlie.should be_nil
           end
 
-          it("ignores option following --") { subject.xyz.should be_nil }
+          it("ignores option following --") { subject.bravo.should be_nil }
         end
       end
     end
 
     context "when options are interlinked" do
-      def tnt_options
-        { :unsets => :xyz }
+      def charlie_options
+        { :unsets => :bravo }
       end
 
       describe "#process" do
@@ -97,9 +97,9 @@ describe Synoption::OptionSet do
             process %w{ -x foo }
           end
 
-          its(:xyz) { should eql 'foo' }
+          its(:bravo) { should eql 'foo' }
           its(:alpha) { should be_nil }
-          its(:tnt) { should be_nil }
+          its(:charlie) { should be_nil }
         end
 
         context "when there is only an option to unset" do
@@ -107,8 +107,8 @@ describe Synoption::OptionSet do
             process %w{ -t bar }
           end
 
-          its(:tnt) { should eql 'bar' }
-          its(:xyz) { should be_nil }
+          its(:charlie) { should eql 'bar' }
+          its(:bravo) { should be_nil }
         end
 
         context "when the option order is the unset option, then the option to be unset" do
@@ -116,8 +116,8 @@ describe Synoption::OptionSet do
             process %w{ -t bar -x foo }
           end
 
-          its(:tnt) { should eql 'bar' }
-          its(:xyz) { should be_nil }
+          its(:charlie) { should eql 'bar' }
+          its(:bravo) { should be_nil }
         end
 
         context "when the option order is the option to be unset, then the unset option" do
@@ -125,8 +125,8 @@ describe Synoption::OptionSet do
             process %w{ -x foo -t bar }
           end
 
-          its(:tnt) { should eql 'bar' }
-          its(:xyz) { should be_nil }
+          its(:charlie) { should eql 'bar' }
+          its(:bravo) { should be_nil }
         end
       end
     end

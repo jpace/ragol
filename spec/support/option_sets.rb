@@ -1,11 +1,11 @@
 module Synoption
   module OptionTestSets
-    def create_abc_tnt_xyz_option_set tnt_options
-      xyz = Synoption::Option.new :xyz, '-x', "blah blah xyz",    nil
+    def create_abc_option_set tnt_options
+      bravo = Synoption::Option.new :bravo, '-x', "blah blah xyz",    nil
       alpha = Synoption::Option.new :alpha, '-a', "abc yadda yadda",  nil
-      tnt = Synoption::Option.new :tnt, '-t', "tnt and so forth", nil, tnt_options
+      charlie = Synoption::Option.new :charlie, '-t', "tnt and so forth", nil, charlie_options
       
-      optset = Synoption::OptionSet.new [ xyz, alpha, tnt ]
+      optset = Synoption::OptionSet.new bravo, alpha, charlie
       def optset.name; 'testing'; end
       optset
     end

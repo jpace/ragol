@@ -5,7 +5,7 @@ module Synoption
   class OptionList    
     attr_reader :options
     
-    def initialize options = Array.new
+    def initialize(*options)
       @options = options
     end
 

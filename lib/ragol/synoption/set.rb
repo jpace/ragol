@@ -23,7 +23,7 @@ module Synoption
       @@options_for_class[cls]
     end
     
-    def initialize options = Array.new
+    def initialize(*options)
       super
       add_all_options
     end
