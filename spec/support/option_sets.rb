@@ -1,9 +1,9 @@
 module Synoption
   module OptionTestSets
     def create_abc_option_set tnt_options
-      bravo = Synoption::Option.new :bravo, '-x', "blah blah xyz",    nil
-      alpha = Synoption::Option.new :alpha, '-a', "abc yadda yadda",  nil
-      charlie = Synoption::Option.new :charlie, '-t', "tnt and so forth", nil, charlie_options
+      bravo = Synoption::Option.new :bravo, '-x', "Italian commendations",    nil
+      alpha = Synoption::Option.new :alpha, '-a', "first Greek letter",  nil
+      charlie = Synoption::Option.new :charlie, '-t', "Charles' nickname", nil, charlie_options
       
       optset = Synoption::OptionSet.new bravo, alpha, charlie
       def optset.name; 'testing'; end
@@ -12,19 +12,19 @@ module Synoption
 
     class EchoOption < Synoption::Option
       def initialize
-        super :echo, '-e', "blah blah", nil
+        super :echo, '-e', "description description", nil
       end
     end
 
     class DeltaOption < Synoption::Option
       def initialize 
-        super :delta, '-d', "description of delta",  nil
+        super :delta, '-d', "mouth of a river",  nil
       end
     end
     
     class FoxtrotOption < Synoption::Option
       def initialize 
-        super :foxtrot, '-f', "and so forth", nil
+        super :foxtrot, '-f', "a dance", nil
       end
     end
     
@@ -34,7 +34,7 @@ module Synoption
       has_option :foxtrot, FoxtrotOption
 
       def name
-        'testing'
+        'def'
       end
     end
 
@@ -44,44 +44,44 @@ module Synoption
 
     # -------------------------------------------------------
 
-    class UghOption < Synoption::Option
+    class GolfOption < Synoption::Option
       def initialize
-        super :ugh, '-u', "you gee ache", nil
+        super :golf, '-w', "a walk ruined", nil
       end
     end
     
-    class CommonTestOptionSet < Synoption::OptionSet
+    class DgOptionSet < Synoption::OptionSet
       has_option :delta, DeltaOption
-      has_option :ugh, UghOption
+      has_option :golf, GolfOption
 
       def name
-        'common'
+        'dg'
       end
     end
     
-    def create_common_option_set
-      CommonTestOptionSet.new
+    def create_dg_option_set
+      DgOptionSet.new
     end
 
     # -------------------------------------------------------
 
-    class GhiOption < Synoption::Option
+    class HotelOption < Synoption::Option
       def initialize
-        super :ghi, '-g', "gee ache eye", nil
+        super :hotel, '-h', "an upscale motel", nil
       end
     end
     
-    class AbcTestOptionSet < CommonTestOptionSet
+    class DgEhOptionSet < DgOptionSet
       has_option :echo, EchoOption
-      has_option :ghi, GhiOption
+      has_option :hotel, HotelOption
 
       def name
-        'testing'
+        'dgeh'
       end
     end
 
-    def create_abc_test_option_set
-      AbcTestOptionSet.new
+    def create_dgeh_option_set
+      DgEhOptionSet.new
     end
   end
 end

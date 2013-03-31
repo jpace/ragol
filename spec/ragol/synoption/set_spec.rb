@@ -189,23 +189,23 @@ describe Synoption::OptionSet do
 
     context "when multiple subclasses of OptionSet" do
       before :all do
-        @commonoptset = create_common_option_set
-        @abcoptset = create_abc_test_option_set
+        @dgoptset = create_dg_option_set
+        @dgehoptset = create_dgeh_option_set
       end
 
       def process args
-        @abcoptset.process args
+        @dgehoptset.process args
       end
 
       context "when options are not interlinked" do
         describe "accessor methods added" do
           context "when option set is subclass" do
-            let(:optset) { @abcoptset }
+            let(:optset) { @dgehoptset }
 
-            valid_methods = [ :delta, :ugh, :echo, :ghi ]
+            valid_methods = [ :delta, :golf, :echo, :hotel ]
             invalid_methods = [ :bfd ]
 
-            let(:results) { @abcoptset.process [] }
+            let(:results) { @dgehoptset.process [] }
 
             subject { results }
 
@@ -213,14 +213,14 @@ describe Synoption::OptionSet do
           end
 
           context "when option set is common" do
-            let(:optset) { @commonoptset }
+            let(:optset) { @dgoptset }
 
             subject { results }
 
-            valid_methods = [ :delta, :ugh ]
-            invalid_methods = [ :echo, :ghi, :bfd ]
+            valid_methods = [ :delta, :golf ]
+            invalid_methods = [ :echo, :hotel, :bfd ]
 
-            let(:results) { @commonoptset.process [] }
+            let(:results) { @dgoptset.process [] }
             
             it_behaves_like "defined methods", valid_methods, invalid_methods
           end
@@ -238,8 +238,8 @@ describe Synoption::OptionSet do
 
             its(:echo) { should eql 'foo' }
             its(:delta) { should be_nil }
-            its(:ghi) { should be_nil }
-            its(:ugh) { should be_nil }
+            its(:hotel) { should be_nil }
+            its(:golf) { should be_nil }
           end
 
           describe "multiple invocations" do
@@ -251,21 +251,21 @@ describe Synoption::OptionSet do
               subject { @results }
               
               its(:delta) { should be_nil }
-              its(:ghi) { should be_nil }
-              its(:ugh) { should be_nil }
+              its(:hotel) { should be_nil }
+              its(:golf) { should be_nil }
               its(:echo) { should eql 'foo' }
             end
 
             context "second invocation" do
               before :all do
-                @results = process %w{ -g bar }
+                @results = process %w{ --hotel bar }
               end
 
               subject { @results }
               
               its(:delta) { should be_nil }
-              its(:ghi) { should eql 'bar' }
-              its(:ugh) { should be_nil }
+              its(:hotel) { should eql 'bar' }
+              its(:golf) { should be_nil }
               its(:echo) { should be_nil }
             end
           end
