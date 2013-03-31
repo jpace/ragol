@@ -9,35 +9,29 @@ require 'ragol/synoption/results'
 
 describe Synoption::Option do
   describe "option defaults" do
-    let(:option) do
+    subject(:option) do
       Synoption::Option.new :limit, '-l', "the number of log entries", 15
     end
 
-    subject { option }
-
-    it { option.name.should eql :limit }
-    it { option.tag.should eql '-l' }
-    it { option.value.should eql 15 }
-    it { option.description.should eql 'the number of log entries' }
+    its(:name) { should eql :limit }
+    its(:tag) { should eql '-l' }
+    its(:value) { should eql 15 }
+    its(:description) { should eql 'the number of log entries' }
   end
 
   describe "initial value" do
-    let(:option) do
+    subject(:option) do
       Synoption::Option.new :nombre, '-x', " one two three", 133
     end
 
-    subject { option }
-
-    it { option.value.should eql 133 }
+    its(:value) { should eql 133 }
   end
 
   describe "documentation" do
     context "no negatives" do
-      let(:option) do
+      subject(:option) do
         Synoption::Option.new :limit, '-l', "the number of log entries", 777
       end
-
-      subject { option }
 
       it "should show documentation" do
         sio = StringIO.new
@@ -50,11 +44,9 @@ describe Synoption::Option do
     end
 
     context "with negatives" do
-      let(:option) do
+      subject(:option) do
         Synoption::Option.new :limit, '-l', "the number of log entries", 777, :negate => [ %r{^--no-?limit} ]
       end
-
-      subject { option }
 
       it "should show documentation" do
         sio = StringIO.new
@@ -128,14 +120,14 @@ describe Synoption::Option do
     end
 
     def process args
-      @optset = Synoption::OptionSet.new
-      @optset.add option
-      def @optset.name; 'testing'; end
-      @results = @optset.process args
+      optset = Synoption::OptionSet.new
+      optset.add option
+      def optset.name; 'testing'; end
+      @results = optset.process args
     end
 
     context "when it has matching tag and no following arguments" do
-      before do
+      before :all do
         process %w{ --xyz foo }
       end
       
@@ -149,7 +141,7 @@ describe Synoption::Option do
     end
 
     context "when it has matching tag and a following argument" do
-      before do
+      before :all do
         process %w{ --xyz foo bar }
       end
 
@@ -169,12 +161,10 @@ describe Synoption::Option do
   end
 
   describe "process negative" do
-    let(:option) do
+    subject(:option) do
       opts = { :negate => [ '-X', %r{^--no-?xyz} ] }
       Synoption::Option.new :xyz, '-x', "the blah blah blah", nil, opts
     end
-
-    subject { option }
 
     def process args
       results = Synoption::Results.new [ option ]
@@ -201,12 +191,10 @@ describe Synoption::Option do
   end
 
   describe "process regexp" do
-    let(:option) do
+    subject(:option) do
       opts = { :regexp => Regexp.new('^[\-\+]\d+$') }
       Synoption::Option.new :xyz, '-x', "the blah blah blah", nil, opts
     end
-
-    subject { option }
 
     def process args
       results = Synoption::Results.new [ option ]
@@ -235,11 +223,9 @@ describe Synoption::Option do
   end
   
   describe "name match" do
-    let(:option) do
+    subject(:option) do
       Synoption::Option.new :max_limit, '-m', "the maximum", nil
     end
-
-    subject { option }
 
     it "should convert underscores and dashes" do
       option.exact_match?('--max-limit').should be_true
