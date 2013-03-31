@@ -242,18 +242,32 @@ describe Synoption::OptionSet do
             its(:ugh) { should be_nil }
           end
 
-          it "resets options on multiple invocations of #process" do
-            @results = process %w{ -x foo }
-            @results.abc.should be_nil
-            @results.ghi.should be_nil
-            @results.ugh.should be_nil
-            @results.xyz.should eql 'foo'
-            
-            @results = process %w{ -g bar }
-            @results.abc.should be_nil
-            @results.ghi.should eql 'bar'
-            @results.ugh.should be_nil
-            @results.xyz.should be_nil
+          describe "multiple invocations" do
+            context "first invocation" do
+              before :all do
+                @results = process %w{ -x foo }
+              end
+
+              subject { @results }
+              
+              its(:abc) { should be_nil }
+              its(:ghi) { should be_nil }
+              its(:ugh) { should be_nil }
+              its(:xyz) { should eql 'foo' }
+            end
+
+            context "second invocation" do
+              before :all do
+                @results = process %w{ -g bar }
+              end
+
+              subject { @results }
+              
+              its(:abc) { should be_nil }
+              its(:ghi) { should eql 'bar' }
+              its(:ugh) { should be_nil }
+              its(:xyz) { should be_nil }
+            end
           end
         end
       end
