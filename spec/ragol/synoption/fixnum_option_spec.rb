@@ -31,12 +31,14 @@ describe Synoption::FixnumOption do
     valid_tags = %w{ -d --delta }
     
     valid_tags.each do |tag|
-      before :all do
-        process_option [ tag, '434' ]
-      end
+      context "with valid tag #{tag}" do
+        before :all do
+          process_option [ tag, '434' ]
+        end
 
-      its(:delta) { should == 434 }
-      its(:unprocessed) { should be_empty }
+        its(:delta) { should == 434 }
+        its(:unprocessed) { should be_empty }
+      end
     end
 
     valid_tags.each do |tag|

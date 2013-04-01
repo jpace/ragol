@@ -28,23 +28,26 @@ describe Synoption::BooleanOption do
   describe "#process" do
     subject(:results) { @results }
     
-    %w{ -f --foxtrot }.each do |tag|
-      before :all do
-        process_option [ tag ]
+    valid_tags = %w{ -f --foxtrot }
+    
+    valid_tags.each do |tag|
+      context "with valid tag #{tag}" do
+        before :all do
+          process_option [ tag, 'foo' ]
+        end
+        
+        its(:foxtrot) { should == true }
+        its(:unprocessed) { should eql %w{ foo } }
       end
-
-      its(:foxtrot) { should == true }
     end
 
-    context  do
-      %w{ -f --foxtrot }.each do |tag|
-        before :all do
-          process_option [ tag, 'nextarg' ]
-        end
-
-        it "should not take the following argument" do
-          results.unprocessed.should eql %w{ nextarg }
-        end
+    valid_tags.each do |tag|
+      before :all do
+        process_option [ tag, 'nextarg' ]
+      end
+      
+      it "should not take the following argument for tag #{tag}" do
+        results.unprocessed.should eql %w{ nextarg }
       end
     end
   end
