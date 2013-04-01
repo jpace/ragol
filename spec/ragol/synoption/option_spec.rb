@@ -8,7 +8,7 @@ require 'ragol/synoption/results'
 # Logue::Log.level = Logue::Log::INFO
 
 describe Synoption::Option do
-  describe "option defaults" do
+  describe "defaults" do
     subject(:option) do
       Synoption::Option.new :limit, '-l', "the number of log entries", 15
     end
@@ -19,16 +19,8 @@ describe Synoption::Option do
     its(:description) { should eql 'the number of log entries' }
   end
 
-  describe "initial value" do
-    subject(:option) do
-      Synoption::Option.new :nombre, '-x', " one two three", 133
-    end
-
-    its(:value) { should eql 133 }
-  end
-
-  describe "documentation" do
-    context "no negatives" do
+  describe "#to_doc" do
+    context "without negatives" do
       subject(:option) do
         Synoption::Option.new :limit, '-l', "the number of log entries", 777
       end
@@ -60,7 +52,7 @@ describe Synoption::Option do
     end
   end
   
-  describe "exact match" do
+  describe "#exact_match" do
     subject(:option) do
       Synoption::Option.new :limit, '-l', "the number of log entries", 3
     end
@@ -78,7 +70,7 @@ describe Synoption::Option do
     end
   end
 
-  describe "negative match" do
+  describe "#negative_match" do
     subject(:option) do
       Synoption::Option.new :limit, '-l', "the number of log entries", 777, :negate => [ '-L', %r{^--no-?limit} ]
     end
@@ -96,7 +88,7 @@ describe Synoption::Option do
     end
   end
 
-  describe "regexp match" do
+  describe "#regexp_match" do
     subject(:option) do
       Synoption::Option.new :revision, '-r', "the revision", nil, :regexp => Regexp.new('^[\-\+]\d+$')
     end
