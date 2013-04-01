@@ -1,4 +1,7 @@
+require 'ragol/synoption/option'
 require 'ragol/synoption/fixnum_option'
+require 'ragol/synoption/boolean_option'
+require 'ragol/synoption/set'
 
 module Synoption
   module OptionTestSets
@@ -71,6 +74,13 @@ module Synoption
 
     def create_defgh_option_set
       DefghOptionSet.new
+    end
+
+    def process_option args
+      optset = Synoption::OptionSet.new
+      optset.add create_option
+      def optset.name; 'testing'; end
+      @results = optset.process args
     end
   end
 end

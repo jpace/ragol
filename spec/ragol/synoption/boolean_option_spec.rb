@@ -9,6 +9,10 @@ require 'support/option_sets'
 
 describe Synoption::BooleanOption do
   include Synoption::OptionTestSets
+
+  def create_option
+    Synoption::OptionTestSets::FoxtrotOption.new
+  end
   
   describe "#new" do
     subject(:option) do
@@ -22,31 +26,25 @@ describe Synoption::BooleanOption do
   end
 
   describe "#process" do
-    def process args
-      optset = Synoption::OptionSet.new
-      optset.add Synoption::OptionTestSets::FoxtrotOption.new
-      def optset.name; 'testing'; end
-      @results = optset.process args
-    end
-
     subject(:results) { @results }
     
     %w{ -f --foxtrot }.each do |tag|
       before :all do
-        process [ tag ]
+        process_option [ tag ]
       end
 
       its(:foxtrot) { should == true }
     end
 
-    context "does not take following argument" do
+    context  do
       %w{ -f --foxtrot }.each do |tag|
         before :all do
-          process [ tag, 'nextarg' ]
+          process_option [ tag, 'nextarg' ]
         end
 
-        its(:foxtrot) { should == true }
-        its(:unprocessed) { should eql %w{ nextarg } }
+        it "should not take the following argument" do
+          results.unprocessed.should eql %w{ nextarg }
+        end
       end
     end
   end
