@@ -4,18 +4,21 @@
 require 'ragol/synoption/option'
 require 'ragol/synoption/set'
 require 'ragol/synoption/results'
+require 'support/option_sets'
 
 # Logue::Log.level = Logue::Log::INFO
 
 describe Synoption::Option do
+  include Synoption::OptionTestSets
+  
   describe "defaults" do
     subject(:option) do
-      Synoption::Option.new :limit, '-l', "the number of log entries", 15
+      Synoption::Option.new :limit, '-l', "the number of log entries", 777
     end
 
     its(:name) { should eql :limit }
     its(:tag) { should eql '-l' }
-    its(:value) { should eql 15 }
+    its(:value) { should eql 777 }
     its(:description) { should eql 'the number of log entries' }
   end
 

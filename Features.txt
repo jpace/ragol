@@ -92,3 +92,7 @@ Sun Mar 31 10:42:36 2013
 
   Refined tests for clarity.
   Added test for unprocessed after --.
+
+Mon Apr  1 19:11:12 2013
+
+  Added spec for BooleanOption.

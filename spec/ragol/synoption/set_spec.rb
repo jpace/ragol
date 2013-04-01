@@ -196,7 +196,7 @@ describe Synoption::OptionSet do
               
               its(:echo) { should be_nil }
               its(:delta) { should be_nil }
-              its(:foxtrot) { should eql 'bar' }
+              its(:foxtrot) { should be_true }
             end
           end
         end

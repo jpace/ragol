@@ -1,3 +1,5 @@
+require 'ragol/synoption/fixnum_option'
+
 module Synoption
   module OptionTestSets
     def create_abc_option_set charlie_options = Hash.new
@@ -18,15 +20,15 @@ module Synoption
       end
     end
 
-    class DeltaOption < Synoption::Option
+    class DeltaOption < Synoption::FixnumOption
       def initialize 
-        super :delta, '-d', "mouth of a river",  nil
+        super :delta, '-d', "mouth of a river", 317
       end
     end
     
-    class FoxtrotOption < Synoption::Option
+    class FoxtrotOption < Synoption::BooleanOption
       def initialize 
-        super :foxtrot, '-f', "a dance", nil
+        super :foxtrot, '-f', "a dance"
       end
     end
     
