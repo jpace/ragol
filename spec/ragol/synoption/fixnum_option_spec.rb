@@ -15,9 +15,7 @@ describe Synoption::FixnumOption do
   end
   
   describe "#new" do
-    subject(:option) do
-      Synoption::OptionTestSets::DeltaOption.new
-    end
+    subject(:option) { create_option }
 
     its(:name) { should eql :delta }
     its(:tag) { should eql '-d' }

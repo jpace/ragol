@@ -15,9 +15,7 @@ describe Synoption::BooleanOption do
   end
   
   describe "#new" do
-    subject(:option) do
-      Synoption::OptionTestSets::FoxtrotOption.new
-    end
+    subject(:option) { create_option }
 
     its(:name) { should eql :foxtrot }
     its(:tag) { should eql '-f' }

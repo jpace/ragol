@@ -18,15 +18,14 @@ module Synoption
 
     # -------------------------------------------------------
 
-    class EchoOption < Synoption::Option
-      def initialize
-        super :echo, '-e', "description description", nil
-      end
-    end
-
     class DeltaOption < Synoption::FixnumOption
       def initialize 
         super :delta, '-d', "mouth of a river", 317
+      end
+    end
+    class EchoOption < Synoption::Option
+      def initialize
+        super :echo, '-e', "description description", nil
       end
     end
     

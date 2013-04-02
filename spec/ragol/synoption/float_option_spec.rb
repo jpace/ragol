@@ -15,9 +15,7 @@ describe Synoption::FloatOption do
   end
   
   describe "#new" do
-    subject(:option) do
-      Synoption::OptionTestSets::HotelOption.new
-    end
+    subject(:option) { create_option }
 
     its(:name) { should eql :hotel }
     its(:tag) { should eql '-h' }
