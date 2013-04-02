@@ -1,6 +1,7 @@
 require 'ragol/synoption/option'
 require 'ragol/synoption/fixnum_option'
 require 'ragol/synoption/boolean_option'
+require 'ragol/synoption/float_option'
 require 'ragol/synoption/set'
 
 module Synoption
@@ -57,9 +58,9 @@ module Synoption
       end
     end
     
-    class HotelOption < Synoption::Option
+    class HotelOption < Synoption::FloatOption
       def initialize
-        super :hotel, '-h', "an upscale motel", nil
+        super :hotel, '-h', "an upscale motel", 8.79
       end
     end
     

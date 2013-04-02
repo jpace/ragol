@@ -238,14 +238,14 @@ describe Synoption::OptionSet do
 
           context "second invocation" do
             before :all do
-              process %w{ --hotel bar }
+              process %w{ --hotel 8.881bar }
             end
             
             its(:delta) { should be_nil }
             its(:echo) { should be_nil }
             its(:foxtrot) { should be_nil }
             its(:golf) { should be_nil }
-            its(:hotel) { should eql 'bar' }
+            its(:hotel) { should eql 8.881 }
           end
         end
       end
