@@ -24,7 +24,7 @@ describe Synoption::OptionSet do
     describe "OptionSet class (not subclass)" do
       subject { create_abc_option_set.process Array.new }
 
-      valid_methods = [ :alpha, :charlie, :bravo ]
+      valid_methods = [ :alpha, :bravo, :charlie ]
       invalid_methods = [ :bfd ]
       
       it_behaves_like "defined methods", valid_methods, invalid_methods
@@ -41,19 +41,13 @@ describe Synoption::OptionSet do
   end
   
   context "when options are isolated" do
-    before :all do
-      @optset = create_abc_option_set
-    end
-
     def process args
-      @results = @optset.process args
+      @results = create_abc_option_set.process args
     end
 
-    subject { @results }
+    subject(:results) { @results }
 
     describe "#process" do
-      let(:optset) { @optset }
-
       context "when arguments are valid" do
         before :all do
           process %w{ --bravo foo bar baz }
@@ -82,31 +76,27 @@ describe Synoption::OptionSet do
         end
 
         it "sets option preceding --" do
-          subject.alpha.should eql 'bar'
+          results.alpha.should eql 'bar'
         end
 
         it "ignores unspecified option" do
-          subject.charlie.should be_nil
+          results.charlie.should be_nil
         end
 
         it("ignores option following --") do 
-          subject.bravo.should be_nil
+          results.bravo.should be_nil
         end
 
         it "does not include -- in unprocessed" do
-          subject.unprocessed.should eql %w{ --charlie foo }
+          results.unprocessed.should eql %w{ --charlie foo }
         end
       end
     end
   end
 
   context "when one option unsets another" do
-    before :all do
-      @optset = create_abc_option_set(:unsets => :bravo)
-    end
-
     def process args
-      @results = @optset.process args
+      @results = create_abc_option_set(:unsets => :bravo).process args
     end
 
     subject { @results }
@@ -117,8 +107,8 @@ describe Synoption::OptionSet do
           process %w{ --bravo foo }
         end
 
-        its(:bravo) { should eql 'foo' }
         its(:alpha) { should be_nil }
+        its(:bravo) { should eql 'foo' }
         its(:charlie) { should be_nil }
       end
 
@@ -127,9 +117,9 @@ describe Synoption::OptionSet do
           process %w{ --charlie bar }
         end
 
-        its(:charlie) { should eql 'bar' }
-        its(:bravo) { should be_nil }
         its(:alpha) { should be_nil }
+        its(:bravo) { should be_nil }
+        its(:charlie) { should eql 'bar' }
       end
 
       context "when the option order is the unset option, then the option to be unset" do
@@ -137,9 +127,9 @@ describe Synoption::OptionSet do
           process %w{ --charlie bar --bravo foo }
         end
 
-        its(:charlie) { should eql 'bar' }
-        its(:bravo) { should be_nil }
         its(:alpha) { should be_nil }
+        its(:bravo) { should be_nil }
+        its(:charlie) { should eql 'bar' }
       end
 
       context "when the option order is the option to be unset, then the unset option" do
@@ -147,21 +137,17 @@ describe Synoption::OptionSet do
           process %w{ --bravo foo --charlie bar }
         end
 
-        its(:charlie) { should eql 'bar' }
-        its(:bravo) { should be_nil }
         its(:alpha) { should be_nil }
+        its(:bravo) { should be_nil }
+        its(:charlie) { should eql 'bar' }
       end
     end
   end
 
   context ":has_option" do
     context "when direct subclass of OptionSet" do
-      before :all do
-        @optset = create_def_option_set
-      end
-
       def process args
-        @results = @optset.process args
+        @results = create_def_option_set.process args
       end
 
       subject { @results }
@@ -173,8 +159,8 @@ describe Synoption::OptionSet do
               process %w{ --echo foo }
             end
 
-            its(:echo) { should eql 'foo' }
             its(:delta) { should be_nil }
+            its(:echo) { should eql 'foo' }
             its(:foxtrot) { should be_nil }
           end
 
@@ -184,8 +170,8 @@ describe Synoption::OptionSet do
                 process %w{ --echo foo }
               end
               
-              its(:echo) { should eql 'foo' }
               its(:delta) { should be_nil }
+              its(:echo) { should eql 'foo' }
               its(:foxtrot) { should be_nil }
             end
             
@@ -194,8 +180,8 @@ describe Synoption::OptionSet do
                 process %w{ --foxtrot bar }
               end
               
-              its(:echo) { should be_nil }
               its(:delta) { should be_nil }
+              its(:echo) { should be_nil }
               its(:foxtrot) { should be_true }
             end
           end
