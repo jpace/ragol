@@ -108,7 +108,7 @@ module OptProc
       end
       
       value = convert md
-
+      
       setargs = [ value, opt, args ][0 ... @setter.arity]
       @setter.call(*setargs)
     end
@@ -117,17 +117,6 @@ module OptProc
       return @tags.to_s if @tags
       return "" unless @regexps
       @regexps.to_s
-    end
-  end
-
-  class RegexpOption < Option
-    def value_regexp
-      nil
-    end
-    
-    # not implemented
-    def convert md
-      md
     end
   end
 end

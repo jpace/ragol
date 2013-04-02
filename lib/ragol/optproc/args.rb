@@ -47,7 +47,6 @@ module OptProc
       
       @regexps = args[:regexps] || args[:regexp] || args[:res]
       @tags = args[:tags]
-
       @option_class = @@types_to_classes[opttype] || Option
     end
   end

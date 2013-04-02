@@ -72,6 +72,11 @@ describe OptProc::Option do
       should eq 17
     end
 
+    it "takes a tag argument" do
+      process %w{ -C 17 }
+      should eq 17
+    end
+
     it "ignores missing tag argument" do
       process %w{ --context }
       should eq 2

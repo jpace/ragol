@@ -9,7 +9,7 @@ module OptProc
       nil
     end
     
-    # not implemented
+    # returns the metadata, from matching the option.
     def convert md
       md
     end

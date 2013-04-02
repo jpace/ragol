@@ -14,5 +14,9 @@ module OptProc
     def match opt
       @regexps.collect { |re| re.match(opt) }.detect { |x| x }
     end
+
+    def to_s
+      @regexps.to_s
+    end
   end
 end
