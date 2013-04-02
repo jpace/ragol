@@ -110,20 +110,13 @@ describe Synoption::Option do
   end
 
   describe "process positive" do
-    subject(:option) do
+    def create_option
       Synoption::Option.new :xyz, '-x', "the blah blah blah", nil, Hash.new
     end
-
-    def process args
-      optset = Synoption::OptionSet.new
-      optset.add option
-      def optset.name; 'testing'; end
-      @results = optset.process args
-    end
-
+    
     context "when it has matching tag and no following arguments" do
       before :all do
-        process %w{ --xyz foo }
+        process_option %w{ --xyz foo }
       end
       
       it "should change the option value" do
@@ -137,7 +130,7 @@ describe Synoption::Option do
 
     context "when it has matching tag and a following argument" do
       before :all do
-        process %w{ --xyz foo bar }
+        process_option %w{ --xyz foo bar }
       end
 
       it "should change the option value" do
@@ -151,64 +144,50 @@ describe Synoption::Option do
 
     it "raises error without required argument" do
       args = %w{ --xyz }
-      expect { process(args) }.to raise_error(RuntimeError, "option xyz expects following argument")
+      expect { process_option(args) }.to raise_error(RuntimeError, "option xyz expects following argument")
     end
   end
 
   describe "process negative" do
-    subject(:option) do
+    def create_option
       opts = { :negate => [ '-X', %r{^--no-?xyz} ] }
       Synoption::Option.new :xyz, '-x', "the blah blah blah", nil, opts
     end
 
-    def process args
-      @results = Synoption::Results.new [ option ]
-      option.process @results, args
-    end
-
     %w{ -X --no-xyz --noxyz }.each do |val|
       it "matches #{val} with no following argument" do
-        args = [ val ]
-        process args
+        process_option [ val ]
         @results.xyz.should == false
-        args.should be_empty
+        @results.unprocessed.should be_empty
       end
 
       it "matches #{val} with following argument" do
-        args = [ val, '--abc' ]
-        process args
+        process_option [ val, 'abc' ]
         @results.xyz.should == false
-        args.should eql [ '--abc' ]
+        @results.unprocessed.should eql [ 'abc' ]
       end
     end
   end
 
   describe "process regexp" do
-    subject(:option) do
+    def create_option
       opts = { :regexp => Regexp.new('^[\-\+]\d+$') }
       Synoption::Option.new :xyz, '-x', "the blah blah blah", nil, opts
     end
 
-    def process args
-      @results = Synoption::Results.new [ option ]
-      option.process @results, args
-    end
-
     %w{ -1 +123 }.each do |val|
       it "matches #{val} with no following argument" do
-        args = [ val ]
-        process args
+        process_option [ val ]
         @results.xyz.should be_true
-        args.should be_empty
+        @results.unprocessed.should be_empty
       end
     end
 
     %w{ -1 +123 }.each do |val|
       it "matches #{val} with following argument" do
-        args = [ val, '--foo' ]
-        process args
+        process_option [ val, 'foo' ]
         @results.xyz.should be_true
-        args.should eql [ '--foo' ]
+        @results.unprocessed.should eql [ 'foo' ]
       end
     end
   end
