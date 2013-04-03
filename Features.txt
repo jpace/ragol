@@ -100,3 +100,7 @@ Mon Apr  1 19:11:12 2013
 Tue Apr  2 07:32:57 2013
 
   Added Synoption::FloatOption.
+
+Wed Apr  3 19:14:45 2013
+
+  Added spec for OptProc::OptionArguments.

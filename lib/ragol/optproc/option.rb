@@ -30,8 +30,8 @@ module OptProc
 
       @argreqtype = optargs.required
 
-      @regexps = optargs.regexps && Regexps.new([ optargs.regexps ].flatten)
-      @tags = optargs.tags && Tags.new(optargs.tags)
+      @regexps = optargs.regexps
+      @tags = optargs.tags
     end
 
     def value_regexp
