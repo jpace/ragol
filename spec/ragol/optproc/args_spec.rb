@@ -22,11 +22,11 @@ describe OptProc::OptionArguments do
         convert_arguments old_arguments
       end
 
-      it "should have tags" do
+      it "should have :tags" do
         subject[:tags].should eql [ '--foo', '-b' ]
       end
 
-      it "should not have regexps" do
+      it "should not have :regexps" do
         subject[:regexps].should be_nil
       end
     end
@@ -41,11 +41,11 @@ describe OptProc::OptionArguments do
             convert_arguments old_arguments
           end
 
-          it "should not have tags" do
+          it "should not have :tags" do
             subject[:tags].should be_nil
           end
 
-          it "should have regexps" do
+          it "should have :regexps" do
             subject[:regexps].should eql [ Regexp.new('^--(\d+)$') ]
           end
         end
@@ -61,11 +61,11 @@ describe OptProc::OptionArguments do
         convert_arguments old_arguments
       end
 
-      it "should have tags" do
+      it "should have :tags" do
         subject[:tags].should eql [ '--foo', '-b' ]
       end
 
-      it "should have regexps" do
+      it "should have :regexps" do
         subject[:regexps].should eql [ Regexp.new('^--(\d+)$') ]
       end
     end
@@ -78,7 +78,7 @@ describe OptProc::OptionArguments do
         convert_arguments old_arguments
       end
 
-      it "should have required" do
+      it "should have :valuereq" do
         subject[:valuereq].should == true
       end
     end
@@ -91,7 +91,7 @@ describe OptProc::OptionArguments do
         convert_arguments old_arguments
       end
 
-      it "should have required" do
+      it "should have :valuereq as :optional" do
         subject[:valuereq].should == :optional
       end
     end
@@ -104,7 +104,7 @@ describe OptProc::OptionArguments do
         convert_arguments old_arguments
       end
 
-      it "should have required" do
+      it "should not have :valuereq" do
         subject[:valuereq].should == false
       end
     end
@@ -117,7 +117,7 @@ describe OptProc::OptionArguments do
         convert_arguments old_arguments
       end
 
-      it "should have required" do
+      it "should not have :valuereq" do
         subject[:valuereq].should == false
       end
     end
@@ -129,7 +129,7 @@ describe OptProc::OptionArguments do
         convert_arguments old_arguments
       end
 
-      it "should have required" do
+      it "should not have :valuereq" do
         subject[:valuereq].should == false
       end
 
@@ -147,7 +147,7 @@ describe OptProc::OptionArguments do
           convert_arguments old_arguments
         end
 
-        it "should have required" do
+        it "should have ::valuereq" do
           subject[:valuereq].should == true
         end
 
@@ -158,9 +158,47 @@ describe OptProc::OptionArguments do
     end
 
     [ :fixnum, :float, :boolean, :string, :regexp ].each do |valuetype|
-      it_behaves_like "value type", valuetype, valuetype
+      include_examples "value type", valuetype, valuetype
     end
     
-    it_behaves_like "value type", :integer, :fixnum
+    include_examples "value type", :integer, :fixnum
+
+    context "when set is specified" do
+      before :all do
+        @proc = Proc.new { }
+        old_arguments = {
+          :set => @proc
+        }
+        convert_arguments old_arguments
+      end
+
+      it "should have :process" do
+        subject[:process].should eql @proc
+      end
+    end
+
+    context "when arguments are the new format" do
+      before :all do
+        process = Proc.new { }
+        postproc = Proc.new { }
+        @orig_arguments = {
+          :regexps => [ Regexp.new('--fo+'), Regexp.new('--ba*r') ],
+          :tags => [ '--foo', '-b' ],
+          :rcnames => [ 'foo', 'foobar' ],
+          :valuereq => :optional,
+          :valuetype => :float,
+          :default => 8899,
+          :process => process,
+          :postproc => postproc
+        }
+        convert_arguments @orig_arguments
+      end
+
+      [ :regexps, :tags, :rcnames, :valuereq, :valuetype, :default, :process, :postproc ].each do |field|
+        it "should match field #{field}" do
+          subject[field].should eql @orig_arguments[field]
+        end
+      end
+    end
   end
 end

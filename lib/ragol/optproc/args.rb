@@ -49,6 +49,7 @@ module OptProc
     
     def self.convert_arguments origargs
       args = Hash.new
+
       oldregexpfields = [ :regexps, :regexp, :res, :re ]
       args[:regexps] = if regexps = oldregexpfields.collect { |field| origargs[field] }.compact[0]
                          [ regexps ].flatten
@@ -72,10 +73,15 @@ module OptProc
                           when :none, nil
                             !(valuetype.nil?)
                           end
-        
       else
-        args[:valuereq] = false
+        args[:valuereq] = origargs[:valuereq] || false
+        args[:valuetype] = origargs[:valuetype]
       end
+
+      args[:process] = origargs[:process] || origargs[:set]
+      args[:postproc] = origargs[:postproc]
+      args[:rcnames] = origargs[:rcnames]
+      args[:default] = origargs[:default]
       
       args
     end
