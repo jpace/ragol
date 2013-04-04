@@ -26,10 +26,9 @@ module OptProc
       @rcfield = oldargs[:rcfield] || oldargs[:rc]
       @rcfield = [ @rcfield ].flatten if @rcfield
       
-      @setter = blk || oldargs[:set]
+      @setter = blk || optargs.process
 
-      @argreqtype = optargs.required
-
+      @argreqtype = optargs.valuereq
       @regexps = optargs.regexps
       @tags = optargs.tags
     end
@@ -71,12 +70,12 @@ module OptProc
     end
 
     def argument_missing
-      raise MissingExpectedArgument.new if @argreqtype == :required
+      raise MissingExpectedArgument.new if @argreqtype == true
     end
 
     def match_next_value args
       val = args.shift
-      if @argreqtype == :required
+      if @argreqtype == true
         val && do_match(val)
       elsif val
         if val[0] == '-'
@@ -114,9 +113,10 @@ module OptProc
     end
 
     def to_s
-      return @tags.to_s if @tags
-      return "" unless @regexps
-      @regexps.to_s
+      str = ""
+      str << @tags.to_s if @tags
+      str << @regexps.to_s if @regexps
+      str
     end
   end
 end

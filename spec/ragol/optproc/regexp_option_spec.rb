@@ -12,11 +12,11 @@ describe "regexp option" do
   end
 
   def create_set optdata
-    @set = OptProc::OptionSet.new optdata
+    @optset = OptProc::OptionSet.new optdata
   end
 
   def process args
-    @set.process_option args
+    @optset.process_option args
   end
 
   before do

@@ -9,21 +9,24 @@ module OptProc
   class OptionArguments
     include Logue::Loggable
 
-    VALUE_TYPES = [
-                   :boolean,
-                   :string,
-                   :float,
-                   :integer,
-                   :fixnum,
-                   :regexp
-                  ]
+    TYPES_TO_CLASSES = {
+      :boolean => :BooleanOption,
+      :string  => :StringOption,
+      :float   => :FloatOption,
+      :integer => :FixnumOption,
+      :fixnum  => :FixnumOption,
+      :regexp  => :RegexpOption
+    }
     
-    attr_reader :required
-    attr_reader :regexps
     attr_reader :tags
+    attr_reader :regexps
     attr_reader :option_class
-
-    @@types_to_classes = nil
+    attr_reader :process
+    attr_reader :postproc
+    attr_reader :rcnames
+    attr_reader :valuereq
+    attr_reader :valuetype
+    attr_reader :default
 
     OLD_OPTIONS = {
       :regexps => [ Regexp.new('--fo+'), Regexp.new('--ba*r') ],
@@ -60,7 +63,7 @@ module OptProc
       args[:tags] = origargs[:tags]
 
       if valueargs = origargs[:arg]
-        if valuetype = common_element(valueargs, VALUE_TYPES)
+        if valuetype = common_element(valueargs, TYPES_TO_CLASSES.keys)
           args[:valuetype] = valuetype == :integer ? :fixnum : valuetype
         end
 
@@ -80,7 +83,7 @@ module OptProc
 
       args[:process] = origargs[:process] || origargs[:set]
       args[:postproc] = origargs[:postproc]
-      args[:rcnames] = origargs[:rcnames]
+      args[:rcnames] = origargs[:rcnames] || origargs[:rc]
       args[:default] = origargs[:default]
       
       args
@@ -93,37 +96,26 @@ module OptProc
       require 'ragol/optproc/regexp_option'
       require 'ragol/optproc/string_option'
 
-      optargs = args[:arg] || Array.new
-
-      @@types_to_classes ||= {
-        :boolean => BooleanOption,
-        :string  => StringOption,
-        :float   => FloatOption,
-        :integer => FixnumOption,
-        :fixnum  => FixnumOption,
-        :regexp  => RegexpOption
-      }
-
-      @required = case 
-                  when optargs.include?(:required)
-                    :required
-                  when optargs.include?(:optional)
-                    :optional
-                  when optargs.include?(:none)
-                    nil
-                  end
-
-      if opttype = (@@types_to_classes.keys & optargs)[0]
-        @required ||= :required
-      end
+      newargs = self.class.convert_arguments args
       
-      regexps = args[:regexps] || args[:regexp] || args[:res]
+      @valuereq = newargs[:valuereq]
+      
+      regexps = newargs[:regexps]
       @regexps = regexps && Regexps.new([ regexps ].flatten)
       
-      tags = args[:tags]
+      tags = newargs[:tags]
       @tags = tags && Tags.new(tags)
       
-      @option_class = @@types_to_classes[opttype] || Option
+      opttype = newargs[:valuetype]
+      clssym = TYPES_TO_CLASSES[opttype]
+      optcls = if clssym
+                 OptProc.const_get(clssym)
+               else
+                 Option
+               end
+      @option_class = optcls
+      @default = newargs[:default]
+      @process = newargs[:process]
     end
   end
 end
