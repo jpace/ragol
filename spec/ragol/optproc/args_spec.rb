@@ -147,7 +147,7 @@ describe OptProc::OptionArguments do
           convert_arguments old_arguments
         end
 
-        it "should have ::valuereq" do
+        it "should have :valuereq" do
           subject[:valuereq].should == true
         end
 

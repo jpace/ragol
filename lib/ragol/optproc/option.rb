@@ -99,7 +99,10 @@ module OptProc
       opt = args.shift
       md = nil
       begin
-        md = (@regexps && @regexps.match(opt)) || take_value(opt, args)
+        convert nil
+        unless md = @regexps && @regexps.match(opt)
+          md = take_value(opt, args)
+        end
       rescue InvalidArgument => e
         raise "invalid argument '#{e.value}' for option: #{self}"
       rescue MissingExpectedArgument => e
