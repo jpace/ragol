@@ -61,25 +61,6 @@ describe "regexp option" do
     end
   end
 
-  describe "with required string argument" do
-    def create_option_data optdata
-      @opt_value = nil
-      optdata << {
-        :regexp => %r{^--(foo)}x,
-        :arg    => [ :string, :required ],
-        :set    => Proc.new { |val| @opt_value = val },
-      }
-    end
-
-    subject { @opt_value }
-
-    it "takes required argument" do
-      pending "not implemented"
-      process %w{ --foo xyz }
-      should eq 'xyz'
-    end
-  end
-
   describe "with no argument type" do
     def create_option_data optdata
       @regexp_value = nil
