@@ -18,6 +18,11 @@ describe OptProc::BooleanOption do
       }      
     end
 
+    it "should default to nil" do
+      opt = OptProc::Option.new option_data
+      opt.default.should == nil
+    end
+
     %w{ true yes on }.each do |val|
       it "takes #{val} as true" do
         process [ '--bool', val ]

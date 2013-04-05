@@ -23,8 +23,8 @@ module OptProc
     def initialize(optargs, args, &blk)
       oldargs = args[0]
       
-      @rcfield = oldargs[:rcfield] || oldargs[:rc]
-      @rcfield = [ @rcfield ].flatten if @rcfield
+      rcnames = optargs.rcnames
+      @rcnames = rcnames && [ rcnames ].flatten
       
       @setter = blk || optargs.process
 
@@ -41,7 +41,7 @@ module OptProc
     end
 
     def match_rc? field
-      @rcfield && @rcfield.include?(field)
+      @rcnames && @rcnames.include?(field)
     end
 
     def match_score args
