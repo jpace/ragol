@@ -112,3 +112,4 @@ Thu Apr  4 09:06:48 2013
 Fri Apr  5 18:27:49 2013
 
   Refined tests.
+  Added tests for numbers combined with short options.

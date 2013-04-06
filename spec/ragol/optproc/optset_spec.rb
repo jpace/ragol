@@ -228,6 +228,53 @@ describe OptProc::OptionSet do
       end
     end
 
+    context "when number and short options are defined" do
+      def option_set_data
+        optdata = Array.new
+        optdata << {
+          :regexp => Regexp.new('^-(\d+)'),
+          :arg => [ :integer ],
+          :set  => Proc.new { |val| @abc = val }
+        }
+        @xyz = false
+        optdata << {
+          :tags => %w{ -x --xyz },
+          :set  => Proc.new { |val| @xyz = true }
+        }
+        optdata
+      end
+
+      it "should split short args when number is first" do
+        args = %w{ -123x }
+        process args
+        @abc.should eql 123
+        @xyz.should be_false
+
+        # not necessarily: we might change this to process both at once.
+        args.should have(1).items
+
+        process args
+        @abc.should eql 123
+        @xyz.should be_true
+        args.should be_empty
+      end
+
+      it "should split short args when number is first" do
+        args = %w{ -x123 }
+        process args
+        @abc.should be_nil
+        @xyz.should be_true
+
+        # not necessarily: we might change this to process both at once.
+        args.should have(1).items
+
+        process args
+        @abc.should eql 123
+        @xyz.should be_true
+        args.should be_empty
+      end
+    end
+
     context "when options are incomplete" do
       def option_set_data
         @abc_executed = false
