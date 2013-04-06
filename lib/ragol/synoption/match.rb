@@ -3,6 +3,8 @@
 
 require 'rubygems'
 require 'logue/loggable'
+require 'ragol/common/tags'
+require 'ragol/common/regexps'
 
 module Synoption
   class OptionMatch
@@ -13,18 +15,16 @@ module Synoption
     end
   end
 
-  class OptionExactMatch < OptionMatch
+  class OptionExactMatch < Ragol::Tags
     attr_reader :tag
     attr_reader :name
     
     def initialize tag, name
       @tag = tag
       @name = name
-      @long_tag = name.to_s.gsub('_', '-')
-    end
+      long_tag = '--' + name.to_s.gsub('_', '-')
 
-    def match? arg
-      arg == @tag || arg == '--' + @long_tag
+      super [ tag, long_tag ]
     end
   end
 
@@ -41,13 +41,9 @@ module Synoption
     end
   end
 
-  class OptionRegexpMatch < OptionMatch
+  class OptionRegexpMatch < Ragol::Regexps
     def initialize regexp
-      @regexp = regexp
-    end
-
-    def match? arg
-      arg && @regexp.match(arg)
+      super [ regexp ]
     end
   end
 end

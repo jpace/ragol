@@ -30,6 +30,7 @@ module OptProc
 
       @argreqtype = optargs.valuereq
       @regexps = optargs.regexps
+
       @tags = optargs.tags
     end
 
@@ -100,7 +101,7 @@ module OptProc
       md = nil
       begin
         convert nil
-        unless md = @regexps && @regexps.match(opt)
+        unless md = @regexps && @regexps.match?(opt)
           md = take_value(opt, args)
         end
       rescue InvalidArgument => e
