@@ -21,6 +21,12 @@ module OptProc
       Regexp.new('^ ( - [a-zA-Z] )  ( .+    ) $ ', Regexp::EXTENDED)
     ]
 
+    def process args
+      while args
+        return unless process_option args
+      end
+    end
+
     def process_option args
       opt = args[0]
 

@@ -161,12 +161,7 @@ describe OptProc::OptionSet do
       describe "both options" do
         it "should use the long arg for both options" do
           args = %w{ --abc --xyz }
-          process args
-          abc.should be_true
-          xyz.should be_false
-          args.should have(1).items
-
-          process args
+          optset.process args
           abc.should be_true
           xyz.should be_true
           args.should be_empty
@@ -174,25 +169,24 @@ describe OptProc::OptionSet do
 
         it "should use the short arg for both options" do
           args = %w{ -a -x }
-          process args
-          abc.should be_true
-          xyz.should be_false
-          args.should have(1).items
-
-          process args
+          optset.process args
           abc.should be_true
           xyz.should be_true
           args.should be_empty
         end  
 
+        it "should use the short arg for both options and leave unprocessed argument" do
+          args = %w{ -a -x foo }
+          optset.process args
+          abc.should be_true
+          xyz.should be_true
+          args.should eql %w{ foo }
+        end  
+
         it "should use long arg for first, short for second" do
           args = %w{ --abc -x }
-          process args
-          abc.should be_true
-          xyz.should be_false
-          args.should have(1).items
+          optset.process args
 
-          process args
           abc.should be_true
           xyz.should be_true
           args.should be_empty
@@ -200,12 +194,8 @@ describe OptProc::OptionSet do
 
         it "should use short arg for first, long for second" do
           args = %w{ -a --xyz }
-          process args
-          abc.should be_true
-          xyz.should be_false
-          args.should have(1).items
+          optset.process args
 
-          process args
           abc.should be_true
           xyz.should be_true
           args.should be_empty
@@ -213,17 +203,20 @@ describe OptProc::OptionSet do
 
         it "should split short args" do
           args = %w{ -ax }
-          process args
-          abc.should be_true
-          xyz.should be_false
+          optset.process args
 
-          # not necessarily: we might change this to process both at once.
-          args.should have(1).items
-
-          process args
           abc.should be_true
           xyz.should be_true
           args.should be_empty
+        end
+
+        it "should split short args and leave unprocessed argument" do
+          args = %w{ -ax foo }
+          optset.process args
+
+          abc.should be_true
+          xyz.should be_true
+          args.should eql %w{ foo }
         end
       end
     end
@@ -246,14 +239,7 @@ describe OptProc::OptionSet do
 
       it "should split short args when number is first" do
         args = %w{ -123x }
-        process args
-        @abc.should eql 123
-        @xyz.should be_false
-
-        # not necessarily: we might change this to process both at once.
-        args.should have(1).items
-
-        process args
+        optset.process args
         @abc.should eql 123
         @xyz.should be_true
         args.should be_empty
@@ -261,14 +247,7 @@ describe OptProc::OptionSet do
 
       it "should split short args when number is first" do
         args = %w{ -x123 }
-        process args
-        @abc.should be_nil
-        @xyz.should be_true
-
-        # not necessarily: we might change this to process both at once.
-        args.should have(1).items
-
-        process args
+        optset.process args
         @abc.should eql 123
         @xyz.should be_true
         args.should be_empty

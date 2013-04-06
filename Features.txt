@@ -117,3 +117,5 @@ Fri Apr  5 18:27:49 2013
 Sat Apr  6 10:07:18 2013
 
   Added spec for tags.
+  Added #process to OptProc::OptionSet.
+
