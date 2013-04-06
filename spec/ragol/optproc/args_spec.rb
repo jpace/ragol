@@ -157,11 +157,28 @@ describe OptProc::OptionArguments do
       end
     end
 
-    [ :fixnum, :float, :boolean, :string, :regexp ].each do |valuetype|
-      include_examples "value type", valuetype, valuetype
+    [ :fixnum, :float, :string, :regexp ].each do |valuetype|
+      include_examples "value type", valuetype
     end
     
     include_examples "value type", :integer, :fixnum
+
+    context "when argument value type is boolean" do
+      before :all do
+        old_arguments = {
+          :arg => [ :boolean ]
+        }
+        convert_arguments old_arguments
+      end
+
+      it "should not have :valuereq" do
+        subject[:valuereq].should == false
+      end
+
+      it "should have valuetype :boolean" do
+        subject[:valuetype].should == :boolean
+      end
+    end
 
     context "when set is specified" do
       before :all do

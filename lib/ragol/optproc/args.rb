@@ -67,15 +67,19 @@ module OptProc
           args[:valuetype] = valuetype == :integer ? :fixnum : valuetype
         end
 
-        valuereq = common_element(valueargs, [ :optional, :required, :none ])
-        args[:valuereq] = case valuereq
-                          when :optional
-                            :optional
-                          when :required
-                            true
-                          when :none, nil
-                            !(valuetype.nil?)
-                          end
+        if valuetype == :boolean
+          args[:valuereq] = false
+        else
+          valuereq = common_element(valueargs, [ :optional, :required, :none ])
+          args[:valuereq] = case valuereq
+                            when :optional
+                              :optional
+                            when :required
+                              true
+                            when :none, nil
+                              !(valuetype.nil?)
+                            end
+        end
       else
         args[:valuereq] = origargs[:valuereq] || false
         args[:valuetype] = origargs[:valuetype]

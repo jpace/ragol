@@ -11,7 +11,7 @@ module OptProc
     REGEXP = Regexp.new('^(' + (TRUE | FALSE).join('|') + ')$', Regexp::IGNORECASE)
 
     def value_regexp
-      REGEXP
+      nil
     end
     
     def convert_value val
