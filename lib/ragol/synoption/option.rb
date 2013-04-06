@@ -13,20 +13,16 @@ module Synoption
     attr_reader :default
     attr_reader :description
     attr_reader :matchers
+    attr_reader :name
+    attr_reader :tag
 
     def initialize name, tag, description, default, options = Hash.new
+      @name = name
+      @tag = tag
       @description = description
       @value = @default = default
       @matchers = Matchers.new tag, name, options[:negate], options[:regexp]
       @unsets = options[:unsets]
-    end
-
-    def tag
-      @matchers.exact.tag
-    end
-
-    def name
-      @matchers.exact.name
     end
 
     def takes_value?

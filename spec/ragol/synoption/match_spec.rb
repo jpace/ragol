@@ -10,20 +10,6 @@ describe "Synoption::OptionMatch" do
     matcher.match? tag
   end
   
-  describe "exact match" do
-    let(:matcher) do
-      Synoption::OptionExactMatch.new '-t', 'tagname'
-    end
-
-    it { match?('-t').should be_true }
-    it { match?('--tagname').should be_true }
-
-    it { match?('-T').should be_false }
-    it { match?('--tag-name').should be_false }
-    it { match?('--no-tagname').should be_false }
-    it { match?('--notagname').should be_false }
-  end
-
   describe "negative tag match" do
     let(:matcher) do
       Synoption::OptionNegativeMatch.new '-T'
