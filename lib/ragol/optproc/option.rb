@@ -15,21 +15,19 @@ module OptProc
       def new(*args, &blk)
         optargs = OptionArguments.new(*args)
         optcls = optargs.option_class
-        optcls.old_new(optargs, args, &blk)
+        optcls.old_new(optargs, &blk)
       end
     end
 
-    def initialize(optargs, args, &blk)
-      oldargs = args[0]
-      
+    def initialize(optargs, &blk)
       rcnames = optargs.rcnames
       @rcnames = rcnames && [ rcnames ].flatten
       
       @setter = blk || optargs.process
 
       @argreqtype = optargs.valuereq
-      @regexps = optargs.regexps
 
+      @regexps = optargs.regexps
       @tags = optargs.tags
     end
 
@@ -88,12 +86,6 @@ module OptProc
         nil
       end
     end
-    
-    def take_value opt, args
-      if @argreqtype
-        take_eq_value(opt) || match_next_value(args) || argument_missing
-      end
-    end
 
     def set_value args
       opt = args.shift
@@ -101,7 +93,9 @@ module OptProc
       begin
         convert nil
         unless md = @regexps && @regexps.match?(opt)
-          md = take_value(opt, args)
+          if @argreqtype
+            md = take_eq_value(opt) || match_next_value(args) || argument_missing
+          end
         end
       rescue InvalidArgument => e
         raise "invalid argument '#{e.value}' for option: #{self}"
