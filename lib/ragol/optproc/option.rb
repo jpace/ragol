@@ -2,7 +2,6 @@
 # -*- ruby -*-
 
 require 'logue/loggable'
-require 'ragol/optproc/errors'
 require 'ragol/common/tags'
 require 'ragol/optproc/args'
 
@@ -54,7 +53,7 @@ module OptProc
       valuere = value_regexp
       if valuere
         unless md = valuere.match(val)
-          raise InvalidArgument.new val
+          raise "invalid argument '#{val}' for option: #{self}"
         end
         md
       else
@@ -68,7 +67,9 @@ module OptProc
     end
 
     def argument_missing
-      raise MissingExpectedArgument.new if @argreqtype == true
+      if @argreqtype == true
+        raise "value expected for option: #{self}"
+      end
     end
 
     def match_next_value args
@@ -90,17 +91,11 @@ module OptProc
     def set_value args
       opt = args.shift
       md = nil
-      begin
-        convert nil
-        unless md = @regexps && @regexps.match?(opt)
-          if @argreqtype
-            md = take_eq_value(opt) || match_next_value(args) || argument_missing
-          end
+
+      unless md = @regexps && @regexps.match?(opt)
+        if @argreqtype
+          md = take_eq_value(opt) || match_next_value(args) || argument_missing
         end
-      rescue InvalidArgument => e
-        raise "invalid argument '#{e.value}' for option: #{self}"
-      rescue MissingExpectedArgument => e
-        raise "value expected for option: #{self}"
       end
       
       value = convert md
