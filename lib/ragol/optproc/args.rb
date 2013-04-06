@@ -86,7 +86,7 @@ module OptProc
 
       args[:process] = origargs[:process] || origargs[:set]
       args[:postproc] = origargs[:postproc]
-      args[:rcnames] = origargs[:rcnames] || origargs[:rc]
+      args[:rcnames] = [ origargs[:rcnames] || origargs[:rc] ].flatten
       args[:default] = origargs[:default]
       
       args

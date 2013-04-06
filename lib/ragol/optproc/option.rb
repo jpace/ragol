@@ -19,13 +19,9 @@ module OptProc
     end
 
     def initialize(optargs, &blk)
-      rcnames = optargs.rcnames
-      @rcnames = rcnames && [ rcnames ].flatten
-      
+      @rcnames = optargs.rcnames
       @setter = blk || optargs.process
-
       @argreqtype = optargs.valuereq
-
       @regexps = optargs.regexps
       @tags = optargs.tags
     end
