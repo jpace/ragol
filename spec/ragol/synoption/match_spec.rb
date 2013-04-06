@@ -5,7 +5,7 @@ require 'ragol/synoption/match'
 
 Logue::Log.level = Logue::Log::INFO
 
-describe Synoption::OptionMatch do
+describe "Synoption::OptionMatch" do
   def match? tag
     matcher.match? tag
   end

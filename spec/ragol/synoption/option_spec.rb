@@ -6,7 +6,7 @@ require 'ragol/synoption/set'
 require 'ragol/synoption/results'
 require 'support/option_sets'
 
-# Logue::Log.level = Logue::Log::INFO
+Logue::Log.level = Logue::Log::INFO
 
 describe Synoption::Option do
   include Synoption::OptionTestSets

@@ -6,6 +6,8 @@ require 'logue/loggable'
 
 module Ragol
   class Tags
+    include Logue::Loggable
+    
     attr_reader :tags
     
     def initialize tags
@@ -18,15 +20,18 @@ module Ragol
 
     def score opt
       tag = opt.split('=', 2)[0] || opt
-      return unless tm = @tags.detect do |t|
-        t.index(tag) == 0 && tag.length <= t.length
+
+      @tags.each do |t|
+        if t.kind_of?(Regexp)
+          return 1.0 if t.match(tag)
+        elsif tag.length > t.length
+          next 
+        elsif idx = t.index(tag)
+          return 1.0 if tag.length == t.length
+          return tag.length * 0.01
+        end
       end
-      
-      if tag.length == tm.length
-        1.0
-      else
-        tag.length.to_f * 0.01
-      end
+      nil
     end
 
     def to_s

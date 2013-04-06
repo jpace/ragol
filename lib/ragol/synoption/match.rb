@@ -7,14 +7,6 @@ require 'ragol/common/tags'
 require 'ragol/common/regexps'
 
 module Synoption
-  class OptionMatch
-    include Logue::Loggable
-
-    def match? arg
-      raise "not implemented"
-    end
-  end
-
   class OptionExactMatch < Ragol::Tags
     attr_reader :tag
     attr_reader :name
@@ -28,16 +20,13 @@ module Synoption
     end
   end
 
-  class OptionNegativeMatch < OptionMatch
+  class OptionNegativeMatch < Ragol::Tags
     attr_reader :negopts
 
-    def initialize *negopts
+    def initialize(*negopts)
+      super Array.new(negopts).flatten
       # in case this gets passed an array as an element:
       @negopts = Array.new(negopts).flatten
-    end
-
-    def match? arg
-      arg && @negopts.select { |x| arg.index x }.size > 0
     end
   end
 
