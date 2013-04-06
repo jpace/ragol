@@ -3,7 +3,6 @@
 
 require 'logue/loggable'
 require 'ragol/optproc/errors'
-require 'ragol/common/regexps'
 require 'ragol/common/tags'
 require 'ragol/optproc/args'
 

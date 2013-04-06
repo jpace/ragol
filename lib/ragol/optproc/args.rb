@@ -3,7 +3,6 @@
 
 require 'logue/loggable'
 require 'ragol/common/tags'
-require 'ragol/common/regexps'
 
 module OptProc
   class OptionArguments
@@ -105,7 +104,7 @@ module OptProc
       @valuereq = newargs[:valuereq]
       
       regexps = newargs[:regexps]
-      @regexps = regexps && Ragol::Regexps.new([ regexps ].flatten)
+      @regexps = regexps && Ragol::Tags.new([ regexps ].flatten)
       
       tags = newargs[:tags]
       @tags = tags && Ragol::Tags.new(tags)
