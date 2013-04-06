@@ -19,7 +19,7 @@ describe Synoption::FixnumOption do
 
     its(:name) { should eql :delta }
     its(:tag) { should eql '-d' }
-    its(:value) { should eql 317 }
+    its(:default) { should eql 317 }
     its(:description) { should eql 'mouth of a river' }
   end
 

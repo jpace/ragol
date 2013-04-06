@@ -17,6 +17,8 @@ module Synoption
       @values = Hash.new
 
       options.each do |option|
+        @values[option.name] = option.default
+        
         singleton_class.define_method option.name do
           instance_eval do
             @values[option.name]
@@ -35,6 +37,10 @@ module Synoption
 
     def unset_value optname
       @values.delete(optname)
+    end
+
+    def end_of_options?
+      unprocessed[0] == '--'
     end
   end
 end

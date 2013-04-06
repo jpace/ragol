@@ -48,17 +48,10 @@ module Synoption
     def unset results
       debug "results: #{results}"
       results.unset_value name
-      @value = nil
     end
 
     def set_value results, val
-      debug "results: #{results}"
       results.set_value name, val
-      @value = val
-    end
-
-    def value
-      @value
     end
       
     def to_doc io

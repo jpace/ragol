@@ -86,13 +86,11 @@ module Synoption
       aborted = false
       
       while !results.unprocessed.empty?
-        if results.unprocessed[0] == '--'
+        if results.end_of_options?
           results.unprocessed.delete_at 0
           aborted = true
           break
         end
-
-        processed = false
 
         match_types = options.collect do |opt|
           [ match_type(opt, results.unprocessed[0]), opt ]

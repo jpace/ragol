@@ -19,7 +19,7 @@ describe Synoption::BooleanOption do
 
     its(:name) { should eql :foxtrot }
     its(:tag) { should eql '-f' }
-    its(:value) { should == false }
+    its(:default) { should == false }
     its(:description) { should eql 'a dance' }
   end
 

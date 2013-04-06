@@ -159,9 +159,9 @@ describe Synoption::OptionSet do
               process %w{ --echo foo }
             end
 
-            its(:delta) { should be_nil }
+            its(:delta) { should eql 317 }
             its(:echo) { should eql 'foo' }
-            its(:foxtrot) { should be_nil }
+            its(:foxtrot) { should be_false }
           end
 
           describe "multiple invocations" do
@@ -170,9 +170,9 @@ describe Synoption::OptionSet do
                 process %w{ --echo foo }
               end
               
-              its(:delta) { should be_nil }
+              its(:delta) { should eql 317 }
               its(:echo) { should eql 'foo' }
-              its(:foxtrot) { should be_nil }
+              its(:foxtrot) { should be_false }
             end
             
             context "second invocation" do
@@ -180,8 +180,8 @@ describe Synoption::OptionSet do
                 process %w{ --foxtrot bar }
               end
               
-              its(:delta) { should be_nil }
-              its(:echo) { should be_nil }
+              its(:delta) { should eql 317 }
+              its(:echo) { should eql 'default default' }
               its(:foxtrot) { should be_true }
             end
           end
@@ -202,11 +202,11 @@ describe Synoption::OptionSet do
             process %w{ --echo foo }
           end
           
-          its(:delta) { should be_nil }
+          its(:delta) { should eql 317 }
           its(:echo) { should eql 'foo' }
-          its(:foxtrot) { should be_nil }
+          its(:foxtrot) { should be_false }
           its(:golf) { should be_nil }
-          its(:hotel) { should be_nil }
+          its(:hotel) { should eql 8.79 }
         end
 
         describe "multiple invocations" do
@@ -215,11 +215,11 @@ describe Synoption::OptionSet do
               process %w{ --echo foo }
             end
             
-            its(:delta) { should be_nil }
+            its(:delta) { should eql 317 }
             its(:echo) { should eql 'foo' }
-            its(:foxtrot) { should be_nil }
+            its(:foxtrot) { should be_false }
             its(:golf) { should be_nil }
-            its(:hotel) { should be_nil }
+            its(:hotel) { should eql 8.79 }
           end
 
           context "second invocation" do
@@ -227,9 +227,9 @@ describe Synoption::OptionSet do
               process %w{ --hotel 8.881bar }
             end
             
-            its(:delta) { should be_nil }
-            its(:echo) { should be_nil }
-            its(:foxtrot) { should be_nil }
+            its(:delta) { should eql 317 }
+            its(:echo) { should eql 'default default' }
+            its(:foxtrot) { should be_false }
             its(:golf) { should be_nil }
             its(:hotel) { should eql 8.881 }
           end
