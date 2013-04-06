@@ -61,6 +61,19 @@ module Synoption
       end
     end
 
+    def match_type opt, arg
+      case 
+      when opt.exact_match?(arg)
+        :exact_match
+      when opt.negative_match?(arg)
+        :negative_match
+      when opt.regexp_match?(arg)
+        :regexp_match
+      else
+        nil
+      end
+    end
+
     def process args
       debug "args: #{args}"
       results = Results.new options, args
@@ -81,15 +94,26 @@ module Synoption
 
         processed = false
 
-        options.each do |opt|
-          if opt.process results, results.unprocessed
-            debug "opt: #{opt.inspect}"
-            processed = true
-            options_processed << opt
-          end
+        match_types = options.collect do |opt|
+          [ match_type(opt, results.unprocessed[0]), opt ]
         end
 
-        break unless processed
+        mtypes = Hash[match_types]
+        
+        if opt = mtypes[:exact_match]
+          results.unprocessed.shift
+          opt.set_value_exact results, results.unprocessed
+        elsif opt = mtypes[:negative_match]
+          results.unprocessed.shift
+          opt.set_value_negative results
+        elsif opt = mtypes[:regexp_match]
+          arg = results.unprocessed.shift
+          opt.set_value_regexp results, arg
+        else
+          break
+        end
+
+        options_processed << opt
       end
 
       unless aborted

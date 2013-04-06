@@ -71,23 +71,18 @@ module Synoption
       args.shift
     end
 
-    def process results, args
-      if exact_match?(args[0])
-        args.shift
-        val = takes_value? ? next_argument(args) : true
-        set_value results, val
-        true
-      elsif negative_match?(args[0])
-        args.shift
-        set_value results, false
-        true
-      elsif md = regexp_match?(args[0])
-        args.shift
-        set_value results, md[0]
-        true
-      else
-        false
-      end
+    def set_value_exact results, args
+      val = takes_value? ? next_argument(args) : true
+      set_value results, val
+    end
+
+    def set_value_negative results
+      set_value results, false
+    end
+
+    def set_value_regexp results, arg
+      md = regexp_match? arg
+      set_value results, md[0]
     end
 
     def post_process option_set, results, unprocessed
