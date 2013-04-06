@@ -2,8 +2,8 @@
 # -*- ruby -*-
 
 require 'logue/loggable'
-require 'ragol/optproc/tags'
-require 'ragol/optproc/regexps'
+require 'ragol/common/tags'
+require 'ragol/common/regexps'
 
 module OptProc
   class OptionArguments
@@ -105,10 +105,10 @@ module OptProc
       @valuereq = newargs[:valuereq]
       
       regexps = newargs[:regexps]
-      @regexps = regexps && Regexps.new([ regexps ].flatten)
+      @regexps = regexps && Ragol::Regexps.new([ regexps ].flatten)
       
       tags = newargs[:tags]
-      @tags = tags && Tags.new(tags)
+      @tags = tags && Ragol::Tags.new(tags)
       
       opttype = newargs[:valuetype]
       clssym = TYPES_TO_CLASSES[opttype]

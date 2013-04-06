@@ -62,13 +62,13 @@ describe Synoption::Option do
 
     [ '-l', '--limit' ].each do |val|
       it "should exactly match #{val}" do
-        option.exact_match?(val).should be_true
+        option.exact_match?(val).should == 1.0
       end
     end
 
     [ '-L', '-x', '--lim', '--liMit' ].each do |val|
       it "should not exactly match #{val}" do
-        option.exact_match?(val).should be_false
+        option.exact_match?(val).should_not == 1.0
       end
     end
   end

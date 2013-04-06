@@ -3,8 +3,8 @@
 
 require 'logue/loggable'
 require 'ragol/optproc/errors'
-require 'ragol/optproc/regexps'
-require 'ragol/optproc/tags'
+require 'ragol/common/regexps'
+require 'ragol/common/tags'
 require 'ragol/optproc/args'
 
 module OptProc

@@ -1,9 +1,7 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'rubygems'
 require 'logue/loggable'
-require 'ragol/synoption/match'
 require 'ragol/common/tags'
 
 module Synoption
@@ -17,8 +15,8 @@ module Synoption
     def initialize tag, name, negate, regexp
       long_tag = '--' + name.to_s.gsub('_', '-')
       @exact = Ragol::Tags.new [ tag, long_tag ]
-      @negative = negate && OptionNegativeMatch.new(negate)
-      @regexp = regexp && OptionRegexpMatch.new(regexp)
+      @negative = negate && Ragol::Tags.new(negate)
+      @regexp = regexp && Ragol::Tags.new([ regexp ])
     end
 
     def exact_match? arg
