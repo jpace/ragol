@@ -22,7 +22,7 @@ module OptProc
                         ]
 
     def process args
-      while args
+      while !args.empty?
         return unless process_option args
       end
     end
@@ -32,8 +32,10 @@ module OptProc
       if opt == '--'
         args.shift
         return nil
+      else
+        return nil unless opt[0] == '-'
       end
-
+      
       if md = COMBINED_OPTS_RES.collect { |re| re.match opt }.detect { |x| x }
         lhs = md[1]
         rhs = "-" + md[2]

@@ -171,20 +171,18 @@ describe Synoption::Option do
 
   describe "process regexp" do
     def create_option
-      opts = { :regexp => Regexp.new('^[\-\+]\d+$') }
+      opts = { :regexp => Regexp.new('^-\d+$') }
       Synoption::Option.new :xyz, '-x', "the blah blah blah", nil, opts
     end
 
-    %w{ -1 +123 }.each do |val|
+    %w{ -1 -234 }.each do |val|
       it "matches #{val} with no following argument" do
         process_option [ val ]
         @results.xyz.should be_true
         @results.xyz.should eql val
         @results.unprocessed.should be_empty
       end
-    end
 
-    %w{ -1 +123 }.each do |val|
       it "matches #{val} with following argument" do
         process_option [ val, 'foo' ]
         @results.xyz.should be_true

@@ -63,7 +63,7 @@ describe OptProc::OptionSet do
     subject { optset }
     
     def process args
-      optset.process_option args
+      optset.process args
     end
     
     context "when one option is defined" do

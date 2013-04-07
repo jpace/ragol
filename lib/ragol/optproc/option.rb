@@ -38,9 +38,8 @@ module OptProc
     end
 
     def match_score args
-      return if args.empty?
       opt = args[0]
-      return unless opt && opt[0] == '-'
+      # return unless opt && opt[0] == '-'
       
       (@matchers.regexp && @matchers.regexp.score(opt)) || (@matchers.exact && @matchers.exact.score(opt))
     end

@@ -95,13 +95,13 @@ module Synoption
           results.unprocessed.delete_at 0
           aborted = true
           break
+        elsif results.unprocessed[0][0] != '-'
+          break
         end
 
-        bm = get_best_match results.unprocessed
+        type, opt = get_best_match(results.unprocessed)
 
-        break unless bm
-        type = bm[0]
-        opt = bm[1]
+        break unless type
 
         case type
         when :exact_match
