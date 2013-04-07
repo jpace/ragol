@@ -65,6 +65,20 @@ module Synoption
       opt.matchers.match_type? arg
     end
 
+    def get_best_match args
+      match_types = options.collect do |opt|
+        [ match_type(opt, args[0]), opt ]
+      end
+
+      [ :exact_match, :negative_match, :regexp_match ].each do |type|
+        if m = match_types.assoc(type)
+          return m
+        end
+      end
+
+      nil
+    end
+
     def process args
       debug "args: #{args}"
       results = Results.new options, args
@@ -83,23 +97,22 @@ module Synoption
           break
         end
 
-        match_types = options.collect do |opt|
-          [ match_type(opt, results.unprocessed[0]), opt ]
-        end
+        bm = get_best_match results.unprocessed
 
-        mtypes = Hash[match_types]
-        
-        if opt = mtypes[:exact_match]
+        break unless bm
+        type = bm[0]
+        opt = bm[1]
+
+        case type
+        when :exact_match
           results.unprocessed.shift
           opt.set_value_exact results, results.unprocessed
-        elsif opt = mtypes[:negative_match]
+        when :negative_match
           results.unprocessed.shift
           opt.set_value_negative results
-        elsif opt = mtypes[:regexp_match]
+        when :regexp_match
           arg = results.unprocessed.shift
           opt.set_value_regexp results, arg
-        else
-          break
         end
 
         options_processed << opt

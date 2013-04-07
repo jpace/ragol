@@ -15,11 +15,11 @@ module OptProc
     end
 
     COMBINED_OPTS_RES = [
-      #               -number       non-num
-      Regexp.new('^ ( - \d+   )     ( \D+.* ) $ ', Regexp::EXTENDED),
-      #               -letter       anything
-      Regexp.new('^ ( - [a-zA-Z] )  ( .+    ) $ ', Regexp::EXTENDED)
-    ]
+                         #               -number       non-num
+                         Regexp.new('^ ( - \d+   )     ( \D+.* ) $ ', Regexp::EXTENDED),
+                         #               -letter       anything
+                         Regexp.new('^ ( - [a-zA-Z] )  ( .+    ) $ ', Regexp::EXTENDED)
+                        ]
 
     def process args
       while args
@@ -45,27 +45,31 @@ module OptProc
       option
     end
 
-    def set_option args
+    def get_best_match args
       bestmatch = nil
       bestopts = Array.new
-      
+
       @options.each do |option|
-        next unless matchval = option.match_score(args)
-        if matchval >= 1.0
-          # exact match:
-          return set_option_value option, args
-        elsif !bestmatch || bestmatch <= matchval
-          bestmatch = matchval
-          bestopts << option
+        if score = option.match_score(args)
+          if score >= 1.0
+            return [ option ]
+          elsif !bestmatch || bestmatch <= score
+            bestmatch = score
+            bestopts << option
+          end
         end
       end
       
-      return unless bestmatch
-
+      bestmatch && bestopts
+    end
+    
+    def set_option args
+      return unless bestopts = get_best_match(args)
+      
       if bestopts.size == 1
         set_option_value bestopts[0], args
       else
-        optstr = bestopts.collect { |y| '(' + y.to_s + ')' }.join(', ')
+        optstr = bestopts.collect { |opt| '(' + opt.to_s + ')' }.join(', ')
         raise "ambiguous match of '#{args[0]}'; matches options: #{optstr}"
       end
     end
