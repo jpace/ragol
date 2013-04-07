@@ -62,16 +62,7 @@ module Synoption
     end
 
     def match_type opt, arg
-      case 
-      when opt.exact_match?(arg)
-        :exact_match
-      when opt.negative_match?(arg)
-        :negative_match
-      when opt.regexp_match?(arg)
-        :regexp_match
-      else
-        nil
-      end
+      opt.matchers.match_type? arg
     end
 
     def process args
