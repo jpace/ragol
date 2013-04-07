@@ -89,14 +89,14 @@ describe OptProc::OptionSet do
         should be_true
       end
 
-      it "should ignore invalid long arg" do
-        process %w{ --def }
-        should be_false
+      it "should error on invalid long arg" do
+        args = %w{ --ghi }
+        expect { optset.process args }.to raise_error(RuntimeError, "option '--ghi' is not valid")
       end
 
-      it "should ignore invalid short arg" do
-        process %w{ -d }
-        should be_false
+      it "should error on invalid short arg" do
+        args = %w{ -d }
+        expect { optset.process args }.to raise_error(RuntimeError, "option '-d' is not valid")
       end
 
       it "should leave one unprocessed argument" do
@@ -328,9 +328,6 @@ describe OptProc::OptionSet do
         should be_a_kind_of(MatchData)
         @abc_value[1].should eql '123'
       end
-    end
-
-    context "when arguments contain double dash" do
     end
 
     context "when arguments contain double dash" do

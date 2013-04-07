@@ -3,6 +3,7 @@
 
 require 'logue/loggable'
 require 'ragol/optproc/option'
+require 'ragol/synoption/exception'
 
 module OptProc
   class OptionSet
@@ -23,19 +24,19 @@ module OptProc
 
     def process args
       while !args.empty?
-        return unless process_option args
+        if args[0] == '--'
+          args.shift
+          return
+        elsif args[0][0] == '-'
+          return unless process_option(args)
+        else
+          return
+        end
       end
     end
 
     def process_option args
       opt = args[0]
-      if opt == '--'
-        args.shift
-        return nil
-      else
-        return nil unless opt[0] == '-'
-      end
-      
       if md = COMBINED_OPTS_RES.collect { |re| re.match opt }.detect { |x| x }
         lhs = md[1]
         rhs = "-" + md[2]
@@ -70,7 +71,9 @@ module OptProc
     end
     
     def set_option args
-      return unless bestopts = get_best_match(args)
+      unless bestopts = get_best_match(args)
+        raise "option '#{args[0]}' is not valid"
+      end
       
       if bestopts.size == 1
         set_option_value bestopts[0], args
