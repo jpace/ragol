@@ -11,7 +11,7 @@ module Ragol
     attr_reader :tags
     
     def initialize tags
-      @tags = tags
+      @tags = [ tags ].flatten.compact
     end
 
     def find_match opt

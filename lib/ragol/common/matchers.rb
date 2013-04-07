@@ -13,9 +13,9 @@ module Ragol
     attr_reader :regexp
 
     def initialize tags, negate, regexp
-      @exact = tags && Ragol::Tags.new(tags)
-      @negative = negate && Ragol::Tags.new(negate)
-      @regexp = regexp && Ragol::Tags.new(regexp)
+      @exact = tags
+      @negative = negate
+      @regexp = regexp
     end
 
     def exact_match? arg

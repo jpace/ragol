@@ -4,6 +4,7 @@
 require 'logue/loggable'
 require 'ragol/common/tags'
 require 'ragol/optproc/args'
+require 'ragol/common/matchers'
 
 module OptProc
   class Option
@@ -22,8 +23,7 @@ module OptProc
       @rcnames = optargs.rcnames
       @setter = blk || optargs.process
       @argreqtype = optargs.valuereq
-      @regexps = optargs.regexps
-      @tags = optargs.tags
+      @matchers = Ragol::Matchers.new optargs.tags, nil, optargs.regexps
     end
 
     def value_regexp
@@ -42,7 +42,7 @@ module OptProc
       opt = args[0]
       return unless opt && opt[0] == '-'
       
-      (@regexps && @regexps.score(opt)) || (@tags && @tags.score(opt))
+      (@matchers.regexp && @matchers.regexp.score(opt)) || (@matchers.exact && @matchers.exact.score(opt))
     end
 
     def do_match val
@@ -88,7 +88,7 @@ module OptProc
       opt = args.shift
       md = nil
 
-      unless md = @regexps && @regexps.match?(opt)
+      unless md = @matchers.regexp && @matchers.regexp.match?(opt)
         if @argreqtype
           md = take_eq_value(opt) || match_next_value(args) || argument_missing
         end
@@ -102,8 +102,8 @@ module OptProc
 
     def to_s
       str = ""
-      str << @tags.to_s if @tags
-      str << @regexps.to_s if @regexps
+      str << @matchers.exact.to_s if @matchers.exact
+      str << @matchers.regexp.to_s if @matchers.regexp
       str
     end
   end
