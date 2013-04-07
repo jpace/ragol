@@ -329,5 +329,32 @@ describe OptProc::OptionSet do
         @abc_value[1].should eql '123'
       end
     end
+
+    context "when arguments contain double dash" do
+    end
+
+    context "when arguments contain double dash" do
+      def option_set_data
+        optdata = Array.new
+        optdata << {
+          :tags => %w{ -a --abc },
+          :set  => Proc.new { @abc = true }
+        }
+        @xyz = false
+        optdata << {
+          :tags => %w{ -x --xyz },
+          :set  => Proc.new { @xyz = true }
+        }
+        optdata
+      end
+
+      it "sets option preceding --" do
+        args = %w{ --abc -- foo }
+        optset.process args
+        @abc.should == true
+        @xyz.should == false
+        args.should eql %w{ foo }
+      end
+    end
   end
 end

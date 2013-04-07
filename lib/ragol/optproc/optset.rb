@@ -29,6 +29,10 @@ module OptProc
 
     def process_option args
       opt = args[0]
+      if opt == '--'
+        args.shift
+        return nil
+      end
 
       if md = COMBINED_OPTS_RES.collect { |re| re.match opt }.detect { |x| x }
         lhs = md[1]
