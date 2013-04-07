@@ -179,6 +179,7 @@ describe Synoption::Option do
       it "matches #{val} with no following argument" do
         process_option [ val ]
         @results.xyz.should be_true
+        @results.xyz.should eql val
         @results.unprocessed.should be_empty
       end
     end
@@ -187,6 +188,7 @@ describe Synoption::Option do
       it "matches #{val} with following argument" do
         process_option [ val, 'foo' ]
         @results.xyz.should be_true
+        @results.xyz.should eql val
         @results.unprocessed.should eql [ 'foo' ]
       end
     end
