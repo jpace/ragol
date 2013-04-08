@@ -92,30 +92,18 @@ module Synoption
       
       while !results.unprocessed.empty?
         if results.end_of_options?
-          results.unprocessed.delete_at 0
+          results.unprocessed.shift
           aborted = true
           break
         elsif results.unprocessed[0][0] != '-'
           break
         end
 
-        type, opt = get_best_match(results.unprocessed)
-
-        break unless type
-
-        case type
-        when :exact_match
-          results.unprocessed.shift
-          opt.set_value_exact results, results.unprocessed
-        when :negative_match
-          results.unprocessed.shift
-          opt.set_value_negative results
-        when :regexp_match
-          arg = results.unprocessed.shift
-          opt.set_value_regexp results, arg
+        if opt = set_option(results)
+          options_processed << opt
+        else
+          break
         end
-
-        options_processed << opt
       end
 
       unless aborted
@@ -125,6 +113,26 @@ module Synoption
       post_process_all results, options_processed
 
       results
+    end
+
+    def set_option results
+      type, opt = get_best_match(results.unprocessed)
+
+      return unless type
+
+      case type
+      when :exact_match
+        results.unprocessed.shift
+        opt.set_value_exact results, results.unprocessed
+      when :negative_match
+        results.unprocessed.shift
+        opt.set_value_negative results
+      when :regexp_match
+        arg = results.unprocessed.shift
+        opt.set_value_regexp results, arg
+      end
+
+      opt
     end
 
     def check_for_valid_options results
