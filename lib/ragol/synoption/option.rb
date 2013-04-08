@@ -36,18 +36,6 @@ module Synoption
       true
     end
 
-    def exact_match? arg
-      @matchers.exact_match? arg
-    end
-
-    def negative_match? arg
-      @matchers.negative_match? arg
-    end
-
-    def regexp_match? arg
-      @matchers.regexp_match? arg
-    end
-
     def unset results
       debug "results: #{results}"
       results.unset_value name
@@ -77,7 +65,7 @@ module Synoption
     end
 
     def set_value_regexp results, arg
-      md = regexp_match? arg
+      md = @matchers.regexp_match? arg
       set_value results, md[0]
     end
 

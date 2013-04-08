@@ -62,13 +62,13 @@ describe Synoption::Option do
 
     [ '-l', '--limit' ].each do |val|
       it "should exactly match #{val}" do
-        option.exact_match?(val).should == 1.0
+        option.matchers.exact_match?(val).should == 1.0
       end
     end
 
     [ '-L', '-x', '--lim', '--liMit' ].each do |val|
       it "should not exactly match #{val}" do
-        option.exact_match?(val).should_not == 1.0
+        option.matchers.exact_match?(val).should_not == 1.0
       end
     end
   end
@@ -80,13 +80,13 @@ describe Synoption::Option do
 
     [ '-L', '--no-limit', '--nolimit' ].each do |val|
       it "should negatively match #{val}" do
-        option.negative_match?(val).should be_true
+        option.matchers.negative_match?(val).should be_true
       end
     end
 
     [ '-l', '-x', '-nolimit', '  --nolimit' ].each do |val|
       it "should not negatively match #{val}" do
-        option.negative_match?(val).should be_false
+        option.matchers.negative_match?(val).should be_false
       end
     end
   end
@@ -98,13 +98,13 @@ describe Synoption::Option do
 
     [ '-1', '-123', '+99', '+443' ].each do |val|
       it "should regexp match #{val}" do
-        option.regexp_match?(val).should be_true
+        option.matchers.regexp_match?(val).should be_true
       end
     end
 
     [ '-x', '123', '+-x', 'word' ].each do |val|
       it "should not regexp match #{val}" do
-        option.regexp_match?(val).should be_false
+        option.matchers.regexp_match?(val).should be_false
       end
     end
   end
@@ -198,7 +198,7 @@ describe Synoption::Option do
     end
 
     it "should convert underscores and dashes" do
-      option.exact_match?('--max-limit').should be_true
+      option.matchers.exact_match?('--max-limit').should be_true
     end
   end
 end
