@@ -123,3 +123,7 @@ Sun Apr  7 09:59:26 2013
 
   Added handling of -- in arguments list.
   Added reporting of invalid option arguments.
+
+Mon Apr  8 19:26:49 2013
+
+  Added spec for short option test.

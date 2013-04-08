@@ -23,6 +23,7 @@ module Synoption
         super :delta, '-d', "mouth of a river", 317
       end
     end
+
     class EchoOption < Synoption::Option
       def initialize
         super :echo, '-e', "description description", "default default"
@@ -81,6 +82,25 @@ module Synoption
       optset.add create_option
       def optset.name; 'testing'; end
       @results = optset.process args
+    end
+    
+    class IndiaOption < Synoption::BooleanOption
+      def initialize 
+        super :india, '-i', "a country"
+      end
+    end
+    
+    class FiOptionSet < Synoption::OptionSet
+      has_option :foxtrot, FoxtrotOption
+      has_option :india, IndiaOption
+
+      def name
+        'fi'
+      end
+    end
+
+    def create_fi_option_set
+      FiOptionSet.new
     end
   end
 end
