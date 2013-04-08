@@ -61,13 +61,10 @@ module Synoption
       end
     end
 
-    def match_type opt, arg
-      opt.matchers.match_type? arg
-    end
-
     def get_best_match args
       match_types = options.collect do |opt|
-        [ match_type(opt, args[0]), opt ]
+        mt = opt.matchers.match_type? args[0]
+        [ mt, opt ]
       end
 
       [ :tag_match, :negative_match, :regexp_match ].each do |type|
@@ -80,73 +77,48 @@ module Synoption
     end
 
     def process args
-      debug "args: #{args}"
-      results = Results.new options, args
-      
+      results = Results.new options, args      
       options_processed = Array.new
-
-      debug "args: #{args.inspect}"
-      debug "results.unprocessed: #{results.unprocessed.inspect}"
-
-      aborted = false
       
-      while !results.unprocessed.empty?
+      while !results.args_empty?
         if results.end_of_options?
-          results.unprocessed.shift
-          aborted = true
+          results.next_arg
           break
-        elsif results.unprocessed[0][0] != '-'
-          break
-        end
-
-        if opt = set_option(results)
-          options_processed << opt
-        else
+        elsif results.current_arg[0] != '-'
           break
         end
+
+        opt = set_option(results)
+        options_processed << opt
       end
 
-      unless aborted
-        check_for_valid_options results
+      options_processed.each do |opt|
+        opt.post_process self, results, results.args
       end
-
-      post_process_all results, options_processed
 
       results
     end
 
     def set_option results
-      type, opt = get_best_match(results.unprocessed)
-
-      return unless type
+      type, opt = get_best_match(results.args)
+      
+      unless type
+        raise OptionException.new "option '#{results.current_arg}' invalid for #{name}"
+      end
 
       case type
       when :tag_match
-        results.unprocessed.shift
-        opt.set_value_for_tag results, results.unprocessed
+        results.next_arg
+        opt.set_value_for_tag results
       when :negative_match
-        results.unprocessed.shift
+        results.next_arg
         opt.set_value_negative results
       when :regexp_match
-        arg = results.unprocessed.shift
+        arg = results.next_arg
         opt.set_value_regexp results, arg
       end
 
       opt
-    end
-
-    def check_for_valid_options results
-      results.unprocessed.each do |opt|
-        if opt.start_with? '-'
-          raise OptionException.new "option '#{opt}' invalid for #{name}"
-        end
-      end
-    end
-
-    def post_process_all results, options_processed
-      options_processed.each do |opt|
-        opt.post_process self, results, results.unprocessed
-      end
     end
   end
 end

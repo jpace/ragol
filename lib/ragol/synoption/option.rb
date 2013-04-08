@@ -49,13 +49,13 @@ module Synoption
       doc.to_doc io
     end
 
-    def next_argument args
-      raise "option #{name} expects following argument" if args.empty?
-      args.shift
+    def next_argument results
+      raise "option #{name} expects following argument" if results.args_empty?
+      results.next_arg
     end
 
-    def set_value_for_tag results, args
-      val = takes_value? ? next_argument(args) : true
+    def set_value_for_tag results
+      val = takes_value? ? next_argument(results) : true
       set_value results, val
     end
 

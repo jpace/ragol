@@ -36,11 +36,27 @@ module Synoption
     end
 
     def unset_value optname
-      @values.delete(optname)
+      @values.delete optname
     end
 
     def end_of_options?
-      unprocessed[0] == '--'
+      current_arg == '--'
+    end
+
+    def args
+      @unprocessed
+    end
+
+    def next_arg
+      @unprocessed.shift
+    end
+
+    def args_empty?
+      @unprocessed.empty?
+    end
+
+    def current_arg
+      @unprocessed[0]
     end
   end
 end

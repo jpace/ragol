@@ -1,7 +1,6 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'logue/loggable'
 require 'ragol/optproc/option'
 require 'ragol/synoption/exception'
 
