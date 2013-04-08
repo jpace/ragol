@@ -55,20 +55,20 @@ describe Synoption::Option do
     end
   end
   
-  describe "#exact_match" do
+  describe "#tag_match" do
     subject(:option) do
       Synoption::Option.new :limit, '-l', "the number of log entries", 3
     end
 
     [ '-l', '--limit' ].each do |val|
-      it "should exactly match #{val}" do
-        option.matchers.exact_match?(val).should == 1.0
+      it "should fully match #{val}" do
+        option.matchers.tag_match?(val).should == 1.0
       end
     end
 
     [ '-L', '-x', '--lim', '--liMit' ].each do |val|
-      it "should not exactly match #{val}" do
-        option.matchers.exact_match?(val).should_not == 1.0
+      it "should not fully match #{val}" do
+        option.matchers.tag_match?(val).should_not == 1.0
       end
     end
   end
@@ -198,7 +198,7 @@ describe Synoption::Option do
     end
 
     it "should convert underscores and dashes" do
-      option.matchers.exact_match?('--max-limit').should be_true
+      option.matchers.tag_match?('--max-limit').should be_true
     end
   end
 end

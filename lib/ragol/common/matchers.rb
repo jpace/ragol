@@ -8,18 +8,18 @@ module Ragol
   class Matchers
     include Logue::Loggable
 
-    attr_reader :exact
+    attr_reader :tags
     attr_reader :negative
     attr_reader :regexp
 
     def initialize tags, negate, regexp
-      @exact = tags
+      @tags = tags
       @negative = negate
       @regexp = regexp
     end
 
-    def exact_match? arg
-      @exact.match? arg
+    def tag_match? arg
+      @tags.match? arg
     end
 
     def negative_match? arg
@@ -32,8 +32,8 @@ module Ragol
 
     def match_type? arg
       case 
-      when exact_match?(arg)
-        :exact_match
+      when tag_match?(arg)
+        :tag_match
       when negative_match?(arg)
         :negative_match
       when regexp_match?(arg)

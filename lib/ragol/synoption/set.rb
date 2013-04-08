@@ -70,7 +70,7 @@ module Synoption
         [ match_type(opt, args[0]), opt ]
       end
 
-      [ :exact_match, :negative_match, :regexp_match ].each do |type|
+      [ :tag_match, :negative_match, :regexp_match ].each do |type|
         if m = match_types.assoc(type)
           return m
         end
@@ -121,9 +121,9 @@ module Synoption
       return unless type
 
       case type
-      when :exact_match
+      when :tag_match
         results.unprocessed.shift
-        opt.set_value_exact results, results.unprocessed
+        opt.set_value_for_tag results, results.unprocessed
       when :negative_match
         results.unprocessed.shift
         opt.set_value_negative results

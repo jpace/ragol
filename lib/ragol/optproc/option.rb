@@ -2,7 +2,6 @@
 # -*- ruby -*-
 
 require 'logue/loggable'
-require 'ragol/common/tags'
 require 'ragol/optproc/args'
 require 'ragol/common/matchers'
 
@@ -39,9 +38,7 @@ module OptProc
 
     def match_score args
       opt = args[0]
-      # return unless opt && opt[0] == '-'
-      
-      (@matchers.regexp && @matchers.regexp.score(opt)) || (@matchers.exact && @matchers.exact.score(opt))
+      (@matchers.regexp && @matchers.regexp.score(opt)) || (@matchers.tags && @matchers.tags.score(opt))
     end
 
     def do_match val
@@ -101,7 +98,7 @@ module OptProc
 
     def to_s
       str = ""
-      str << @matchers.exact.to_s if @matchers.exact
+      str << @matchers.tags.to_s if @matchers.tags
       str << @matchers.regexp.to_s if @matchers.regexp
       str
     end

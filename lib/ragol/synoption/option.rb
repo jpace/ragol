@@ -54,7 +54,7 @@ module Synoption
       args.shift
     end
 
-    def set_value_exact results, args
+    def set_value_for_tag results, args
       val = takes_value? ? next_argument(args) : true
       set_value results, val
     end
