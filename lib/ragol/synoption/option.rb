@@ -24,10 +24,10 @@ module Synoption
       @value = @default = default
 
       tags = Ragol::Tags.new [ tag, '--' + name.to_s.gsub('_', '-') ]
-      negate = options[:negate] && Ragol::Tags.new(options[:negate])
-      regexp = options[:regexp] && Ragol::Tags.new(options[:regexp])
+      negates = options[:negate] && Ragol::Tags.new(options[:negate])
+      regexps = options[:regexp] && Ragol::Tags.new(options[:regexp])
 
-      @matchers = Ragol::Matchers.new tags, negate, regexp
+      @matchers = Ragol::Matchers.new tags, negates, regexps
       @unsets = options[:unsets]
     end
 

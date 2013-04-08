@@ -9,13 +9,13 @@ module Ragol
     include Logue::Loggable
 
     attr_reader :tags
-    attr_reader :negative
-    attr_reader :regexp
+    attr_reader :negatives
+    attr_reader :regexps
 
     def initialize tags, negate, regexp
       @tags = tags
-      @negative = negate
-      @regexp = regexp
+      @negatives = negate
+      @regexps = regexp
     end
 
     def tag_match? arg
@@ -23,11 +23,15 @@ module Ragol
     end
 
     def negative_match? arg
-      @negative and @negative.match? arg
+      @negatives and @negatives.match? arg
     end
 
     def regexp_match? arg
-      @regexp and @regexp.match? arg
+      @regexps and @regexps.match? arg
+    end
+
+    def match_score arg
+      (@regexps && @regexps.score(arg)) || (@tags && @tags.score(arg))
     end
 
     def match_type? arg

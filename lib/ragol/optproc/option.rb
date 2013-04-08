@@ -37,8 +37,7 @@ module OptProc
     end
 
     def match_score args
-      opt = args[0]
-      (@matchers.regexp && @matchers.regexp.score(opt)) || (@matchers.tags && @matchers.tags.score(opt))
+      @matchers.match_score args[0]
     end
 
     def do_match val
@@ -84,7 +83,7 @@ module OptProc
       opt = args.shift
       md = nil
 
-      unless md = @matchers.regexp && @matchers.regexp.match?(opt)
+      unless md = @matchers.regexps && @matchers.regexps.match?(opt)
         if @argreqtype
           md = take_eq_value(opt) || match_next_value(args) || argument_missing
         end
@@ -99,7 +98,7 @@ module OptProc
     def to_s
       str = ""
       str << @matchers.tags.to_s if @matchers.tags
-      str << @matchers.regexp.to_s if @matchers.regexp
+      str << @matchers.regexps.to_s if @matchers.regexps
       str
     end
   end
