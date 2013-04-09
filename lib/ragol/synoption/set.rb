@@ -61,9 +61,9 @@ module Synoption
       end
     end
 
-    def get_best_match args
+    def get_best_match results
       match_types = options.collect do |opt|
-        mt = opt.matchers.match_type? args[0]
+        mt = opt.matchers.match_type? results.current_arg
         [ mt, opt ]
       end
 
@@ -100,7 +100,7 @@ module Synoption
     end
 
     def set_option results
-      type, opt = get_best_match(results.args)
+      type, opt = get_best_match(results)
       
       unless type
         raise OptionException.new "option '#{results.current_arg}' invalid for #{name}"

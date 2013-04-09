@@ -90,17 +90,24 @@ module Synoption
       end
     end
     
-    class FiOptionSet < Synoption::OptionSet
+    class JulietOption < Synoption::Option
+      def initialize 
+        super :juliet, '-j', "romeo's girlfriend", nil, { :regexp => Regexp.new('^-\d+$') }
+      end
+    end
+    
+    class FijOptionSet < Synoption::OptionSet
       has_option :foxtrot, FoxtrotOption
       has_option :india, IndiaOption
+      has_option :juliet, JulietOption
 
       def name
-        'fi'
+        'fij'
       end
     end
 
-    def create_fi_option_set
-      FiOptionSet.new
+    def create_fij_option_set
+      FijOptionSet.new
     end
   end
 end

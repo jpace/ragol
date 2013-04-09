@@ -48,7 +48,16 @@ module Synoption
     end
 
     def next_arg
-      @unprocessed.shift
+      curr = @unprocessed.shift
+      re = Regexp.new('^-(?:(\d+)(\D)|([a-zA-Z])(\w+))')
+      if md = re.match(curr)
+        mi = md[1] ? 1 : 3
+        arg, newarg = ('-' + md[mi]), ('-' + md[mi + 1])
+        @unprocessed.unshift newarg
+        arg
+      else
+        curr
+      end
     end
 
     def args_empty?
@@ -56,7 +65,9 @@ module Synoption
     end
 
     def current_arg
-      @unprocessed[0]
+      curr = @unprocessed[0]
+      re = Regexp.new('^-(?:\d+|\w)')
+      (md = re.match(curr)) ? md[0] : curr
     end
   end
 end
