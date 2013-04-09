@@ -35,7 +35,9 @@ describe Synoption::FloatOption do
         end
 
         its(:hotel) { should == 21.34 }
-        its(:unprocessed) { should be_empty }
+        it "should have no remaining arguments" do
+          subject.unprocessed.should be_empty
+        end
       end
     end
 

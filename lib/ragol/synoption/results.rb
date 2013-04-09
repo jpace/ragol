@@ -4,6 +4,7 @@
 require 'rubygems'
 require 'logue/loggable'
 require 'ragol/synoption/option'
+require 'ragol/common/argslist'
 
 module Synoption
   class Results
@@ -13,7 +14,7 @@ module Synoption
     attr_accessor :unprocessed
     
     def initialize options, args = Array.new
-      @unprocessed = args
+      @unprocessed = Ragol::ArgsList.new(args)
       @values = Hash.new
 
       options.each do |option|
@@ -44,30 +45,19 @@ module Synoption
     end
 
     def args
-      @unprocessed
+      @unprocessed.args
     end
 
     def next_arg
-      curr = @unprocessed.shift
-      re = Regexp.new('^-(?:(\d+)(\D)|([a-zA-Z])(\w+))')
-      if md = re.match(curr)
-        mi = md[1] ? 1 : 3
-        arg, newarg = ('-' + md[mi]), ('-' + md[mi + 1])
-        @unprocessed.unshift newarg
-        arg
-      else
-        curr
-      end
+      @unprocessed.next_arg
     end
 
     def args_empty?
-      @unprocessed.empty?
+      @unprocessed.args_empty?
     end
 
     def current_arg
-      curr = @unprocessed[0]
-      re = Regexp.new('^-(?:\d+|\w)')
-      (md = re.match(curr)) ? md[0] : curr
+      @unprocessed.current_arg
     end
   end
 end
