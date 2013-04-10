@@ -3,6 +3,7 @@
 
 require 'ragol/optproc/option'
 require 'ragol/synoption/exception'
+require 'ragol/common/argslist'
 
 module OptProc
   class OptionSet
@@ -22,12 +23,14 @@ module OptProc
                         ]
 
     def process args
-      while !args.empty?
-        if args[0] == '--'
-          args.shift
+      argslist = args.kind_of?(Ragol::ArgsList) ? args : Ragol::ArgsList.new(args)
+      
+      while !argslist.empty?
+        if argslist.end_of_options?
+          argslist.shift_arg
           return
-        elsif args[0][0] == '-'
-          return unless process_option(args)
+        elsif argslist.current_arg[0] == '-'
+          return unless process_option(argslist)
         else
           return
         end
@@ -35,28 +38,30 @@ module OptProc
     end
 
     def process_option args
-      opt = args[0]
+      argslist = args.kind_of?(Ragol::ArgsList) ? args : Ragol::ArgsList.new(args)
+      
+      opt = argslist.args[0]
       if md = COMBINED_OPTS_RES.collect { |re| re.match opt }.detect { |x| x }
         lhs = md[1]
         rhs = "-" + md[2]
-        args[0, 1] = lhs, rhs
-        process_option args
+        argslist.args[0, 1] = lhs, rhs
+        process_option argslist
       else
-        set_option args
+        set_option argslist
       end
     end
 
-    def set_option_value option, args
-      option.set_value args
+    def set_option_value option, argslist
+      option.set_value argslist.args
       option
     end
 
-    def get_best_match args
+    def get_best_match argslist
       bestmatch = nil
       bestopts = Array.new
 
       @options.each do |option|
-        if score = option.match_score(args)
+        if score = option.match_score(argslist.args[0])
           if score >= 1.0
             return [ option ]
           elsif !bestmatch || bestmatch <= score
@@ -69,16 +74,16 @@ module OptProc
       bestmatch && bestopts
     end
     
-    def set_option args
-      unless bestopts = get_best_match(args)
-        raise "option '#{args[0]}' is not valid"
+    def set_option argslist
+      unless bestopts = get_best_match(argslist)
+        raise "option '#{argslist.args[0]}' is not valid"
       end
       
       if bestopts.size == 1
-        set_option_value bestopts[0], args
+        set_option_value bestopts[0], argslist
       else
         optstr = bestopts.collect { |opt| '(' + opt.to_s + ')' }.join(', ')
-        raise "ambiguous match of '#{args[0]}'; matches options: #{optstr}"
+        raise "ambiguous match of '#{argslist.args[0]}'; matches options: #{optstr}"
       end
     end
   end

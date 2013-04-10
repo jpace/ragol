@@ -51,5 +51,9 @@ module Ragol
     def [] idx
       @args[idx]
     end
+
+    def end_of_options?
+      current_arg == '--'
+    end
   end
 end

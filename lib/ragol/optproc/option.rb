@@ -9,6 +9,8 @@ module OptProc
   class Option
     include Logue::Loggable
 
+    attr_reader :matchers
+
     class << self
       alias_method :old_new, :new
       def new(*args, &blk)
@@ -36,8 +38,8 @@ module OptProc
       @rcnames && @rcnames.include?(field)
     end
 
-    def match_score args
-      @matchers.match_score args[0]
+    def match_score arg
+      @matchers.match_score arg
     end
 
     def do_match val

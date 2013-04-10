@@ -41,7 +41,7 @@ module Synoption
     end
 
     def end_of_options?
-      current_arg == '--'
+      @unprocessed.end_of_options?
     end
 
     def args
