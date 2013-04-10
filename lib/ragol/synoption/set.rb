@@ -30,10 +30,9 @@ module Synoption
 
     def add_all_options
       cls = self.class
-      while cls
+      while cls <= OptionSet
         add_options_for_class cls
         cls = cls.superclass
-        break unless cls <= OptionSet
       end
     end
     
