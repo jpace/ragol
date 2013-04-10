@@ -22,6 +22,10 @@ module Ragol
       end
     end
 
+    def shift_arg
+      @args.shift
+    end
+
     def args_empty?
       @args.empty?
     end

@@ -142,6 +142,20 @@ describe Synoption::Option do
       end
     end
 
+    context "when it has matching tag and a following argument with a leading dash" do
+      before :all do
+        process_option %w{ --xyz -foo }
+      end
+
+      it "should change the option value" do
+        @results.xyz.should eql '-foo'
+      end
+
+      it "should leave the remaining argument" do
+        @results.unprocessed.should be_empty
+      end
+    end
+
     it "raises error without required argument" do
       args = %w{ --xyz }
       expect { process_option(args) }.to raise_error(RuntimeError, "option xyz expects following argument")

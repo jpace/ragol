@@ -52,6 +52,10 @@ module Synoption
       @unprocessed.next_arg
     end
 
+    def shift_arg
+      @unprocessed.shift_arg
+    end
+
     def args_empty?
       @unprocessed.args_empty?
     end

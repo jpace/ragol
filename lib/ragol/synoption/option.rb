@@ -51,7 +51,7 @@ module Synoption
 
     def next_argument results
       raise "option #{name} expects following argument" if results.args_empty?
-      results.next_arg
+      results.shift_arg
     end
 
     def set_value_for_tag results

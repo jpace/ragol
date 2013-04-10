@@ -82,7 +82,7 @@ module Synoption
       
       while !results.args_empty?
         if results.end_of_options?
-          results.next_arg
+          results.shift_arg
           break
         elsif results.current_arg[0] != '-'
           break
