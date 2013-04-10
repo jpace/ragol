@@ -87,13 +87,17 @@ describe OptProc::StringOption do
       end
 
       it "ignores a following --xyz option" do
-        process %w{ --sopt --xyz }
+        args = %w{ --sopt --xyz }
+        process args
         should be_nil
+        args.should eql %w{ --xyz }
       end
 
       it "ignores a following -x option" do
-        process %w{ --sopt -x }
+        args = %w{ --sopt -x }
+        process args
         should be_nil
+        args.should eql %w{ -x }
       end
     end
   end

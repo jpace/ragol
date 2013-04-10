@@ -66,14 +66,14 @@ module OptProc
     end
 
     def match_next_value argslist
-      val = argslist.args.shift
       if @argreqtype == true
+        val = argslist.shift_arg
         val && do_match(val)
-      elsif val
+      elsif val = argslist[0]
         if val[0] == '-'
-          argslist.args.unshift val
           nil
         else
+          argslist.shift_arg
           do_match(val)
         end
       else

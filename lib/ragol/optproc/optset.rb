@@ -37,20 +37,6 @@ module OptProc
       end
     end
 
-    def process_option_orig args
-      argslist = args.kind_of?(Ragol::ArgsList) ? args : Ragol::ArgsList.new(args)
-      
-      opt = argslist.args[0]
-      if md = COMBINED_OPTS_RES.collect { |re| re.match opt }.detect { |x| x }
-        lhs = md[1]
-        rhs = "-" + md[2]
-        argslist.args[0, 1] = lhs, rhs
-        process_option argslist
-      else
-        set_option argslist
-      end
-    end
-
     def process_option args
       argslist = args.kind_of?(Ragol::ArgsList) ? args : Ragol::ArgsList.new(args)
       
