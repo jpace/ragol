@@ -37,7 +37,7 @@ module OptProc
       end
     end
 
-    def process_option args
+    def process_option_orig args
       argslist = args.kind_of?(Ragol::ArgsList) ? args : Ragol::ArgsList.new(args)
       
       opt = argslist.args[0]
@@ -51,8 +51,15 @@ module OptProc
       end
     end
 
+    def process_option args
+      argslist = args.kind_of?(Ragol::ArgsList) ? args : Ragol::ArgsList.new(args)
+      
+      opt = argslist.args[0]
+      set_option argslist
+    end
+
     def set_option_value option, argslist
-      option.set_value argslist.args
+      option.set_value argslist
       option
     end
 
@@ -61,7 +68,7 @@ module OptProc
       bestopts = Array.new
 
       @options.each do |option|
-        if score = option.match_score(argslist.args[0])
+        if score = option.match_score(argslist.current_arg)
           if score >= 1.0
             return [ option ]
           elsif !bestmatch || bestmatch <= score
