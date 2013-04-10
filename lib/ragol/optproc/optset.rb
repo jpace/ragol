@@ -15,32 +15,22 @@ module OptProc
       end
     end
 
-    COMBINED_OPTS_RES = [
-                         #               -number       non-num
-                         Regexp.new('^ ( - \d+   )     ( \D+.* ) $ ', Regexp::EXTENDED),
-                         #               -letter       anything
-                         Regexp.new('^ ( - [a-zA-Z] )  ( .+    ) $ ', Regexp::EXTENDED)
-                        ]
-
     def process args
       argslist = args.kind_of?(Ragol::ArgsList) ? args : Ragol::ArgsList.new(args)
       
       while !argslist.empty?
         if argslist.end_of_options?
           argslist.shift_arg
-          return
-        elsif argslist.current_arg[0] == '-'
-          return unless process_option(argslist)
-        else
-          return
+          break
+        elsif argslist.current_arg[0] != '-'
+          break
         end
+
+        set_option(argslist)
       end
     end
 
-    def process_option args
-      argslist = args.kind_of?(Ragol::ArgsList) ? args : Ragol::ArgsList.new(args)
-      
-      opt = argslist.args[0]
+    def process_option argslist
       set_option argslist
     end
 

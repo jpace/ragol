@@ -16,7 +16,7 @@ describe "regexp option" do
   end
 
   def process args
-    @optset.process_option args
+    @optset.process args
   end
 
   before do
