@@ -303,7 +303,7 @@ describe OptProc::OptionSet do
         ghi.should be_true
       end
 
-      it "should use the ambiguous option" do
+      it "should error on ambiguous options" do
         args = %w{ --ab }
         expect { process(args) }.to raise_error(RuntimeError, "ambiguous match of '--ab'; matches options: (--abc), (--abcdef)")
       end
