@@ -46,5 +46,12 @@ module Ragol
         nil
       end
     end
+
+    def to_s
+      str = ""
+      str << @tags.to_s if @tags
+      str << @regexps.to_s if @regexps
+      str
+    end
   end
 end

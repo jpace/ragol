@@ -1,7 +1,6 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'rubygems'
 require 'logue/loggable'
 require 'ragol/synoption/doc'
 require 'ragol/common/matchers'
@@ -80,10 +79,7 @@ module Synoption
     end
     
     def to_s
-      str = ""
-      str << @matchers.tags.to_s if @matchers.tags
-      str << @matchers.regexps.to_s if @matchers.regexps
-      str
+      @matchers.to_s
     end
   end
 end

@@ -98,10 +98,7 @@ module OptProc
     end
     
     def to_s
-      str = ""
-      str << @matchers.tags.to_s if @matchers.tags
-      str << @matchers.regexps.to_s if @matchers.regexps
-      str
+      @matchers.to_s
     end
   end
 end
