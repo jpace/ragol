@@ -61,22 +61,22 @@ module OptProc
       
       args[:tags] = origargs[:tags]
 
-      if valueargs = origargs[:arg]
-        if valuetype = common_element(valueargs, TYPES_TO_CLASSES.keys)
+      if origargs[:arg]
+        if valuetype = common_element(origargs[:arg], TYPES_TO_CLASSES.keys)
           args[:valuetype] = valuetype == :integer ? :fixnum : valuetype
         end
 
         if valuetype == :boolean
           args[:valuereq] = false
         else
-          valuereq = common_element(valueargs, [ :optional, :required, :none ])
+          valuereq = common_element(origargs[:arg], [ :optional, :required, :none ])
           args[:valuereq] = case valuereq
                             when :optional
                               :optional
                             when :required
                               true
                             when :none, nil
-                              !(valuetype.nil?)
+                              valuetype != nil
                             end
         end
       else
