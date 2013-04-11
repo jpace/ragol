@@ -61,18 +61,37 @@ module Synoption
     end
 
     def get_best_match results
-      match_types = options.collect do |opt|
-        mt = opt.matchers.match_type? results.current_arg
-        [ mt, opt ]
-      end
+      arg = results.current_arg
 
-      [ :tag_match, :negative_match, :regexp_match ].each do |type|
-        if m = match_types.assoc(type)
-          return m
+      tag_matches = Hash.new { |h, k| h[k] = Array.new }
+      negative_match = nil
+      regexp_match = nil
+      
+      match_types = Hash.new
+      options.each do |opt|
+        if mt = opt.matchers.match_type?(results.current_arg)
+          case mt[0]
+          when :tag_match
+            tag_matches[mt[1]] << opt
+          when :negative_match
+            negative_match = opt
+          when :regexp_match
+            regexp_match = opt
+          end
         end
       end
 
-      nil
+      if tag_matches.keys.any?
+        highest = tag_matches.keys.sort[-1]
+        opt = tag_matches[highest]
+        [ :tag_match, opt.first ]
+      elsif negative_match
+        [ :negative_match, negative_match ]
+      elsif regexp_match
+        [ :regexp_match, regexp_match ]
+      else
+        nil
+      end
     end
 
     def process args

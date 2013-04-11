@@ -36,12 +36,12 @@ module Ragol
 
     def match_type? arg
       case 
-      when tag_match?(arg)
-        :tag_match
-      when negative_match?(arg)
-        :negative_match
-      when regexp_match?(arg)
-        :regexp_match
+      when tm = tag_match?(arg)
+        [ :tag_match, tm ]
+      when nm = negative_match?(arg)
+        [ :negative_match, nm ]
+      when rm = regexp_match?(arg)
+        [ :regexp_match, rm ]
       else
         nil
       end

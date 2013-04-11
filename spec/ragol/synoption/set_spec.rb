@@ -275,4 +275,56 @@ describe Synoption::OptionSet do
       end
     end
   end
+
+  context "when options partially match" do
+    class DelayOption < Synoption::Option
+      def initialize
+        super :delay, '-y', "waiting period", nil
+      end
+    end
+
+    class DdOptionSet < Synoption::OptionSet
+      has_option :delta, Synoption::OptionTestSets::DeltaOption
+      has_option :delay, DelayOption
+      def name
+        'dd'
+      end
+    end
+
+    def process args
+      @results = DdOptionSet.new.process args
+    end
+
+    subject { @results }
+
+    describe "#process" do
+      context "when arguments are full" do
+        before :all do
+          process %w{ --delay 44 --delta 6 }
+        end
+        
+        its(:delay) { should eql '44' }
+        its(:delta) { should eql 6 }
+      end
+
+      context "when arguments are partial" do
+        before :all do
+          process %w{ --dela 144 --delt 37 }
+        end
+        
+        its(:delay) { should eql '144' }
+        its(:delta) { should eql 37 }
+      end
+
+      context "when arguments are conflicting partial" do
+        before :all do
+          pending "not done"
+          process %w{ --del 144 --del 37 }
+        end
+        
+        its(:delay) { should eql '144' }
+        its(:delta) { should eql 37 }
+      end
+    end
+  end
 end

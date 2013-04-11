@@ -136,3 +136,7 @@ Wed Apr 10 08:26:04 2013
 
   Added handling of --abc -xyz, where -xyz is the value for the --abc option.
   Expanded tests.
+
+Thu Apr 11 19:14:26 2013
+
+  Added handling of partial tags for Synoption.
