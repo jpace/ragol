@@ -78,5 +78,12 @@ module Synoption
 
     def resolve_value option_set, results, unprocessed
     end
+    
+    def to_s
+      str = ""
+      str << @matchers.tags.to_s if @matchers.tags
+      str << @matchers.regexps.to_s if @matchers.regexps
+      str
+    end
   end
 end

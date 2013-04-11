@@ -83,8 +83,12 @@ module Synoption
 
       if tag_matches.keys.any?
         highest = tag_matches.keys.sort[-1]
-        opt = tag_matches[highest]
-        [ :tag_match, opt.first ]
+        opts = tag_matches[highest]
+        if opts.size > 1
+          optstr = opts.collect { |opt| '(' + opt.to_s + ')' }.join(', ')
+          raise "ambiguous match of '#{arg}'; matches options: #{optstr}"
+        end
+        [ :tag_match, opts.first ]
       elsif negative_match
         [ :negative_match, negative_match ]
       elsif regexp_match

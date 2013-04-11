@@ -317,13 +317,10 @@ describe Synoption::OptionSet do
       end
 
       context "when arguments are conflicting partial" do
-        before :all do
-          pending "not done"
-          process %w{ --del 144 --del 37 }
+        it "should error on ambiguous options" do
+          args = %w{ --del 144 --del 37 }
+          expect { process(args) }.to raise_error(RuntimeError, "ambiguous match of '--del'; matches options: (-d, --delta), (-y, --delay)")
         end
-        
-        its(:delay) { should eql '144' }
-        its(:delta) { should eql 37 }
       end
     end
   end
