@@ -85,7 +85,7 @@ module OptProc
       opt = argslist.next_arg
       md = nil
 
-      unless md = @matchers.regexps && @matchers.regexps.match?(opt)
+      unless md = @matchers.regexp_match?(opt)
         if @argreqtype
           md = take_eq_value(opt) || match_next_value(argslist) || argument_missing
         end
