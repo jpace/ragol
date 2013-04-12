@@ -34,11 +34,6 @@ module Synoption
       true
     end
 
-    def unset results
-      debug "results: #{results}"
-      results.unset_value name
-    end
-
     def set_value results, val
       results.set_value name, val
     end

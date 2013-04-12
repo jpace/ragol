@@ -4,11 +4,11 @@
 require 'logue/loggable'
 require 'ragol/synoption/option'
 require 'ragol/synoption/exception'
-require 'ragol/synoption/list'
 require 'ragol/common/results'
+require 'ragol/common/option_set'
 
 module Synoption
-  class OptionSet < OptionList
+  class OptionSet < Ragol::OptionSet
     include Logue::Loggable
 
     # maps from an OptionSet class to the valid options for that class.
@@ -54,44 +54,7 @@ module Synoption
     
     def unset results, key
       if opt = find_by_name(key)
-        opt.unset(results)
         results.unset_value opt.name
-      end
-    end
-
-    def get_best_match results
-      tag_matches = Hash.new { |h, k| h[k] = Array.new }
-      negative_match = nil
-      regexp_match = nil
-      
-      match_types = Hash.new
-      options.each do |opt|
-        if mt = opt.matchers.match_type?(results.current_arg)
-          case mt[0]
-          when :tag_match
-            tag_matches[mt[1]] << opt
-          when :negative_match
-            negative_match = opt
-          when :regexp_match
-            regexp_match = opt
-          end
-        end
-      end
-
-      if tag_matches.keys.any?
-        highest = tag_matches.keys.sort[-1]
-        opts = tag_matches[highest]
-        if opts.size > 1
-          optstr = opts.collect { |opt| '(' + opt.to_s + ')' }.join(', ')
-          raise "ambiguous match of '#{results.current_arg}'; matches options: #{optstr}"
-        end
-        [ :tag_match, opts.first ]
-      elsif negative_match
-        [ :negative_match, negative_match ]
-      elsif regexp_match
-        [ :regexp_match, regexp_match ]
-      else
-        nil
       end
     end
 

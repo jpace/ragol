@@ -30,10 +30,6 @@ module Ragol
       @regexps and @regexps.match? arg
     end
 
-    def match_score arg
-      (@regexps && @regexps.score(arg)) || (@tags && @tags.score(arg))
-    end
-
     def match_type? arg
       case 
       when tm = tag_match?(arg)
