@@ -1,13 +1,10 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'logue/loggable'
 require 'ragol/common/tags'
 
 module OptProc
   class OptionArguments
-    include Logue::Loggable
-
     TYPES_TO_CLASSES = {
       :boolean => :BooleanOption,
       :string  => :StringOption,
@@ -82,7 +79,7 @@ module OptProc
                 [ :default ]
                ]
       fields.each do |fieldnames|
-        args[fieldnames[0]] = origargs[fieldnames.find { |x| origargs[x] }]
+        args[fieldnames.first] = origargs[fieldnames.find { |x| origargs[x] }]
       end
       
       args
