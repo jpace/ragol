@@ -21,7 +21,7 @@ module OptProc
     end
 
     def initialize(optargs, &blk)
-      @rcnames = optargs.rcnames
+      @rcnames = [ optargs.rcnames ].flatten
       @setter = blk || optargs.process
       @argreqtype = optargs.valuereq
       @matchers = Ragol::Matchers.new optargs.tags, nil, optargs.regexps
@@ -36,10 +36,6 @@ module OptProc
 
     def match_rc? field
       @rcnames && @rcnames.include?(field)
-    end
-
-    def match_score arg
-      @matchers.match_score arg
     end
 
     def do_match val

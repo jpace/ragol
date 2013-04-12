@@ -19,7 +19,7 @@ module Ragol
     end
 
     def tag_match? arg
-      @tags.match? arg
+      @tags and @tags.match? arg
     end
 
     def negative_match? arg

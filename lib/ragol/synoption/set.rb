@@ -1,12 +1,11 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'rubygems'
 require 'logue/loggable'
 require 'ragol/synoption/option'
 require 'ragol/synoption/exception'
 require 'ragol/synoption/list'
-require 'ragol/synoption/results'
+require 'ragol/common/results'
 
 module Synoption
   class OptionSet < OptionList
@@ -61,8 +60,6 @@ module Synoption
     end
 
     def get_best_match results
-      arg = results.current_arg
-
       tag_matches = Hash.new { |h, k| h[k] = Array.new }
       negative_match = nil
       regexp_match = nil
@@ -86,7 +83,7 @@ module Synoption
         opts = tag_matches[highest]
         if opts.size > 1
           optstr = opts.collect { |opt| '(' + opt.to_s + ')' }.join(', ')
-          raise "ambiguous match of '#{arg}'; matches options: #{optstr}"
+          raise "ambiguous match of '#{results.current_arg}'; matches options: #{optstr}"
         end
         [ :tag_match, opts.first ]
       elsif negative_match
@@ -99,7 +96,7 @@ module Synoption
     end
 
     def process args
-      results = Results.new options, args      
+      results = Ragol::Results.new options, args      
       options_processed = Array.new
       
       while !results.args_empty?

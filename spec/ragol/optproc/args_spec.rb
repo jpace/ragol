@@ -46,7 +46,7 @@ describe OptProc::OptionArguments do
           end
 
           it "should have :regexps" do
-            subject[:regexps].should eql [ Regexp.new('^--(\d+)$') ]
+            subject[:regexps].should eql Regexp.new('^--(\d+)$')
           end
         end
       end

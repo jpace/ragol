@@ -3,6 +3,8 @@
 
 require 'ragol/optproc/optset'
 
+Logue::Log.level = Logue::Log::INFO
+
 describe OptProc::OptionSet do
   before :all do
     # ignore what they have in ENV[HOME]    

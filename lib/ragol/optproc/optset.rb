@@ -4,9 +4,12 @@
 require 'ragol/optproc/option'
 require 'ragol/synoption/exception'
 require 'ragol/common/argslist'
+require 'ragol/common/results'
 
 module OptProc
   class OptionSet
+    include Logue::Loggable
+    
     attr_reader :options
     
     def initialize data
@@ -16,17 +19,17 @@ module OptProc
     end
 
     def process args
-      argslist = args.kind_of?(Ragol::ArgsList) ? args : Ragol::ArgsList.new(args)
+      results = Ragol::Results.new Array.new, args
       
-      while !argslist.empty?
-        if argslist.end_of_options?
-          argslist.shift_arg
+      while !results.args_empty?
+        if results.end_of_options?
+          results.shift_arg
           break
-        elsif argslist.current_arg[0] != '-'
+        elsif results.current_arg[0] != '-'
           break
         end
 
-        set_option(argslist)
+        set_option results
       end
     end
 
@@ -39,35 +42,49 @@ module OptProc
       option
     end
 
-    def get_best_match argslist
-      bestmatch = nil
-      bestopts = Array.new
+    def get_best_match results
+      tag_matches = Hash.new { |h, k| h[k] = Array.new }
+      negative_match = nil
+      regexp_match = nil
 
-      @options.each do |option|
-        if score = option.match_score(argslist.current_arg)
-          if score >= 1.0
-            return [ option ]
-          elsif !bestmatch || bestmatch <= score
-            bestmatch = score
-            bestopts << option
+      options.each do |opt|
+        if mt = opt.matchers.match_type?(results.current_arg)
+          case mt[0]
+          when :tag_match
+            tag_matches[mt[1]] << opt
+          when :negative_match
+            negative_match = opt
+          when :regexp_match
+            regexp_match = opt
           end
         end
       end
-      
-      bestmatch && bestopts
+
+      if tag_matches.keys.any?
+        highest = tag_matches.keys.sort[-1]
+        opts = tag_matches[highest]
+        if opts.size > 1
+          optstr = opts.collect { |opt| '(' + opt.to_s + ')' }.join(', ')
+          raise "ambiguous match of '#{results.current_arg}'; matches options: #{optstr}"
+        end
+        return [ :tag_match, opts.first ]
+      elsif negative_match
+        return [ :negative_match, negative_match ]
+      elsif regexp_match
+        return [ :regexp_match, regexp_match ]
+      else
+        return nil
+      end
     end
     
-    def set_option argslist
-      unless bestopts = get_best_match(argslist)
-        raise "option '#{argslist.args[0]}' is not valid"
+    def set_option results
+      type, opt = get_best_match(results.unprocessed)
+
+      unless type
+        raise "option '#{results.current_arg}' is not valid"
       end
       
-      if bestopts.size == 1
-        set_option_value bestopts[0], argslist
-      else
-        optstr = bestopts.collect { |opt| '(' + opt.to_s + ')' }.join(', ')
-        raise "ambiguous match of '#{argslist.args[0]}'; matches options: #{optstr}"
-      end
+      set_option_value opt, results.unprocessed
     end
   end
 end

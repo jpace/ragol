@@ -31,7 +31,9 @@ module OptProc
       :regexps => [ Regexp.new('--fo+'), Regexp.new('--ba*r') ],
       :tags => [ '--foo', '-b' ],
       :arg => [ [ :boolean, :string, :float, :integer, :fixnum, :regexp ], [ :optional, :required, :none ] ],
-      :set => Proc.new { }
+      :set => Proc.new { },
+      :rcnames => [ "foo" ],
+      :rc => [ ]
     }
     
     NEW_OPTIONS = {
@@ -44,32 +46,19 @@ module OptProc
       :process => Proc.new { },
       :postproc => Proc.new { }
     }
-
-    def self.common_element alist, blist
-      (alist & blist)[0]
-    end
     
     def self.convert_arguments origargs
       args = Hash.new
-
-      oldregexpfields = [ :regexps, :regexp, :res, :re ]
-      args[:regexps] = if regexps = oldregexpfields.collect { |field| origargs[field] }.compact[0]
-                         [ regexps ].flatten
-                       else
-                         nil
-                       end
       
-      args[:tags] = origargs[:tags]
-
       if origargs[:arg]
-        if valuetype = common_element(origargs[:arg], TYPES_TO_CLASSES.keys)
+        if valuetype = origargs[:arg].find { |x| TYPES_TO_CLASSES.keys.include?(x) }
           args[:valuetype] = valuetype == :integer ? :fixnum : valuetype
         end
 
         if valuetype == :boolean
           args[:valuereq] = false
         else
-          valuereq = common_element(origargs[:arg], [ :optional, :required, :none ])
+          valuereq = origargs[:arg].find { |x| [ :optional, :required, :none ].include?(x) }
           args[:valuereq] = case valuereq
                             when :optional
                               :optional
@@ -84,10 +73,17 @@ module OptProc
         args[:valuetype] = origargs[:valuetype]
       end
 
-      args[:process] = origargs[:process] || origargs[:set]
-      args[:postproc] = origargs[:postproc]
-      args[:rcnames] = [ origargs[:rcnames] || origargs[:rc] ].flatten
-      args[:default] = origargs[:default]
+      fields = [
+                [ :regexps, :regexp, :res, :re ],
+                [ :tags ],
+                [ :process, :set ],
+                [ :postproc ],
+                [ :rcnames, :rc ],
+                [ :default ]
+               ]
+      fields.each do |fieldnames|
+        args[fieldnames[0]] = origargs[fieldnames.find { |x| origargs[x] }]
+      end
       
       args
     end
@@ -100,11 +96,12 @@ module OptProc
       require 'ragol/optproc/string_option'
 
       newargs = self.class.convert_arguments args
-      
+
+      @rcnames = newargs[:rcnames]
       @valuereq = newargs[:valuereq]
       
       regexps = newargs[:regexps]
-      @regexps = regexps && Ragol::Tags.new([ regexps ].flatten)
+      @regexps = regexps && Ragol::Tags.new(regexps)
       
       tags = newargs[:tags]
       @tags = tags && Ragol::Tags.new(tags)

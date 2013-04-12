@@ -3,7 +3,6 @@
 
 require 'ragol/synoption/option'
 require 'ragol/synoption/set'
-require 'ragol/synoption/results'
 require 'support/option_sets'
 
 Logue::Log.level = Logue::Log::INFO

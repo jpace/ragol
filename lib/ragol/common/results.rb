@@ -1,20 +1,18 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'rubygems'
 require 'logue/loggable'
 require 'ragol/synoption/option'
 require 'ragol/common/argslist'
 
-module Synoption
+module Ragol
   class Results
     include Logue::Loggable
 
     attr_reader :options
-    attr_accessor :unprocessed
     
     def initialize options, args = Array.new
-      @unprocessed = Ragol::ArgsList.new(args)
+      @argslist = Ragol::ArgsList.new(args)
       @values = Hash.new
 
       options.each do |option|
@@ -40,28 +38,32 @@ module Synoption
       @values.delete optname
     end
 
+    def unprocessed
+      @argslist
+    end
+
     def end_of_options?
-      @unprocessed.end_of_options?
+      @argslist.end_of_options?
     end
 
     def args
-      @unprocessed.args
+      @argslist.args
     end
 
     def next_arg
-      @unprocessed.next_arg
+      @argslist.next_arg
     end
 
     def shift_arg
-      @unprocessed.shift_arg
+      @argslist.shift_arg
     end
 
     def args_empty?
-      @unprocessed.args_empty?
+      @argslist.args_empty?
     end
 
     def current_arg
-      @unprocessed.current_arg
+      @argslist.current_arg
     end
   end
 end

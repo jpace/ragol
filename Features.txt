@@ -141,3 +141,8 @@ Thu Apr 11 19:14:26 2013
 
   Added handling of partial tags for Synoption.
   Added detection of ambigous options for Synoption.
+
+Fri Apr 12 18:39:32 2013
+
+  Refined tests.
+
