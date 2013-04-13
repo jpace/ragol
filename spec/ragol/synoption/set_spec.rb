@@ -65,7 +65,7 @@ describe Synoption::OptionSet do
       context "when arguments are invalid" do
         %w{ -y --bar }.each do |tag|
           it "throws error for invalid tag #{tag}" do
-            expect { process [ tag, 'foo' ] }.to raise_error(Synoption::OptionException, "abc: invalid option '#{tag}'")
+            expect { process [ tag, 'foo' ] }.to raise_error(Ragol::OptionException, "abc: invalid option '#{tag}'")
           end
         end
       end

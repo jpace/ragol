@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-module Synoption
+module Ragol
   class OptionException < RuntimeError
   end
 end

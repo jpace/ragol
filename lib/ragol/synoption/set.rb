@@ -3,7 +3,7 @@
 
 require 'logue/loggable'
 require 'ragol/synoption/option'
-require 'ragol/synoption/exception'
+require 'ragol/common/exception'
 require 'ragol/common/results'
 require 'ragol/common/option_set'
 
@@ -91,7 +91,7 @@ module Synoption
       type, opt = get_best_match(results)
       
       unless type
-        raise OptionException.new "#{name}: invalid option '#{results.current_arg}'"
+        raise Ragol::OptionException.new "#{name}: invalid option '#{results.current_arg}'"
       end
 
       [ type, opt ]
