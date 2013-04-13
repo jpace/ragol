@@ -77,19 +77,25 @@ module OptProc
       end
     end
 
-    def set_value results
-      opt = results.next_arg
-      md = nil
+    def set_value_for_tag results
+      arg = results.next_arg
+      md = if @argreqtype
+             take_eq_value(arg) || match_next_value(results) || argument_missing
+           else
+             nil
+           end
 
-      unless md = @matchers.regexp_match?(opt)
-        if @argreqtype
-          md = take_eq_value(opt) || match_next_value(results) || argument_missing
-        end
-      end
-      
+      set_option_value md, arg, results
+    end
+
+    def set_value_regexp results, arg
+      md = @matchers.regexp_match? arg
+      set_option_value md, arg, results
+    end
+
+    def set_option_value md, arg, results
       value = convert md
-      
-      setargs = [ value, opt, results.unprocessed ][0 ... @setter.arity]
+      setargs = [ value, arg, results.unprocessed ][0 ... @setter.arity]
       @setter.call(*setargs)
     end
     

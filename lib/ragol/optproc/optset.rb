@@ -45,7 +45,14 @@ module OptProc
     def set_option results
       type, opt = find_matching_option(results)
 
-      opt.set_value results
+      if type == :regexp_match
+        arg = results.next_arg
+        opt.set_value_regexp results, arg
+      elsif type == :tag_match
+        opt.set_value_for_tag results
+      else
+        nil
+      end
       opt
     end
   end
