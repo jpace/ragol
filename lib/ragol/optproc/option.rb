@@ -98,8 +98,11 @@ module OptProc
 
     def set_option_value md, arg, results
       value = md == true || convert(md)
-      setargs = [ value, arg, results.unprocessed ][0 ... @setter.arity]
-      @setter.call(*setargs)
+      if @setter
+        setargs = [ value, arg, results.unprocessed ][0 ... @setter.arity]
+        @setter.call(*setargs)
+      end
+      results.set_value name, value
     end
     
     def to_s

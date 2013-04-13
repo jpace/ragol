@@ -150,3 +150,5 @@ Sat Apr 13 09:05:49 2013
 
   Refined tests. Added name as parameter to OptionSet.
   Expanded option/optset tests.
+  Added setter/process as optional for OptProc::Option.
+

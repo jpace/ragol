@@ -87,4 +87,19 @@ describe OptProc::Option do
       should eq 17
     end
   end
+
+  describe "option without setter" do
+    def option_data
+      {
+        :tags => %w{ --none },
+        :arg  => [ :none ],
+      }
+    end
+
+    it "should set the results field" do
+      args = %w{ --none xyz }
+      result = process args
+      result.value('none').should be_true
+    end
+  end
 end
