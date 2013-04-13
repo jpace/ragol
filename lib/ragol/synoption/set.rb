@@ -1,16 +1,11 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'logue/loggable'
 require 'ragol/synoption/option'
-require 'ragol/common/exception'
-require 'ragol/common/results'
 require 'ragol/common/option_set'
 
 module Synoption
   class OptionSet < Ragol::OptionSet
-    include Logue::Loggable
-
     # maps from an OptionSet class to the valid options for that class.
     @@options_for_class = Hash.new { |h, k| h[k] = Array.new }
 
@@ -28,7 +23,7 @@ module Synoption
     end
 
     def name
-      @name ||= self.class.to_s.sub(%r{.*?(\w+)OptionSet}, '\1')
+      @name ||= self.class.to_s.sub(%r{.*?(\w+)OptionSet}, '\1').downcase
     end
 
     def add_all_options

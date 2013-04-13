@@ -70,7 +70,7 @@ module Ragol
 
     def find_matching_option results
       type, opt = get_best_match(results)
-      
+
       unless type
         raise OptionException.new "#{name}: invalid option '#{results.current_arg}'"
       end
