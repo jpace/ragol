@@ -289,7 +289,7 @@ describe Synoption::OptionSet do
     end
 
     def process args
-      @results = DdOptionSet.new('dd').process args
+      @results = DdOptionSet.new.process args
     end
 
     subject { @results }

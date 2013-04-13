@@ -11,7 +11,9 @@ module Synoption
       alpha = Synoption::Option.new :alpha, '-a', "first Greek letter",  nil
       charlie = Synoption::Option.new :charlie, '-t', "Charles' nickname", nil, charlie_options
       
-      Synoption::OptionSet.new 'abc', bravo, alpha, charlie
+      optset = Synoption::OptionSet.new bravo, alpha, charlie
+      def optset.name; 'abc'; end
+      optset
     end
 
     # -------------------------------------------------------
@@ -41,7 +43,7 @@ module Synoption
     end
 
     def create_def_option_set
-      DefOptionSet.new 'def'
+      DefOptionSet.new
     end
 
     # -------------------------------------------------------
@@ -64,11 +66,12 @@ module Synoption
     end
 
     def create_defgh_option_set
-      DefghOptionSet.new 'defgh'
+      DefghOptionSet.new
     end
 
     def process_option args
-      optset = Synoption::OptionSet.new 'testing'
+      optset = Synoption::OptionSet.new
+      def optset.name; 'testing'; end
       optset.add create_option
       @results = optset.process args
     end
@@ -92,7 +95,7 @@ module Synoption
     end
 
     def create_fij_option_set
-      FijOptionSet.new 'fij'
+      FijOptionSet.new
     end
   end
 end

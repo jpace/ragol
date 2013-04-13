@@ -22,10 +22,15 @@ module Synoption
       @@options_for_class[cls]
     end
     
-    def initialize(name, *options)
-      super(*options)
-      @name = name
+    def initialize(*options)
+      super
       add_all_options
+    end
+
+    def name
+      @name ||= self.class.to_s.sub(%r{.*?(\w+)OptionSet}, '\1')
+      puts @name
+      @name
     end
 
     def add_all_options
@@ -60,7 +65,7 @@ module Synoption
     end
 
     def process args
-      results = Ragol::Results.new options, args      
+      results = Ragol::Results.new options, args
       options_processed = Array.new
       
       while !results.args_empty?
@@ -86,7 +91,7 @@ module Synoption
       type, opt = get_best_match(results)
       
       unless type
-        raise OptionException.new "#{@name}: invalid option '#{results.current_arg}'"
+        raise OptionException.new "#{name}: invalid option '#{results.current_arg}'"
       end
 
       [ type, opt ]
