@@ -48,12 +48,12 @@ module Synoption
       results.shift_arg
     end
 
-    def set_value_for_tag results
+    def set_value_for_tag results, arg
       val = takes_value? ? next_argument(results) : true
       set_value results, val
     end
 
-    def set_value_negative results
+    def set_value_negative results, arg
       set_value results, false
     end
 

@@ -27,6 +27,10 @@ module OptProc
       @matchers = Ragol::Matchers.new optargs.tags, nil, optargs.regexps
     end
 
+    def name
+      @name ||= (@matchers.tags && @matchers.tags.tags[0].sub(%r{^\-+}, '')) || (@matchers.regexps && @matchers.regexps.tags[0].to_s)
+    end
+
     def value_regexp
     end
 
@@ -100,6 +104,9 @@ module OptProc
     
     def to_s
       @matchers.to_s
+    end
+
+    def post_process optset, results, argslist
     end
   end
 end

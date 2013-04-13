@@ -61,46 +61,5 @@ module Synoption
         results.unset_value opt.name
       end
     end
-
-    def process args
-      results = Ragol::Results.new options, args
-      options_processed = Array.new
-      
-      while !results.args_empty?
-        if results.end_of_options?
-          results.shift_arg
-          break
-        elsif results.current_arg[0] != '-'
-          break
-        end
-
-        opt = set_option(results)
-        options_processed << opt
-      end
-
-      options_processed.each do |opt|
-        opt.post_process self, results, results.args
-      end
-
-      results
-    end
-
-    def set_option results
-      type, opt = find_matching_option(results)
-
-      case type
-      when :tag_match
-        results.next_arg
-        opt.set_value_for_tag results
-      when :negative_match
-        results.next_arg
-        opt.set_value_negative results
-      when :regexp_match
-        arg = results.next_arg
-        opt.set_value_regexp results, arg
-      end
-
-      opt
-    end
   end
 end
