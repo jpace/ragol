@@ -77,8 +77,7 @@ module OptProc
       end
     end
 
-    def set_value_for_tag results
-      arg = results.next_arg
+    def set_value_for_tag results, arg
       md = if @argreqtype
              take_eq_value(arg) || match_next_value(results) || argument_missing
            else

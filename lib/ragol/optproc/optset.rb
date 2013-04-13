@@ -49,7 +49,8 @@ module OptProc
         arg = results.next_arg
         opt.set_value_regexp results, arg
       elsif type == :tag_match
-        opt.set_value_for_tag results
+        arg = results.next_arg
+        opt.set_value_for_tag results, arg
       else
         nil
       end
