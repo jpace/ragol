@@ -82,7 +82,7 @@ module OptProc
       md = if @argreqtype
              take_eq_value(arg) || match_next_value(results) || argument_missing
            else
-             nil
+             true
            end
 
       set_option_value md, arg, results
@@ -94,7 +94,7 @@ module OptProc
     end
 
     def set_option_value md, arg, results
-      value = convert md
+      value = md == true ? true : convert(md)
       setargs = [ value, arg, results.unprocessed ][0 ... @setter.arity]
       @setter.call(*setargs)
     end
