@@ -87,16 +87,6 @@ module Synoption
       results
     end
 
-    def find_matching_option results
-      type, opt = get_best_match(results)
-      
-      unless type
-        raise Ragol::OptionException.new "#{name}: invalid option '#{results.current_arg}'"
-      end
-
-      [ type, opt ]
-    end
-
     def set_option results
       type, opt = find_matching_option(results)
 

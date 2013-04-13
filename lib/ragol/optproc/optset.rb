@@ -2,8 +2,6 @@
 # -*- ruby -*-
 
 require 'ragol/optproc/option'
-require 'ragol/synoption/exception'
-require 'ragol/common/argslist'
 require 'ragol/common/results'
 require 'ragol/common/option_set'
 
@@ -18,6 +16,10 @@ module OptProc
         OptProc::Option.new optdata
       end
       super(*options)
+    end
+
+    def name
+      'testing'
     end
 
     def process args
@@ -41,12 +43,8 @@ module OptProc
     end
     
     def set_option results
-      type, opt = get_best_match(results)
+      type, opt = find_matching_option(results)
 
-      unless type
-        raise "option '#{results.current_arg}' is not valid"
-      end
-      
       opt.set_value results.unprocessed
       opt
     end
