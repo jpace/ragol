@@ -29,8 +29,6 @@ module Synoption
 
     def name
       @name ||= self.class.to_s.sub(%r{.*?(\w+)OptionSet}, '\1')
-      puts @name
-      @name
     end
 
     def add_all_options

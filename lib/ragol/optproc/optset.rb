@@ -45,7 +45,7 @@ module OptProc
     def set_option results
       type, opt = find_matching_option(results)
 
-      opt.set_value results.unprocessed
+      opt.set_value results
       opt
     end
   end

@@ -2,6 +2,7 @@
 # -*- ruby -*-
 
 require 'ragol/common/argslist'
+require 'ragol/optproc/optset'
 
 shared_context "common option" do
   before :all do
@@ -14,6 +15,7 @@ shared_context "common option" do
   let(:option) { OptProc::Option.new option_data }
   
   def process args
-    option.set_value Ragol::ArgsList.new(args)
+    optset = OptProc::OptionSet.new [ option_data ]
+    optset.process args
   end
 end

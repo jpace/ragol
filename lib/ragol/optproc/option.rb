@@ -61,15 +61,15 @@ module OptProc
       end
     end
 
-    def match_next_value argslist
+    def match_next_value results
       if @argreqtype == true
-        val = argslist.shift_arg
+        val = results.shift_arg
         val && do_match(val)
-      elsif val = argslist[0]
+      elsif val = results.current_arg
         if val[0] == '-'
           nil
         else
-          argslist.shift_arg
+          results.shift_arg
           do_match(val)
         end
       else
@@ -77,19 +77,19 @@ module OptProc
       end
     end
 
-    def set_value argslist
-      opt = argslist.next_arg
+    def set_value results
+      opt = results.next_arg
       md = nil
 
       unless md = @matchers.regexp_match?(opt)
         if @argreqtype
-          md = take_eq_value(opt) || match_next_value(argslist) || argument_missing
+          md = take_eq_value(opt) || match_next_value(results) || argument_missing
         end
       end
       
       value = convert md
       
-      setargs = [ value, opt, argslist.args ][0 ... @setter.arity]
+      setargs = [ value, opt, results.unprocessed ][0 ... @setter.arity]
       @setter.call(*setargs)
     end
     

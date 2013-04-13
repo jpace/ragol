@@ -86,12 +86,5 @@ describe OptProc::Option do
       process %w{ -17 }
       should eq 17
     end
-
-    it "takes the regexp value with following -nonoption" do
-      args = %w{ -17 -foo }
-      process args
-      should eq 17
-      args.should eql %w{ -foo }
-    end
   end
 end

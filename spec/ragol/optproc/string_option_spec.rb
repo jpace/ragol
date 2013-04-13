@@ -61,44 +61,5 @@ describe OptProc::StringOption do
         expect { process args }.to raise_error(RuntimeError, "value expected for option: --str")
       end
     end
-
-    describe "optional" do
-      def option_data
-        {
-          :tags => %w{ --sopt },
-          :arg  => [ :string, :optional ],
-          :set  => Proc.new { |v| @value = v }
-        }
-      end
-      
-      it "takes an argument" do
-        process %w{ --sopt xyz }
-        should eq 'xyz'
-      end
-
-      it "takes an argument with =" do
-        process %w{ --sopt=xyz }
-        should eq 'xyz'
-      end
-
-      it "ignores a missing argument" do
-        process %w{ --sopt }
-        should be_nil
-      end
-
-      it "ignores a following --xyz option" do
-        args = %w{ --sopt --xyz }
-        process args
-        should be_nil
-        args.should eql %w{ --xyz }
-      end
-
-      it "ignores a following -x option" do
-        args = %w{ --sopt -x }
-        process args
-        should be_nil
-        args.should eql %w{ -x }
-      end
-    end
   end
 end
