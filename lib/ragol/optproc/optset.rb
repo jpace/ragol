@@ -41,7 +41,7 @@ module OptProc
     end
     
     def set_option results
-      type, opt = get_best_match(results.unprocessed)
+      type, opt = get_best_match(results)
 
       unless type
         raise "option '#{results.current_arg}' is not valid"

@@ -11,9 +11,7 @@ module Synoption
       alpha = Synoption::Option.new :alpha, '-a', "first Greek letter",  nil
       charlie = Synoption::Option.new :charlie, '-t', "Charles' nickname", nil, charlie_options
       
-      optset = Synoption::OptionSet.new bravo, alpha, charlie
-      def optset.name; 'abc'; end
-      optset
+      Synoption::OptionSet.new 'abc', bravo, alpha, charlie
     end
 
     # -------------------------------------------------------
@@ -40,14 +38,10 @@ module Synoption
       has_option :echo, EchoOption
       has_option :delta, DeltaOption
       has_option :foxtrot, FoxtrotOption
-
-      def name
-        'def'
-      end
     end
 
     def create_def_option_set
-      DefOptionSet.new
+      DefOptionSet.new 'def'
     end
 
     # -------------------------------------------------------
@@ -67,20 +61,15 @@ module Synoption
     class DefghOptionSet < DefOptionSet
       has_option :golf, GolfOption
       has_option :hotel, HotelOption
-
-      def name
-        'defgh'
-      end
     end
 
     def create_defgh_option_set
-      DefghOptionSet.new
+      DefghOptionSet.new 'defgh'
     end
 
     def process_option args
-      optset = Synoption::OptionSet.new
+      optset = Synoption::OptionSet.new 'testing'
       optset.add create_option
-      def optset.name; 'testing'; end
       @results = optset.process args
     end
     
@@ -100,14 +89,10 @@ module Synoption
       has_option :foxtrot, FoxtrotOption
       has_option :india, IndiaOption
       has_option :juliet, JulietOption
-
-      def name
-        'fij'
-      end
     end
 
     def create_fij_option_set
-      FijOptionSet.new
+      FijOptionSet.new 'fij'
     end
   end
 end

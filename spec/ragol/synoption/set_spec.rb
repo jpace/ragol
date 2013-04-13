@@ -65,7 +65,7 @@ describe Synoption::OptionSet do
       context "when arguments are invalid" do
         %w{ -y --bar }.each do |tag|
           it "throws error for invalid tag #{tag}" do
-            expect { process [ tag, 'foo' ] }.to raise_error(Synoption::OptionException, "option '#{tag}' invalid for abc")
+            expect { process [ tag, 'foo' ] }.to raise_error(Synoption::OptionException, "abc: invalid option '#{tag}'")
           end
         end
       end
@@ -286,13 +286,10 @@ describe Synoption::OptionSet do
     class DdOptionSet < Synoption::OptionSet
       has_option :delta, Synoption::OptionTestSets::DeltaOption
       has_option :delay, DelayOption
-      def name
-        'dd'
-      end
     end
 
     def process args
-      @results = DdOptionSet.new.process args
+      @results = DdOptionSet.new('dd').process args
     end
 
     subject { @results }

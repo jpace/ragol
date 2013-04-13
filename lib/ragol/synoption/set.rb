@@ -22,8 +22,9 @@ module Synoption
       @@options_for_class[cls]
     end
     
-    def initialize(*options)
-      super
+    def initialize(name, *options)
+      super(*options)
+      @name = name
       add_all_options
     end
 
@@ -81,12 +82,18 @@ module Synoption
       results
     end
 
-    def set_option results
+    def find_matching_option results
       type, opt = get_best_match(results)
       
       unless type
-        raise OptionException.new "option '#{results.current_arg}' invalid for #{name}"
+        raise OptionException.new "#{@name}: invalid option '#{results.current_arg}'"
       end
+
+      [ type, opt ]
+    end
+
+    def set_option results
+      type, opt = find_matching_option(results)
 
       case type
       when :tag_match
