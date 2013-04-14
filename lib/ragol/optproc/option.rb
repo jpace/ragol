@@ -45,7 +45,7 @@ module OptProc
         val && do_match(val)
       elsif val = results.current_arg
         if val[0] == '-'
-          nil
+          true
         else
           results.shift_arg
           do_match(val)

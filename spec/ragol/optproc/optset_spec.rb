@@ -432,7 +432,7 @@ describe OptProc::OptionSet do
     it "ignores a following --abc option" do
       args = %w{ --sopt --abc }
       process args
-      @strval.should be_nil
+      @strval.should be_true
       @abc.should be_true
       args.should be_empty
     end
@@ -440,7 +440,7 @@ describe OptProc::OptionSet do
     it "ignores a following -a option" do
       args = %w{ --sopt -a }
       process args
-      @strval.should be_nil
+      @strval.should be_true
       @abc.should be_true
       args.should be_empty
     end

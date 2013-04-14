@@ -324,7 +324,7 @@ describe Synoption::OptionSet do
 
   context "when argument is optional" do
     def process args
-      @results = create_jk_option_set.process args
+      @results = create_ik_option_set.process args
     end
 
     subject { @results }
@@ -333,12 +333,21 @@ describe Synoption::OptionSet do
       it "matches #{val} with no following argument" do
         process [ val ]
         @results.kilo.should == nil
+        @results.india.should be_false
         @results.unprocessed.should be_empty
       end
 
       it "matches #{val} with following argument" do
         process [ val, 'abc' ]
         @results.kilo.should eql 'abc'
+        @results.india.should be_false
+        @results.unprocessed.should be_empty
+      end
+
+      it "matches #{val} with following option" do
+        process [ val, '-i' ]
+        @results.kilo.should eql true
+        @results.india.should be_true
         @results.unprocessed.should be_empty
       end
     end

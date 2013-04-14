@@ -104,13 +104,13 @@ module Synoption
       end
     end
     
-    class JkOptionSet < Synoption::OptionSet
-      has_option :juliet, JulietOption
+    class IkOptionSet < Synoption::OptionSet
+      has_option :india, IndiaOption
       has_option :kilo, KiloOption
     end
 
-    def create_jk_option_set
-      JkOptionSet.new
+    def create_ik_option_set
+      IkOptionSet.new
     end
   end
 end
