@@ -3,31 +3,22 @@
 
 require 'logue/loggable'
 require 'ragol/synoption/doc'
-require 'ragol/common/matchers'
-require 'ragol/common/matcher'
+require 'ragol/common/option'
 
 module Synoption
-  class Option
+  class Option < Ragol::Option
     include Logue::Loggable
 
-    attr_reader :default
     attr_reader :description
-    attr_reader :matchers
-    attr_reader :name
     attr_reader :tag
 
     def initialize name, tag, description, default, options = Hash.new
-      @name = name
       @tag = tag
       @description = description
-      @value = @default = default
+      @value = default
 
-      tags = Ragol::Matcher.new [ tag, '--' + name.to_s.gsub('_', '-') ]
-      negates = options[:negate] && Ragol::Matcher.new(options[:negate])
-      regexps = options[:regexp] && Ragol::Matcher.new(options[:regexp])
-
-      @matchers = Ragol::Matchers.new tags, negates, regexps
-      @unsets = options[:unsets]
+      tags = [ tag, '--' + name.to_s.gsub('_', '-') ]
+      super name, default, tags, options[:negate], options[:regexp], options[:unsets]
     end
 
     def takes_value?
@@ -72,21 +63,6 @@ module Synoption
     def set_value_regexp results, arg
       md = @matchers.regexp_match? arg
       set_value results, md[0]
-    end
-
-    def post_process option_set, results, unprocessed
-      resolve_value option_set, results, unprocessed
-
-      if @unsets
-        option_set.unset results, @unsets
-      end
-    end
-
-    def resolve_value option_set, results, unprocessed
-    end
-    
-    def to_s
-      @matchers.to_s
     end
   end
 end
