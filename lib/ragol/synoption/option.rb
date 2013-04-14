@@ -49,19 +49,19 @@ module Synoption
               true
             end
       
-      set_option_value results, val
+      set_option_value val, results
     end
 
     def set_value_negative results, arg
-      set_option_value results, false
+      set_option_value false, results
     end
 
     def set_value_regexp results, arg
       md = @matchers.regexp_match? arg
-      set_option_value results, md[0]
+      set_option_value md[0], results
     end
 
-    def set_option_value results, val
+    def set_option_value val, results
       results.set_value name, val
     end
   end
