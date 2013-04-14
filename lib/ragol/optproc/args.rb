@@ -12,16 +12,16 @@ module OptProc
       :regexp  => :RegexpOption
     }
     
-    attr_reader :tags
-    attr_reader :regexps
+    attr_reader :default
     attr_reader :option_class
-    attr_reader :process
     attr_reader :postproc
+    attr_reader :process
     attr_reader :rcnames
+    attr_reader :regexps
+    attr_reader :tags
+    attr_reader :unsets
     attr_reader :valuereq
     attr_reader :valuetype
-    attr_reader :default
-    attr_reader :unsets
 
     OLD_OPTIONS = {
       :regexps => [ Regexp.new('--fo+'), Regexp.new('--ba*r') ],
