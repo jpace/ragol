@@ -25,7 +25,7 @@ module OptProc
       @rcnames = [ optargs.rcnames ].flatten
       @setter = blk || optargs.process
       @argreqtype = optargs.valuereq
-      @matchers = Ragol::Matchers.new optargs.tags, nil, optargs.regexps
+      # @matchers = Ragol::Matchers.new optargs.tags, nil, optargs.regexps
       @unsets = optargs.unsets
 
       super 'name', nil, optargs.tags, nil, optargs.regexps, optargs.unsets
