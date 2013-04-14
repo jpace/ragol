@@ -39,5 +39,24 @@ module Ragol
     def to_s
       @matchers.to_s
     end
+
+    def value_regexp
+    end
+
+    def convert md
+      md
+    end
+
+    def do_match val
+      valuere = value_regexp
+      if valuere
+        unless md = valuere.match(val)
+          raise "invalid argument '#{val}' for option: #{self}"
+        end
+        md
+      else
+        val
+      end
+    end
   end
 end

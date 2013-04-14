@@ -30,28 +30,9 @@ module OptProc
     def name
       @matchers.name
     end
-    
-    def value_regexp
-    end
-
-    def convert md
-      md
-    end
 
     def match_rc? field
       @rcnames && @rcnames.include?(field)
-    end
-
-    def do_match val
-      valuere = value_regexp
-      if valuere
-        unless md = valuere.match(val)
-          raise "invalid argument '#{val}' for option: #{self}"
-        end
-        md
-      else
-        val
-      end
     end
 
     def takes_value?
