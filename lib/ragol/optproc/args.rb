@@ -1,8 +1,6 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/common/matcher'
-
 module OptProc
   class OptionArguments
     TYPES_TO_CLASSES = {
@@ -99,11 +97,8 @@ module OptProc
       @rcnames = newargs[:rcnames]
       @valuereq = newargs[:valuereq]
       
-      regexps = newargs[:regexps]
-      @regexps = regexps && Ragol::Matcher.new(regexps)
-      
-      tags = newargs[:tags]
-      @tags = tags && Ragol::Matcher.new(tags)
+      @regexps = newargs[:regexps]
+      @tags = newargs[:tags]
       
       opttype = newargs[:valuetype]
       clssym = TYPES_TO_CLASSES[opttype]

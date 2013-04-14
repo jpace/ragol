@@ -3,7 +3,6 @@
 
 require 'logue/loggable'
 require 'ragol/optproc/args'
-require 'ragol/common/matchers'
 require 'ragol/common/option'
 
 module OptProc
@@ -25,10 +24,9 @@ module OptProc
       @rcnames = [ optargs.rcnames ].flatten
       @setter = blk || optargs.process
       @argreqtype = optargs.valuereq
-      @matchers = Ragol::Matchers.new optargs.tags, nil, optargs.regexps
       @unsets = optargs.unsets
 
-      super 'name', nil, optargs.tags, nil, optargs.regexps, optargs.unsets
+      super nil, nil, optargs.tags, nil, optargs.regexps, optargs.unsets
     end
 
     def name
@@ -111,21 +109,6 @@ module OptProc
         @setter.call(*setargs)
       end
       results.set_value name, value
-    end
-    
-    def to_s
-      @matchers.to_s
-    end
-
-    def post_process option_set, results, argslist
-      resolve_value option_set, results, argslist
-
-      if @unsets
-        option_set.unset results, @unsets
-      end
-    end
-
-    def resolve_value option_set, results, unprocessed
     end
   end
 end
