@@ -35,41 +35,16 @@ module Synoption
       doc.to_doc io
     end
 
-    def match_next_value results
-      if takes_value? == true
-        val = results.shift_arg
-        val && do_match(val)
-      elsif val = results.current_arg
-        if val[0] == '-'
-          true
-        else
-          results.shift_arg
-          do_match(val)
-        end
-      else
-        nil
-      end
-    end
-
-    def set_value_for_tag results, arg
-      val = if takes_value?
-              take_eq_value(arg) || match_next_value(results) || argument_missing
-            else
-              true
-            end
-      set_option_value val, results
-    end
-
     def set_value_negative results, arg
-      set_option_value false, results
+      set_option_value false, arg, results
     end
 
     def set_value_regexp results, arg
       md = @matchers.regexp_match? arg
-      set_option_value md[0], results
+      set_option_value md[0], arg, results
     end
 
-    def set_option_value md, results
+    def set_option_value md, arg, results
       val = md == true ? true : convert(md)
       results.set_value name, val
     end

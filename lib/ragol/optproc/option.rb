@@ -39,32 +39,6 @@ module OptProc
       @argreqtype
     end
 
-    def match_next_value results
-      if takes_value? == true
-        val = results.shift_arg
-        val && do_match(val)
-      elsif val = results.current_arg
-        if val[0] == '-'
-          true
-        else
-          results.shift_arg
-          do_match(val)
-        end
-      else
-        nil
-      end
-    end
-
-    def set_value_for_tag results, arg
-      md = if takes_value?
-             take_eq_value(arg) || match_next_value(results) || argument_missing
-           else
-             true
-           end
-
-      set_option_value md, arg, results
-    end
-
     def set_value_regexp results, arg
       md = @matchers.regexp_match? arg
       set_option_value md, arg, results
