@@ -118,5 +118,11 @@ module Ragol
 
       results
     end
+    
+    def unset results, key
+      if opt = find_by_name(key)
+        results.unset_value opt.name
+      end
+    end
   end
 end

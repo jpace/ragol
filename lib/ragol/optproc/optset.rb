@@ -25,11 +25,5 @@ module OptProc
     def process_option argslist
       set_option argslist
     end
-    
-    def unset results, key
-      if opt = find_by_name(key)
-        results.unset_value opt.name
-      end
-    end
   end
 end
