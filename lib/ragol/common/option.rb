@@ -58,5 +58,10 @@ module Ragol
         val
       end
     end
+
+    def take_eq_value opt
+      val = opt.split('=', 2)[1]
+      val && do_match(val)
+    end
   end
 end

@@ -39,11 +39,6 @@ module OptProc
       @argreqtype
     end
 
-    def take_eq_value opt
-      val = opt.split('=', 2)[1]
-      val && do_match(val)
-    end
-
     def argument_missing
       if takes_value? == true
         raise "value expected for option: #{self}"

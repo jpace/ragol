@@ -30,11 +30,6 @@ module Synoption
       doc.to_doc io
     end
 
-    def take_eq_value opt
-      val = opt.split('=', 2)[1]
-      val && do_match(val)
-    end
-
     def next_argument results
       if results.args_empty?
         raise "value expected for option: #{self}"
