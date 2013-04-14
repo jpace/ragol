@@ -24,8 +24,6 @@ module OptProc
       @rcnames = [ optargs.rcnames ].flatten
       @setter = blk || optargs.process
       @argreqtype = optargs.valuereq
-      @unsets = optargs.unsets
-
       super nil, nil, optargs.tags, nil, optargs.regexps, optargs.unsets
     end
 
