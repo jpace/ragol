@@ -13,7 +13,7 @@ module Synoption
     end
     
     def convert md
-      md[1].to_i
+      md[-1].to_i
     end
   end
 end

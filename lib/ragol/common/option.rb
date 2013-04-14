@@ -92,7 +92,6 @@ module Ragol
            else
              true
            end
-
       set_option_value md, arg, results
     end
   end

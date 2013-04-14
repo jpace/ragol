@@ -58,10 +58,7 @@ module Ragol
     end
 
     def to_s
-      str = ""
-      str << @tags.to_s if @tags
-      str << @regexps.to_s if @regexps
-      str
+      [ @tags, @regexps ].compact.collect { |x| x.to_s }.join(' ')
     end
   end
 end
