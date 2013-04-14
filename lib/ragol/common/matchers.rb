@@ -46,13 +46,13 @@ module Ragol
     def name
       @name ||= begin
                   if @tags
-                    if longtag = @tags.tags.find { |t| t[0, 2] == '--' }
+                    if longtag = @tags.elements.find { |t| t[0, 2] == '--' }
                       longtag.sub(%r{^--}, '')
                     else
                       @tags[0][1 .. -1]
                     end
                   elsif @regexps
-                    @regexps.tags[0].to_s
+                    @regexps.elements[0].to_s
                   end
                 end
     end

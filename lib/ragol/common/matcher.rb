@@ -7,24 +7,24 @@ module Ragol
   class Matcher
     include Logue::Loggable
     
-    attr_reader :tags
+    attr_reader :elements
     
     def initialize tags
-      @tags = [ tags ].flatten.compact
+      @elements = [ tags ].flatten.compact
     end
 
     def find_match opt
       tag = opt.split('=', 2)[0] || opt
 
-      @tags.each do |t|
-        if t.kind_of?(Regexp)
-          if md = t.match(tag)
+      @elements.each do |elmt|
+        if elmt.kind_of?(Regexp)
+          if md = elmt.match(tag)
             return [ :regexp, md ]
           end
-        elsif tag.length > t.length
+        elsif tag.length > elmt.length
           next 
-        elsif idx = t.index(tag)
-          score = tag.length == t.length ? 1.0 : tag.length * 0.01
+        elsif idx = elmt.index(tag)
+          score = tag.length == elmt.length ? 1.0 : tag.length * 0.01
           return [ :string, score ]
         end
       end
@@ -42,7 +42,7 @@ module Ragol
    end
 
     def to_s
-      @tags.join(', ')
+      @elements.join(', ')
     end
   end
 end

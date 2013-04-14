@@ -28,7 +28,7 @@ module Synoption
 
     def to_doc_negate
       doc = nil
-      @option.matchers.negatives.tags.each do |neg|
+      @option.matchers.negatives.elements.each do |neg|
         str = if neg.kind_of? Regexp
                 str = re_to_string neg
               else
