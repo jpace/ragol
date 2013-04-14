@@ -127,6 +127,20 @@ describe Synoption::Option do
       end
     end
 
+    context "when it has matching --tag=value and no following arguments" do
+      before :all do
+        process_option %w{ --xyz=foo }
+      end
+      
+      it "should change the option value" do
+        @results.xyz.should eql 'foo'
+      end
+
+      it "should take the arguments" do
+        @results.unprocessed.should be_empty
+      end
+    end
+
     context "when it has matching tag and a following argument" do
       before :all do
         process_option %w{ --xyz foo bar }

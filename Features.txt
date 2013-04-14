@@ -155,3 +155,4 @@ Sat Apr 13 09:05:49 2013
 Sun Apr 14 09:33:11 2013
 
   Added unsets to OptProc::Option.
+  Added --tag=value to Synoption::Option.

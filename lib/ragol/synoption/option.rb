@@ -43,13 +43,18 @@ module Synoption
       doc.to_doc io
     end
 
+    def take_eq_value opt
+      val = opt.split('=', 2)[1]
+      val
+    end
+
     def next_argument results
       raise "option #{name} expects following argument" if results.args_empty?
       results.shift_arg
     end
 
     def set_value_for_tag results, arg
-      val = takes_value? ? next_argument(results) : true
+      val = takes_value? ? (take_eq_value(arg) || next_argument(results)) : true
       set_value results, val
     end
 
