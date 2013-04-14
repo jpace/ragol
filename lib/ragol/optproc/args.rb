@@ -23,6 +23,7 @@ module OptProc
     attr_reader :valuereq
     attr_reader :valuetype
     attr_reader :default
+    attr_reader :unsets
 
     OLD_OPTIONS = {
       :regexps => [ Regexp.new('--fo+'), Regexp.new('--ba*r') ],
@@ -76,7 +77,8 @@ module OptProc
                 [ :process, :set ],
                 [ :postproc ],
                 [ :rcnames, :rc ],
-                [ :default ]
+                [ :default ],
+                [ :unsets, :unset ],
                ]
       fields.each do |fieldnames|
         args[fieldnames.first] = origargs[fieldnames.find { |x| origargs[x] }]
@@ -113,6 +115,7 @@ module OptProc
       @option_class = optcls
       @default = newargs[:default]
       @process = newargs[:process]
+      @unsets = newargs[:unsets]
     end
   end
 end

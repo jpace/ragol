@@ -152,3 +152,6 @@ Sat Apr 13 09:05:49 2013
   Expanded option/optset tests.
   Added setter/process as optional for OptProc::Option.
 
+Sun Apr 14 09:33:11 2013
+
+  Added unsets to OptProc::Option.

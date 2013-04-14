@@ -355,6 +355,32 @@ describe OptProc::OptionSet do
         args.should eql %w{ foo }
       end
     end
+
+    context "when one option unsets another" do
+      def option_set_data
+        optdata = Array.new
+        optdata << {
+          :tags => %w{ -a --abc },
+          :set  => Proc.new { @abc = true },
+          :unset => 'xyz',
+        }
+        @xyz = false
+        optdata << {
+          :tags => %w{ -x --xyz },
+          :set  => Proc.new { @xyz = true }
+        }
+        optdata
+      end
+
+      it "should unset option" do
+        args = %w{ --abc --xyz }
+        results = optset.process args
+        @abc.should == true
+        results.value('xyz').should be_nil
+        # @xyz.should == false
+        args.should be_empty
+      end
+    end
   end
 
   describe "#process" do

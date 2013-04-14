@@ -25,12 +25,23 @@ module OptProc
       @setter = blk || optargs.process
       @argreqtype = optargs.valuereq
       @matchers = Ragol::Matchers.new optargs.tags, nil, optargs.regexps
+      @unsets = optargs.unsets
     end
 
     def name
-      @name ||= (@matchers.tags && @matchers.tags.tags[0].sub(%r{^\-+}, '')) || (@matchers.regexps && @matchers.regexps.tags[0].to_s)
+      @name ||= begin
+                  if @matchers.tags
+                    if longtag = @matchers.tags.tags.find { |t| t[0, 2] == '--' }
+                      longtag.sub(%r{^--}, '')
+                    else
+                      @matchers.tags[0][1 .. -1]
+                    end
+                  elsif @matchers.regexps
+                    @matchers.regexps.tags[0].to_s
+                  end
+                end
     end
-
+    
     def value_regexp
     end
 
@@ -109,7 +120,15 @@ module OptProc
       @matchers.to_s
     end
 
-    def post_process optset, results, argslist
+    def post_process option_set, results, argslist
+      resolve_value option_set, results, argslist
+
+      if @unsets
+        option_set.unset results, @unsets
+      end
+    end
+
+    def resolve_value option_set, results, unprocessed
     end
   end
 end
