@@ -42,7 +42,7 @@ describe Synoption::FixnumOption do
     valid_tags.each do |tag|
       it "raises error without required argument for tag #{tag}" do
         args = [ tag ]
-        expect { process_option(args) }.to raise_error(RuntimeError, "option delta expects following argument")
+        expect { process_option(args) }.to raise_error(RuntimeError, "value expected for option: -d, --delta")
       end
     end
   end

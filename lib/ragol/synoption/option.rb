@@ -49,12 +49,20 @@ module Synoption
     end
 
     def next_argument results
-      raise "option #{name} expects following argument" if results.args_empty?
+      if results.args_empty?
+        raise "value expected for option: #{self}"
+      end
+      # raise "option #{name} expects following argument" if results.args_empty?
       results.shift_arg
     end
 
     def set_value_for_tag results, arg
-      val = takes_value? ? (take_eq_value(arg) || next_argument(results)) : true
+      val = if takes_value?
+              take_eq_value(arg) || next_argument(results)
+            else
+              true
+            end
+      
       set_value results, val
     end
 

@@ -44,7 +44,7 @@ describe Synoption::FloatOption do
     valid_tags.each do |tag|
       it "raises error without required argument for tag #{tag}" do
         args = [ tag ]
-        expect { process_option(args) }.to raise_error(RuntimeError, "option hotel expects following argument")
+        expect { process_option(args) }.to raise_error(RuntimeError, "value expected for option: -h, --hotel")
       end
     end
   end
