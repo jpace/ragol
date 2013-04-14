@@ -4,9 +4,10 @@
 require 'logue/loggable'
 require 'ragol/optproc/args'
 require 'ragol/common/matchers'
+require 'ragol/common/option'
 
 module OptProc
-  class Option
+  class Option < Ragol::Option
     include Logue::Loggable
 
     attr_reader :matchers
@@ -26,6 +27,8 @@ module OptProc
       @argreqtype = optargs.valuereq
       @matchers = Ragol::Matchers.new optargs.tags, nil, optargs.regexps
       @unsets = optargs.unsets
+
+      super 'name', nil, optargs.tags, nil, optargs.regexps, optargs.unsets
     end
 
     def name
