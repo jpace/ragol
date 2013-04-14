@@ -52,7 +52,6 @@ module Synoption
       if results.args_empty?
         raise "value expected for option: #{self}"
       end
-      # raise "option #{name} expects following argument" if results.args_empty?
       results.shift_arg
     end
 

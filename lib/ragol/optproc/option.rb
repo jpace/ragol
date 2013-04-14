@@ -55,19 +55,23 @@ module OptProc
       end
     end
 
+    def takes_value?
+      @argreqtype
+    end
+
     def take_eq_value opt
       val = opt.split('=', 2)[1]
       val && do_match(val)
     end
 
     def argument_missing
-      if @argreqtype == true
+      if takes_value? == true
         raise "value expected for option: #{self}"
       end
     end
 
     def match_next_value results
-      if @argreqtype == true
+      if takes_value? == true
         val = results.shift_arg
         val && do_match(val)
       elsif val = results.current_arg
@@ -83,7 +87,7 @@ module OptProc
     end
 
     def set_value_for_tag results, arg
-      md = if @argreqtype
+      md = if takes_value?
              take_eq_value(arg) || match_next_value(results) || argument_missing
            else
              true
