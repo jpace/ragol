@@ -24,10 +24,6 @@ module Synoption
     def takes_value?
       true
     end
-
-    def set_value results, val
-      results.set_value name, val
-    end
       
     def to_doc io
       doc = Doc.new self
@@ -53,16 +49,20 @@ module Synoption
               true
             end
       
-      set_value results, val
+      set_option_value results, val
     end
 
     def set_value_negative results, arg
-      set_value results, false
+      set_option_value results, false
     end
 
     def set_value_regexp results, arg
       md = @matchers.regexp_match? arg
-      set_value results, md[0]
+      set_option_value results, md[0]
+    end
+
+    def set_option_value results, val
+      results.set_value name, val
     end
   end
 end

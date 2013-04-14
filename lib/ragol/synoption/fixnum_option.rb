@@ -10,7 +10,7 @@ module Synoption
       val.to_i
     end
 
-    def set_value results, val
+    def set_option_value results, val
       super results, val && val.to_i
     end
   end
