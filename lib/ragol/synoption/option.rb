@@ -21,6 +21,25 @@ module Synoption
       super name, default, tags, options[:negate], options[:regexp], options[:unsets]
     end
 
+    def value_regexp
+    end
+
+    def convert md
+      md
+    end
+
+    def do_match val
+      valuere = value_regexp
+      if valuere
+        unless md = valuere.match(val)
+          raise "invalid argument '#{val}' for option: #{self}"
+        end
+        md
+      else
+        val
+      end
+    end
+
     def takes_value?
       true
     end
@@ -32,14 +51,14 @@ module Synoption
 
     def take_eq_value opt
       val = opt.split('=', 2)[1]
-      val
+      val && do_match(val)
     end
 
     def next_argument results
       if results.args_empty?
         raise "value expected for option: #{self}"
       end
-      results.shift_arg
+      do_match results.shift_arg
     end
 
     def set_value_for_tag results, arg
@@ -48,7 +67,6 @@ module Synoption
             else
               true
             end
-      
       set_option_value val, results
     end
 
@@ -59,10 +77,6 @@ module Synoption
     def set_value_regexp results, arg
       md = @matchers.regexp_match? arg
       set_option_value md[0], results
-    end
-
-    def convert md
-      md
     end
 
     def set_option_value md, results

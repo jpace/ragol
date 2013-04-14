@@ -6,8 +6,14 @@ require 'ragol/synoption/option'
 module Synoption
   # An option that has a fixnum (integer) as its value.
   class FixnumOption < Option
-    def convert val
-      val.to_i
+    REGEXP = Regexp.new '^ ([\-\+]?\d+) $ ', Regexp::EXTENDED
+    
+    def value_regexp
+      REGEXP
+    end
+    
+    def convert md
+      md[1].to_i
     end
   end
 end

@@ -262,7 +262,7 @@ describe Synoption::OptionSet do
 
           context "second invocation" do
             before :all do
-              process %w{ --hotel 8.881bar }
+              process %w{ --hotel 8.881 bar }
             end
             
             its(:delta) { should eql 317 }

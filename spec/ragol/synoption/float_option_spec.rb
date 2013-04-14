@@ -41,6 +41,14 @@ describe Synoption::FloatOption do
       end
     end
 
+    context "with --tag=value" do
+      before :all do
+        process_option %w{ --hotel=21.34 }
+      end
+      
+      its(:hotel) { should == 21.34 }
+    end
+    
     valid_tags.each do |tag|
       it "raises error without required argument for tag #{tag}" do
         args = [ tag ]
