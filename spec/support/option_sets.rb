@@ -97,5 +97,20 @@ module Synoption
     def create_fij_option_set
       FijOptionSet.new
     end
+
+    class KiloOption < Synoption::Option
+      def initialize 
+        super :kilo, '-k', "amount of dust", nil, { :valuereq => :optional }
+      end
+    end
+    
+    class JkOptionSet < Synoption::OptionSet
+      has_option :juliet, JulietOption
+      has_option :kilo, KiloOption
+    end
+
+    def create_jk_option_set
+      JkOptionSet.new
+    end
   end
 end

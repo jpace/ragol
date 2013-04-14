@@ -16,13 +16,18 @@ module Synoption
       @tag = tag
       @description = description
       @value = default
+      @valuereq = if options.has_key?(:valuereq)
+                    options[:valuereq]
+                  else
+                    true
+                  end
 
       tags = [ tag, '--' + name.to_s.gsub('_', '-') ]
       super name, default, tags, options[:negate], options[:regexp], options[:unsets]
     end
 
     def takes_value?
-      true
+      @valuereq
     end
       
     def to_doc io
