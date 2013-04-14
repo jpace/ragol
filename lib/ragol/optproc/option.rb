@@ -29,17 +29,7 @@ module OptProc
     end
 
     def name
-      @name ||= begin
-                  if @matchers.tags
-                    if longtag = @matchers.tags.tags.find { |t| t[0, 2] == '--' }
-                      longtag.sub(%r{^--}, '')
-                    else
-                      @matchers.tags[0][1 .. -1]
-                    end
-                  elsif @matchers.regexps
-                    @matchers.regexps.tags[0].to_s
-                  end
-                end
+      @matchers.name
     end
     
     def value_regexp

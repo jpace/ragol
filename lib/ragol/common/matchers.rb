@@ -43,6 +43,20 @@ module Ragol
       end
     end
 
+    def name
+      @name ||= begin
+                  if @tags
+                    if longtag = @tags.tags.find { |t| t[0, 2] == '--' }
+                      longtag.sub(%r{^--}, '')
+                    else
+                      @tags[0][1 .. -1]
+                    end
+                  elsif @regexps
+                    @regexps.tags[0].to_s
+                  end
+                end
+    end
+
     def to_s
       str = ""
       str << @tags.to_s if @tags
