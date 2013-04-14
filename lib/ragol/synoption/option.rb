@@ -31,15 +31,13 @@ module Synoption
     end
 
     def next_argument results
-      if results.args_empty?
-        raise "value expected for option: #{self}"
-      end
-      do_match results.shift_arg
+      val = results.shift_arg
+      val && do_match(val)
     end
 
     def set_value_for_tag results, arg
       val = if takes_value?
-              take_eq_value(arg) || next_argument(results)
+              take_eq_value(arg) || next_argument(results) || argument_missing
             else
               true
             end

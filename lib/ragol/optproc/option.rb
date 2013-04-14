@@ -39,12 +39,6 @@ module OptProc
       @argreqtype
     end
 
-    def argument_missing
-      if takes_value? == true
-        raise "value expected for option: #{self}"
-      end
-    end
-
     def match_next_value results
       if takes_value? == true
         val = results.shift_arg
