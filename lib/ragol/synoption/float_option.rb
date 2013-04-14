@@ -6,8 +6,8 @@ require 'ragol/synoption/option'
 module Synoption
   # An option that has a float as its value.
   class FloatOption < Option
-    def set_option_value val, results
-      super val && val.to_f, results
+    def convert val
+      super val.to_f
     end
   end
 end

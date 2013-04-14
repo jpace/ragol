@@ -61,7 +61,12 @@ module Synoption
       set_option_value md[0], results
     end
 
-    def set_option_value val, results
+    def convert md
+      md
+    end
+
+    def set_option_value md, results
+      val = md == true ? true : convert(md)
       results.set_value name, val
     end
   end
