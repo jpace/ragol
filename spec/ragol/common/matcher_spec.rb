@@ -1,14 +1,14 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/common/tags'
+require 'ragol/common/matcher'
 
 Logue::Log.level = Logue::Log::INFO
 
-describe Ragol::Tags do
+describe Ragol::Matcher do
   describe "#score" do
     before :all do
-      @tags = Ragol::Tags.new [ '-x', '--foo', Regexp.new('^--no-?bar') ]
+      @tags = Ragol::Matcher.new [ '-x', '--foo', Regexp.new('^--no-?bar') ]
     end
 
     subject { @tags }

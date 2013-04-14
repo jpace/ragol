@@ -4,7 +4,7 @@
 require 'logue/loggable'
 require 'ragol/synoption/doc'
 require 'ragol/common/matchers'
-require 'ragol/common/tags'
+require 'ragol/common/matcher'
 
 module Synoption
   class Option
@@ -22,9 +22,9 @@ module Synoption
       @description = description
       @value = @default = default
 
-      tags = Ragol::Tags.new [ tag, '--' + name.to_s.gsub('_', '-') ]
-      negates = options[:negate] && Ragol::Tags.new(options[:negate])
-      regexps = options[:regexp] && Ragol::Tags.new(options[:regexp])
+      tags = Ragol::Matcher.new [ tag, '--' + name.to_s.gsub('_', '-') ]
+      negates = options[:negate] && Ragol::Matcher.new(options[:negate])
+      regexps = options[:regexp] && Ragol::Matcher.new(options[:regexp])
 
       @matchers = Ragol::Matchers.new tags, negates, regexps
       @unsets = options[:unsets]

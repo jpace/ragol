@@ -1,11 +1,10 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'rubygems'
 require 'logue/loggable'
 
 module Ragol
-  class Tags
+  class Matcher
     include Logue::Loggable
     
     attr_reader :tags
