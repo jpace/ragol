@@ -55,6 +55,11 @@ describe OptProc::Option do
       process %w{ --xyz abc }
       should eq 'abc'
     end
+
+    it "takes an argument with equals" do
+      process %w{ --xyz=abc }
+      should eq 'abc'
+    end
   end
 
   describe "option with both tags and regexps" do
