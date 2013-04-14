@@ -19,36 +19,24 @@ module Synoption
     
     def initialize(*options)
       super
-      add_all_options
+
+      cls = self.class
+      while cls <= OptionSet
+        opts = self.class.options_for_class(cls)
+        
+        opts.each do |option|
+          args = option[:args]
+          opt = option[:class].new(*args)
+          
+          add opt
+        end
+        
+        cls = cls.superclass
+      end
     end
 
     def name
       @name ||= self.class.to_s.sub(%r{.*?(\w+)OptionSet}, '\1').downcase
-    end
-
-    def add_all_options
-      cls = self.class
-      while cls <= OptionSet
-        add_options_for_class cls
-        cls = cls.superclass
-      end
-    end
-    
-    def add_options_for_class cls
-      opts = self.class.options_for_class(cls)
-
-      opts.each do |option|
-        add_option option
-      end
-    end
-
-    def add_option option
-      name = option[:name]
-      cls = option[:class]
-      args = option[:args]
-      opt = cls.new(*args)
-      
-      add opt
     end
   end
 end
