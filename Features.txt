@@ -157,3 +157,7 @@ Sun Apr 14 09:33:11 2013
   Added unsets to OptProc::Option.
   Added --tag=value to Synoption::Option.
   Added :valuereq (true, :optional, false) to Synoption::Option.
+
+Mon Apr 15 19:51:33 2013
+
+  Split test specs into smaller units.

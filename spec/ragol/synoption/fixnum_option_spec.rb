@@ -5,7 +5,7 @@ require 'ragol/synoption/fixnum_option'
 require 'ragol/synoption/set'
 require 'support/option_sets'
 
-# Logue::Log.level = Logue::Log::INFO
+Logue::Log.level = Logue::Log::INFO
 
 describe Synoption::FixnumOption do
   include Synoption::OptionTestSets
