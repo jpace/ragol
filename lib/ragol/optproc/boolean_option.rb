@@ -1,10 +1,10 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/optproc/tag_option'
+require 'ragol/optproc/option'
 
 module OptProc
-  class BooleanOption < TagOption
+  class BooleanOption < Option
     def value_regexp
       nil
     end

@@ -13,7 +13,8 @@ module Synoption
     end
     
     def convert md
-      md[-1].to_i
+      return unless val = md && md[-1]
+      val.to_i
     end
   end
 end
