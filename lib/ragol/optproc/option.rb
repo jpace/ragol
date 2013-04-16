@@ -22,9 +22,8 @@ module OptProc
 
     def initialize(optargs, &blk)
       @rcnames = [ optargs.rcnames ].flatten
-      @process = blk || optargs.process
-      @argreqtype = optargs.valuereq
-      super nil, nil, optargs.tags, nil, optargs.regexps, optargs.unsets, @process
+      process = blk || optargs.process
+      super nil, nil, optargs.tags, nil, optargs.regexps, optargs.unsets, process, optargs.valuereq
     end
 
     def name
@@ -36,7 +35,7 @@ module OptProc
     end
 
     def takes_value?
-      @argreqtype
+      super
     end
   end
 end

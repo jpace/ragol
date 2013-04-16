@@ -13,7 +13,7 @@ module Ragol
     attr_reader :default
     attr_reader :matchers
     
-    def initialize name, default, tags, negates, regexps, unsets, process
+    def initialize name, default, tags, negates, regexps, unsets, process, takesvalue
       @name = name
       @default = default
 
@@ -24,6 +24,11 @@ module Ragol
       @matchers = Ragol::Matchers.new tagsmatch, negatesmatch, regexpsmatch
       @unsets = unsets
       @process = process
+      @takesvalue = takesvalue
+    end
+
+    def takes_value?
+      @takesvalue
     end
 
     def post_process option_set, results, unprocessed
