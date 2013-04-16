@@ -38,19 +38,5 @@ module OptProc
     def takes_value?
       @argreqtype
     end
-
-    def set_value_regexp results, arg
-      md = @matchers.regexp_match? arg
-      set_option_value md, arg, results
-    end
-
-    def set_option_value md, arg, results
-      value = md == true || convert(md)
-      if @process
-        setargs = [ value, arg, results.unprocessed ][0 ... @process.arity]
-        @process.call(*setargs)
-      end
-      results.set_value name, value
-    end
   end
 end

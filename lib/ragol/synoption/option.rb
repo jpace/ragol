@@ -34,19 +34,5 @@ module Synoption
       doc = Doc.new self
       doc.to_doc io
     end
-
-    def set_value_negative results, arg
-      set_option_value false, arg, results
-    end
-
-    def set_value_regexp results, arg
-      md = @matchers.regexp_match? arg
-      set_option_value md, arg, results
-    end
-
-    def set_option_value md, arg, results
-      val = md == true ? true : convert(md)
-      results.set_value name, val
-    end
   end
 end
