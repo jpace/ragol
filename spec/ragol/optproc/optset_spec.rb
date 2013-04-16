@@ -11,39 +11,46 @@ describe OptProc::OptionSet do
     ENV['HOME'] = '/this/should/not/exist'
   end
 
+  def add_abc_opt optdata
+    @abc = false
+    optdata << {
+      :tags => %w{ -a --abc },
+      :set  => Proc.new { @abc = true }
+    }
+  end
+
+  def add_xyz_opt optdata
+    @xyz = false
+    optdata << {
+      :tags => %w{ -x --xyz },
+      :set  => Proc.new { @xyz = true }
+    }
+  end
+
+  def abc
+    @abc
+  end
+
+  def xyz
+    @xyz
+  end
+
+  let(:optset) do
+    optdata = option_data
+    OptProc::OptionSet.new optdata
+  end
+
   describe "#process" do
-    let(:optset) do
-      optdata = option_set_data
-      OptProc::OptionSet.new optdata
-    end
-    
-    subject { optset }
-    
     def process args
       optset.process args
     end
 
     context "when two options are defined" do
-      def option_set_data
+      def option_data
         optdata = Array.new
-        optdata << {
-          :tags => %w{ -a --abc },
-          :set  => Proc.new { @abc = true }
-        }
-        @xyz = false
-        optdata << {
-          :tags => %w{ -x --xyz },
-          :set  => Proc.new { @xyz = true }
-        }
+        add_abc_opt optdata
+        add_xyz_opt optdata
         optdata
-      end
-
-      def abc
-        @abc
-      end
-
-      def xyz
-        @xyz
       end
 
       context "when argument is invalid" do
@@ -166,25 +173,22 @@ describe OptProc::OptionSet do
     end
 
     context "when number and short options are defined" do
-      def option_set_data
+      def option_data
         optdata = Array.new
+        @val = nil
         optdata << {
           :regexp => Regexp.new('^-(\d+)'),
           :arg => [ :integer ],
-          :set  => Proc.new { |val| @abc = val }
+          :set  => Proc.new { |val| @val = val }
         }
-        @xyz = false
-        optdata << {
-          :tags => %w{ -x --xyz },
-          :set  => Proc.new { |val| @xyz = true }
-        }
+        add_xyz_opt optdata
         optdata
       end
 
       it "should split short args when number is first" do
         args = %w{ -123x }
         optset.process args
-        @abc.should eql 123
+        @val.should eql 123
         @xyz.should be_true
         args.should be_empty
       end
@@ -192,111 +196,92 @@ describe OptProc::OptionSet do
       it "should split short args when number is first" do
         args = %w{ -x123 }
         optset.process args
-        @abc.should eql 123
+        @val.should eql 123
         @xyz.should be_true
         args.should be_empty
       end
     end
 
     context "when options are incomplete" do
-      def option_set_data
-        @abc_executed = false
+      def option_data
         optdata = Array.new
-        optdata << {
-          :tags => %w{ --abc },
-          :set  => Proc.new { @abc_executed = true }
-        }
-        @abcdef_executed = false
+        add_abc_opt optdata
+
+        @abcdef = false
         optdata << {
           :tags => %w{ --abcdef },
-          :set  => Proc.new { @abcdef_executed = true }
+          :set  => Proc.new { @abcdef = true }
         }
-        @ghi_executed = false
-        optdata << {
-          :tags => %w{ --ghi },
-          :set  => Proc.new { @ghi_executed = true }
-        }
+
+        add_xyz_opt optdata
         optdata
-      end
-
-      def abc
-        @abc_executed
-      end
-
-      def abcdef
-        @abcdef_executed
-      end
-
-      def ghi
-        @ghi_executed
       end
 
       it "should use the full unambiguous option" do
         args = %w{ --abc }
         process args
         abc.should be_true
-        abcdef.should be_false
-        ghi.should be_false
+        @abcdef.should be_false
+        xyz.should be_false
       end
 
       it "should use the short unambiguous option" do
-        args = %w{ --gh }
+        args = %w{ --xy }
         process args
         abc.should be_false
-        abcdef.should be_false
-        ghi.should be_true
+        @abcdef.should be_false
+        xyz.should be_true
       end
 
       it "should error on ambiguous options" do
         args = %w{ --ab }
-        expect { process(args) }.to raise_error(RuntimeError, "ambiguous match of '--ab'; matches options: (--abc), (--abcdef)")
+        expect { process(args) }.to raise_error(RuntimeError, "ambiguous match of '--ab'; matches options: (-a, --abc), (--abcdef)")
       end
     end
 
     context "when regexp" do
-      def option_set_data
-        @abc_value = nil
+      def option_data
+        @value = nil
         optdata = Array.new
         optdata << {
           :res => %r{ ^ - ([1-9]\d*) $ }x,
-          :set => Proc.new { |val| @abc_value = val },
+          :set => Proc.new { |val| @value = val },
         }
         optdata
       end
 
-      subject { @abc_value }
+      subject { @value }
 
       it "should match" do
         args = %w{ -123 }
         process args
         should be_a_kind_of(MatchData)
-        @abc_value[1].should eql '123'
+        subject[1].should eql '123'
       end
     end
 
     context "when one option unsets another" do
-      def option_set_data
+      def option_data
         optdata = Array.new
+        @ghi = nil
         optdata << {
-          :tags => %w{ -a --abc },
-          :set  => Proc.new { @abc = true },
+          :tags => %w{ -g --ghi },
+          :set  => Proc.new { @ghi = true },
           :unset => 'xyz',
         }
-        @xyz = false
-        optdata << {
-          :tags => %w{ -x --xyz },
-          :set  => Proc.new { @xyz = true }
-        }
+        add_xyz_opt optdata
         optdata
       end
 
-      it "should unset option" do
-        args = %w{ --abc --xyz }
-        results = optset.process args
-        @abc.should == true
-        results.value('xyz').should be_nil
-        # @xyz.should == false
-        args.should be_empty
+      [ %w{ --ghi --xyz }, %w{ --xyz --ghi } ].each do |args|
+        it "should unset option for #{args}" do
+          results = optset.process args
+          @ghi.should == true
+          results.value('xyz').should be_nil
+          # this doesn't work, because there is no 'unset' block to call.
+          # @xyz.should == false
+          args.should be_empty
+        end
       end
     end
   end
@@ -311,20 +296,9 @@ describe OptProc::OptionSet do
         :set  => Proc.new { |v| @strval = v }
       }
       
-      @abc = false
-      optdata << {
-        :tags => %w{ -a --abc },
-        :set  => Proc.new { @abc = true }
-      }
+      add_abc_opt optdata
       optdata
     end
-    
-    let(:optset) do
-      optdata = option_data
-      OptProc::OptionSet.new optdata
-    end
-    
-    subject { optset }
     
     def process args
       optset.process args
@@ -375,20 +349,9 @@ describe OptProc::OptionSet do
         :set  => Proc.new { |val, opt, args| @reval = val || 2 },
       }
       
-      @abc = false
-      optdata << {
-        :tags => %w{ -a --abc },
-        :set  => Proc.new { @abc = true }
-      }
+      add_abc_opt optdata
       optdata
     end
-    
-    let(:optset) do
-      optdata = option_data
-      OptProc::OptionSet.new optdata
-    end
-    
-    subject { optset }
     
     def process args
       optset.process args
