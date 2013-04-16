@@ -11,51 +11,6 @@ describe OptProc::OptionSet do
     ENV['HOME'] = '/this/should/not/exist'
   end
 
-  describe "#new" do
-    let(:optset) do
-      optdata = option_set_data
-      OptProc::OptionSet.new optdata
-    end
-    
-    subject { optset }
-    
-    context "when one option" do
-      def option_set_data
-        optdata = Array.new
-        optdata << {
-          :tags => %w{ -a --abc },
-          :set  => Proc.new { |x| }
-        }
-        optdata
-      end
-      
-      it "should match the passed option" do
-        should have(1).options
-      end
-    end
-
-    context "when two options" do
-      def option_set_data
-        optdata = Array.new
-        optdata << {
-          :tags => %w{ -a --abc },
-          :set  => Proc.new { |x| }
-        }
-
-        optdata << {
-          :tags => %w{ -d --def },
-          :set  => Proc.new { |x| }
-        }
-
-        optdata
-      end
-
-      it "with two passed options" do
-        should have(2).options
-      end
-    end
-  end
-
   describe "#process" do
     let(:optset) do
       optdata = option_set_data
@@ -66,47 +21,6 @@ describe OptProc::OptionSet do
     
     def process args
       optset.process args
-    end
-    
-    context "when one option is defined" do
-      def option_set_data
-        @executed = false
-        optdata = Array.new
-        optdata << {
-          :tags => %w{ -a --abc },
-          :set  => Proc.new { @executed = true }
-        }
-        optdata
-      end
-
-      subject { @executed }
-
-      it "should use the long arg" do
-        process %w{ --abc }
-        should be_true
-      end  
-
-      it "should use the short arg" do
-        process %w{ -a }
-        should be_true
-      end
-
-      it "should error on invalid long arg" do
-        args = %w{ --ghi }
-        expect { optset.process args }.to raise_error(Ragol::OptionException, "testing: invalid option '--ghi'")
-      end
-
-      it "should error on invalid short arg" do
-        args = %w{ -d }
-        expect { optset.process args }.to raise_error(Ragol::OptionException, "testing: invalid option '-d'")
-      end
-
-      it "should leave one unprocessed argument" do
-        args = %w{ -a something }
-        process args
-        args.should have(1).items
-        args[0].should eql 'something'
-      end
     end
 
     context "when two options are defined" do
@@ -130,6 +44,18 @@ describe OptProc::OptionSet do
 
       def xyz
         @xyz
+      end
+
+      context "when argument is invalid" do
+        it "should error on invalid long arg" do
+          args = %w{ --ghi }
+          expect { optset.process args }.to raise_error(Ragol::OptionException, "testing: invalid option '--ghi'")
+        end
+
+        it "should error on invalid short arg" do
+          args = %w{ -d }
+          expect { optset.process args }.to raise_error(Ragol::OptionException, "testing: invalid option '-d'")
+        end
       end
 
       describe "first option" do
