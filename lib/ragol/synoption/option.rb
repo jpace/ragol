@@ -23,7 +23,7 @@ module Synoption
                   end
 
       tags = [ tag, '--' + name.to_s.gsub('_', '-') ]
-      super name, default, tags, options[:negate], options[:regexp], options[:unsets]
+      super name, default, tags, options[:negate], options[:regexp], options[:unsets], options[:process]
     end
 
     def takes_value?

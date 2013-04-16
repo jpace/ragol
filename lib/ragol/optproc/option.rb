@@ -22,9 +22,9 @@ module OptProc
 
     def initialize(optargs, &blk)
       @rcnames = [ optargs.rcnames ].flatten
-      @setter = blk || optargs.process
+      @process = blk || optargs.process
       @argreqtype = optargs.valuereq
-      super nil, nil, optargs.tags, nil, optargs.regexps, optargs.unsets
+      super nil, nil, optargs.tags, nil, optargs.regexps, optargs.unsets, @process
     end
 
     def name
@@ -46,9 +46,9 @@ module OptProc
 
     def set_option_value md, arg, results
       value = md == true || convert(md)
-      if @setter
-        setargs = [ value, arg, results.unprocessed ][0 ... @setter.arity]
-        @setter.call(*setargs)
+      if @process
+        setargs = [ value, arg, results.unprocessed ][0 ... @process.arity]
+        @process.call(*setargs)
       end
       results.set_value name, value
     end
