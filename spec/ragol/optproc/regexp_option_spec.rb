@@ -70,11 +70,9 @@ describe "regexp option" do
       }
     end
 
-    it "does not convert value" do
+    it "should return the last capture" do
       process %w{ --xy }
-      @regexp_value.should be_kind_of(MatchData)
-      @regexp_value[0].should eql '--xy'
-      @regexp_value[1].should eql 'xy'
+      @regexp_value.should eql 'xy'
     end
   end
 end

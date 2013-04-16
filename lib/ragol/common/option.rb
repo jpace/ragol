@@ -44,7 +44,7 @@ module Ragol
     end
 
     def convert md
-      md
+      md.kind_of?(MatchData) ? md[-1] : md
     end
 
     def do_match val

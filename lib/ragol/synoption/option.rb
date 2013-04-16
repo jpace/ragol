@@ -41,7 +41,7 @@ module Synoption
 
     def set_value_regexp results, arg
       md = @matchers.regexp_match? arg
-      set_option_value md[-1], arg, results
+      set_option_value md, arg, results
     end
 
     def set_option_value md, arg, results

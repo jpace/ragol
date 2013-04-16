@@ -255,8 +255,7 @@ describe OptProc::OptionSet do
       it "should match" do
         args = %w{ -123 }
         process args
-        should be_a_kind_of(MatchData)
-        subject[1].should eql '123'
+        subject.should eql '123'
       end
     end
 
@@ -307,13 +306,13 @@ describe OptProc::OptionSet do
     it "takes an argument" do
       process %w{ --sopt xyz }
       @strval.should eq 'xyz'
-      @abc.should be_false
+      abc.should be_false
     end
 
     it "takes an argument with =" do
       process %w{ --sopt=xyz }
       @strval.should eq 'xyz'
-      @abc.should be_false
+      abc.should be_false
     end
 
     it "ignores a missing argument" do
@@ -325,7 +324,7 @@ describe OptProc::OptionSet do
       args = %w{ --sopt --abc }
       process args
       @strval.should be_true
-      @abc.should be_true
+      abc.should be_true
       args.should be_empty
     end
 
@@ -333,7 +332,7 @@ describe OptProc::OptionSet do
       args = %w{ --sopt -a }
       process args
       @strval.should be_true
-      @abc.should be_true
+      abc.should be_true
       args.should be_empty
     end
   end
@@ -381,7 +380,7 @@ describe OptProc::OptionSet do
       args = %w{ -17 -a }
       process args
       @reval.should eq 17
-      @abc.should be_true
+      abc.should be_true
       args.should be_empty
     end
   end
