@@ -146,6 +146,22 @@ describe OptProc::OptionSet do
           xyz.should be_true
           args.should eql %w{ foo }
         end
+
+        it "sets option preceding --" do
+          args = %w{ --abc -- foo }
+          optset.process args
+          abc.should == true
+          xyz.should == false
+          args.should eql %w{ foo }
+        end
+
+        it "ignores option after --" do
+          args = %w{ --abc -- --xyz foo }
+          optset.process args
+          abc.should == true
+          xyz.should == false
+          args.should eql %w{ --xyz foo }
+        end
       end
     end
 
@@ -255,30 +271,6 @@ describe OptProc::OptionSet do
         process args
         should be_a_kind_of(MatchData)
         @abc_value[1].should eql '123'
-      end
-    end
-
-    context "when arguments contain double dash" do
-      def option_set_data
-        optdata = Array.new
-        optdata << {
-          :tags => %w{ -a --abc },
-          :set  => Proc.new { @abc = true }
-        }
-        @xyz = false
-        optdata << {
-          :tags => %w{ -x --xyz },
-          :set  => Proc.new { @xyz = true }
-        }
-        optdata
-      end
-
-      it "sets option preceding --" do
-        args = %w{ --abc -- foo }
-        optset.process args
-        @abc.should == true
-        @xyz.should == false
-        args.should eql %w{ foo }
       end
     end
 
