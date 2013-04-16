@@ -1,14 +1,11 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'logue/loggable'
 require 'ragol/synoption/doc'
 require 'ragol/common/option'
 
 module Synoption
   class Option < Ragol::Option
-    include Logue::Loggable
-
     attr_reader :description
     attr_reader :tag
 

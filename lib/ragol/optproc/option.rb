@@ -1,16 +1,11 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'logue/loggable'
 require 'ragol/optproc/args'
 require 'ragol/common/option'
 
 module OptProc
   class Option < Ragol::Option
-    include Logue::Loggable
-
-    attr_reader :matchers
-
     class << self
       alias_method :old_new, :new
       def new(*args, &blk)
