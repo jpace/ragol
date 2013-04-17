@@ -165,3 +165,7 @@ Mon Apr 15 19:51:33 2013
 Tue Apr 16 08:58:41 2013
 
   Simplified tests.
+
+Wed Apr 17 18:39:10 2013
+
+  Cleaned up tests.

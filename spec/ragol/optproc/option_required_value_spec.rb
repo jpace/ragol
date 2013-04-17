@@ -7,7 +7,7 @@ require 'ragol/optproc/common'
 Logue::Log.level = Logue::Log::INFO
 
 describe OptProc::Option do
-  include_context "common option"
+  include_context "common optproc"
 
   describe "option with required argument, without type" do
     def option_data

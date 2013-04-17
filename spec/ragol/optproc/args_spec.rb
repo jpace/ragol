@@ -3,8 +3,7 @@
 
 require 'ragol/optproc/option'
 require 'ragol/optproc/common'
-
-Logue::Log.level = Logue::Log::INFO
+require 'ragol/common'
 
 describe OptProc::OptionArguments do
   describe ".convert_arguments" do

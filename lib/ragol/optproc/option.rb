@@ -32,5 +32,10 @@ module OptProc
     def takes_value?
       super
     end
+      
+    def to_doc io
+      doc = Doc.new self
+      doc.to_doc io
+    end
   end
 end

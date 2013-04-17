@@ -7,7 +7,7 @@ require 'ragol/optproc/common'
 Logue::Log.level = Logue::Log::INFO
 
 describe OptProc::FloatOption do
-  include_context "common option"
+  include_context "common optproc"
 
   context "argument" do
     def option_data

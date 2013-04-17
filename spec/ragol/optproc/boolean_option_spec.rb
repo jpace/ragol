@@ -7,7 +7,7 @@ require 'ragol/optproc/common'
 Logue::Log.level = Logue::Log::INFO
 
 describe OptProc::BooleanOption do
-  include_context "common option"
+  include_context "common optproc"
 
   context "argument" do
     def option_data
@@ -33,6 +33,11 @@ describe OptProc::BooleanOption do
       process args
       should eq true
       args.size.should == 1
+    end
+
+    it "should have documentation" do
+      pending "not implemented"
+
     end
   end
 end

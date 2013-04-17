@@ -2,15 +2,9 @@
 # -*- ruby -*-
 
 require 'ragol/optproc/optproc'
-
-Logue::Log.level = Logue::Log::INFO
+require 'ragol/common'
 
 describe "regexp option" do
-  before :all do
-    # ignore what they have in ENV[HOME]    
-    ENV['HOME'] = '/this/should/not/exist'
-  end
-
   def create_set optdata
     @optset = OptProc::OptionSet.new optdata
   end

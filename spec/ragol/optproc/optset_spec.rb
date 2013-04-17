@@ -2,38 +2,11 @@
 # -*- ruby -*-
 
 require 'ragol/optproc/optset'
-
-Logue::Log.level = Logue::Log::INFO
+require 'ragol/common'
+require 'ragol/optproc/common'
 
 describe OptProc::OptionSet do
-  before :all do
-    # ignore what they have in ENV[HOME]    
-    ENV['HOME'] = '/this/should/not/exist'
-  end
-
-  def add_abc_opt optdata
-    @abc = false
-    optdata << {
-      :tags => %w{ -a --abc },
-      :set  => Proc.new { @abc = true }
-    }
-  end
-
-  def add_xyz_opt optdata
-    @xyz = false
-    optdata << {
-      :tags => %w{ -x --xyz },
-      :set  => Proc.new { @xyz = true }
-    }
-  end
-
-  def abc
-    @abc
-  end
-
-  def xyz
-    @xyz
-  end
+  include_context "common optproc"
 
   let(:optset) do
     optdata = option_data
