@@ -36,8 +36,12 @@ describe OptProc::BooleanOption do
     end
 
     it "should have documentation" do
-      pending "not implemented"
-
+      opt = OptProc::Option.new option_data
+      sio = StringIO.new
+      opt.to_doc sio
+      exp = String.new
+      exp << "  --bool                   : none\n"
+      sio.string.should eql exp
     end
   end
 end

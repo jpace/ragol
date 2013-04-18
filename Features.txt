@@ -169,3 +169,8 @@ Tue Apr 16 08:58:41 2013
 Wed Apr 17 18:39:10 2013
 
   Cleaned up tests.
+
+Thu Apr 18 07:16:44 2013
+
+  Added doc to OptProc option.
+

@@ -31,7 +31,7 @@ describe Synoption::Option do
         sio = StringIO.new
         option.to_doc sio
         exp = String.new
-        exp << "  -l [--limit] ARG         : the number of log entries\n"
+        exp << "  -l, --limit ARG          : the number of log entries\n"
         exp << "                               default: 777\n"
         sio.string.should eql exp
       end
@@ -46,7 +46,7 @@ describe Synoption::Option do
         sio = StringIO.new
         option.to_doc sio
         exp = String.new
-        exp << "  -l [--limit] ARG         : the number of log entries\n"
+        exp << "  -l, --limit ARG          : the number of log entries\n"
         exp << "                               default: 777\n"
         exp << "  --no-limit                 \n"
         sio.string.should eql exp

@@ -14,7 +14,9 @@ module Synoption
     end
 
     def to_doc_tag
-      tagline = "#{@option.tag} [--#{@option.name}]"
+      tags = @option.matchers.tags.elements
+      longopts, shortopts = tags.partition { |tag| tag[0 .. 1] == '--' }
+      tagline = [ shortopts, longopts ].flatten.join ', '
       if @option.takes_value?
         tagline << " ARG"
       end

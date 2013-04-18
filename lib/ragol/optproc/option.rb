@@ -3,9 +3,12 @@
 
 require 'ragol/optproc/args'
 require 'ragol/common/option'
+require 'ragol/synoption/doc'
 
 module OptProc
   class Option < Ragol::Option
+    attr_reader :description
+
     class << self
       alias_method :old_new, :new
       def new(*args, &blk)
@@ -18,6 +21,7 @@ module OptProc
     def initialize(optargs, &blk)
       @rcnames = [ optargs.rcnames ].flatten
       process = blk || optargs.process
+      @description = 'none'
       super nil, nil, optargs.tags, nil, optargs.regexps, optargs.unsets, process, optargs.valuereq
     end
 
@@ -34,7 +38,7 @@ module OptProc
     end
       
     def to_doc io
-      doc = Doc.new self
+      doc = Synoption::Doc.new self
       doc.to_doc io
     end
   end
