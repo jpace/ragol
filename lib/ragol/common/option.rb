@@ -4,6 +4,7 @@
 require 'logue/loggable'
 require 'ragol/common/matcher'
 require 'ragol/common/matchers'
+require 'ragol/common/doc'
 
 module Ragol
   class Option
@@ -117,6 +118,11 @@ module Ragol
         @process.call(*setargs)
       end
       results.set_value name, value
+    end
+      
+    def to_doc io
+      doc = Ragol::Doc.new self
+      doc.to_doc io
     end
   end
 end

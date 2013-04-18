@@ -3,7 +3,6 @@
 
 require 'ragol/optproc/args'
 require 'ragol/common/option'
-require 'ragol/common/doc'
 
 module OptProc
   class Option < Ragol::Option
@@ -31,15 +30,6 @@ module OptProc
 
     def match_rc? field
       @rcnames && @rcnames.include?(field)
-    end
-
-    def takes_value?
-      super
-    end
-      
-    def to_doc io
-      doc = Ragol::Doc.new self
-      doc.to_doc io
     end
   end
 end
