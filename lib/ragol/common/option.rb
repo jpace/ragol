@@ -15,15 +15,15 @@ module Ragol
     attr_reader :description
     attr_reader :matchers
     
-    def initialize name, default, options = Hash.new
+    def initialize options = Hash.new
       tagsmatch = to_matcher options[:tags]
       negatesmatch = to_matcher options[:negates]
       regexpsmatch = to_matcher options[:regexps]
 
       @matchers = Ragol::Matchers.new tagsmatch, negatesmatch, regexpsmatch
-      @name = name || @matchers.name
+      @name = options[:name] || @matchers.name
 
-      @default = default
+      @default = options[:default]
       @unsets = options[:unsets]
       @process = options[:process]
       @takesvalue = options[:takesvalue]

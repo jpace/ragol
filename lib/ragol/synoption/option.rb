@@ -18,8 +18,10 @@ module Synoption
       optargs[:negates] ||= options[:negate]
       optargs[:tags] = [ tag, '--' + name.to_s.gsub('_', '-') ]
       optargs[:description] = description
+      optargs[:name] = name
+      optargs[:default] = default
       
-      super name, default, optargs
+      super optargs
     end
   end
 end

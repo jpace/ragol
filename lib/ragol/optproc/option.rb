@@ -28,12 +28,5 @@ module OptProc
         optcls.old_new(optargs)
       end
     end
-
-    def initialize(optargs)
-      tag = nil
-      name = nil
-      
-      super tag, name, optargs
-    end
   end
 end
