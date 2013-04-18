@@ -31,7 +31,8 @@ module OptProc
       :valuetype => [ :boolean, :string, :float, :integer, :fixnum, :regexp ],
       :default => nil,
       :process => Proc.new { |val| },
-      :postproc => Proc.new { |optset, results, unprocessed| }
+      :postproc => Proc.new { |optset, results, unprocessed| },
+      :description => "a description"
     }
     
     def initialize origargs = Hash.new
@@ -58,6 +59,7 @@ module OptProc
                 [ :rcnames, :rc ],
                 [ :default ],
                 [ :unsets, :unset ],
+                [ :description ],
                ]
       Ragol::HashUtil.copy_hash self, origargs, fields
     end

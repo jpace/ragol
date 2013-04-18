@@ -14,7 +14,8 @@ describe OptProc::BooleanOption do
       {
         :tags => %w{ --bool },
         :arg  => [ :boolean ],
-        :set  => Proc.new { |val| @value = true }
+        :set  => Proc.new { |val| @value = true },
+        :description => "this is something",
       }      
     end
 
@@ -40,7 +41,7 @@ describe OptProc::BooleanOption do
       sio = StringIO.new
       opt.to_doc sio
       exp = String.new
-      exp << "  --bool                   : none\n"
+      exp << "  --bool                   : this is something\n"
       sio.string.should eql exp
     end
   end

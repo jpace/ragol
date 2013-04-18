@@ -12,11 +12,10 @@ module Ragol
 
     attr_reader :name
     attr_reader :default
+    attr_reader :description
     attr_reader :matchers
     
     def initialize name, default, options = Hash.new
-      @default = default
-
       tagsmatch = to_matcher options[:tags]
       negatesmatch = to_matcher options[:negates]
       regexpsmatch = to_matcher options[:regexps]
@@ -24,10 +23,12 @@ module Ragol
       @matchers = Ragol::Matchers.new tagsmatch, negatesmatch, regexpsmatch
       @name = name || @matchers.name
 
+      @default = default
       @unsets = options[:unsets]
       @process = options[:process]
       @takesvalue = options[:takesvalue]
       @rcnames = [ options[:rcnames] ].flatten
+      @description = options[:description]
     end
 
     def match_rc? field

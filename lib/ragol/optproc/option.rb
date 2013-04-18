@@ -7,17 +7,6 @@ require 'ragol/common/option'
 module OptProc
   class Option < Ragol::Option
     include Logue::Loggable
-    
-    TYPES_TO_CLASSES = {
-      :boolean => :BooleanOption,
-      :string  => :StringOption,
-      :float   => :FloatOption,
-      :integer => :FixnumOption,
-      :fixnum  => :FixnumOption,
-      :regexp  => :RegexpOption
-    }
-
-    attr_reader :description
 
     class << self
       alias_method :old_new, :new
@@ -26,9 +15,11 @@ module OptProc
         optargs[:process] = blk if blk
 
         opttype = optargs[:valuetype]
-        clssym = TYPES_TO_CLASSES[opttype]
-        optcls = if clssym
-                   'ragol/optproc/' + clssym.to_s.sub('Option', '_option').downcase
+        clstype = OptionArguments::VAR_TYPES[opttype]
+        optcls = if clstype
+                   clsstr = clstype.to_s
+                   'ragol/optproc/' + clsstr + '_option'
+                   clssym = (clsstr.capitalize + 'Option').to_sym
                    OptProc.const_get(clssym)
                  else
                    Option
@@ -39,8 +30,6 @@ module OptProc
     end
 
     def initialize(optargs)
-      @description = 'none'
-
       tag = nil
       name = nil
       
