@@ -6,27 +6,45 @@ require 'ragol/common/option'
 
 module OptProc
   class Option < Ragol::Option
+    include Logue::Loggable
+    
+    TYPES_TO_CLASSES = {
+      :boolean => :BooleanOption,
+      :string  => :StringOption,
+      :float   => :FloatOption,
+      :integer => :FixnumOption,
+      :fixnum  => :FixnumOption,
+      :regexp  => :RegexpOption
+    }
+
     attr_reader :description
 
     class << self
       alias_method :old_new, :new
       def new(*args, &blk)
         optargs = OptionArguments.new(*args)
-        optcls = optargs.option_class
+
+        opttype = optargs[:valuetype]
+        clssym = TYPES_TO_CLASSES[opttype]
+        optcls = if clssym
+                   'ragol/optproc/' + clssym.to_s.sub('Option', '_option').downcase
+                   OptProc.const_get(clssym)
+                 else
+                   Option
+                 end
+
         optcls.old_new(optargs, &blk)
       end
     end
 
     def initialize(optargs, &blk)
-      @rcnames = [ optargs.rcnames ].flatten
+      newargs = optargs.newargs
+      @rcnames = [ optargs[:rcnames] ].flatten
 
       @description = 'none'
-      options = Hash.new
-      options[:process] = blk || optargs.process
-      options[:takesvalue] = optargs.takesvalue
-      options[:regexps] = optargs.regexps
-      options[:unsets] = optargs.unsets
-      options[:tags] = optargs.tags
+
+      options = optargs.dup
+      options[:process] = blk if blk
       
       tag = nil
       name = nil

@@ -2,26 +2,15 @@
 # -*- ruby -*-
 
 module OptProc
-  class OptionArguments
-    TYPES_TO_CLASSES = {
-      :boolean => :BooleanOption,
-      :string  => :StringOption,
-      :float   => :FloatOption,
-      :integer => :FixnumOption,
-      :fixnum  => :FixnumOption,
-      :regexp  => :RegexpOption
-    }
-    
-    attr_reader :default
-    attr_reader :option_class
-    attr_reader :postproc
-    attr_reader :process
-    attr_reader :rcnames
-    attr_reader :regexps
-    attr_reader :tags
-    attr_reader :unsets
-    attr_reader :takesvalue
-    attr_reader :valuetype
+  class OptionArguments < Hash
+    VAR_TYPES = [
+      :boolean,
+      :string,
+      :float,
+      :integer,
+      :fixnum,
+      :regexp
+    ]
 
     OLD_OPTIONS = {
       :regexps => [ Regexp.new('--fo+'), Regexp.new('--ba*r') ],
@@ -47,7 +36,7 @@ module OptProc
       args = Hash.new
       
       if origargs[:arg]
-        if valuetype = origargs[:arg].find { |x| TYPES_TO_CLASSES.keys.include?(x) }
+        if valuetype = origargs[:arg].find { |x| VAR_TYPES.include?(x) }
           args[:valuetype] = valuetype == :integer ? :fixnum : valuetype
         end
 
@@ -84,33 +73,12 @@ module OptProc
       
       args
     end
+
+    attr_reader :newargs
     
     def initialize args = Hash.new
-      require 'ragol/optproc/boolean_option'
-      require 'ragol/optproc/fixnum_option'
-      require 'ragol/optproc/float_option'
-      require 'ragol/optproc/regexp_option'
-      require 'ragol/optproc/string_option'
-
-      newargs = self.class.convert_arguments args
-
-      @rcnames = newargs[:rcnames]
-      @takesvalue = newargs[:takesvalue]
-      
-      @regexps = newargs[:regexps]
-      @tags = newargs[:tags]
-      
-      opttype = newargs[:valuetype]
-      clssym = TYPES_TO_CLASSES[opttype]
-      optcls = if clssym
-                 OptProc.const_get(clssym)
-               else
-                 Option
-               end
-      @option_class = optcls
-      @default = newargs[:default]
-      @process = newargs[:process]
-      @unsets = newargs[:unsets]
+      @newargs = self.class.convert_arguments args
+      self.merge! newargs
     end
   end
 end
