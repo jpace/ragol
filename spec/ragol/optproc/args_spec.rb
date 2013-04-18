@@ -77,8 +77,8 @@ describe OptProc::OptionArguments do
         convert_arguments old_arguments
       end
 
-      it "should have :valuereq" do
-        subject[:valuereq].should == true
+      it "should have :takesvalue" do
+        subject[:takesvalue].should == true
       end
     end
 
@@ -90,8 +90,8 @@ describe OptProc::OptionArguments do
         convert_arguments old_arguments
       end
 
-      it "should have :valuereq as :optional" do
-        subject[:valuereq].should == :optional
+      it "should have :takesvalue as :optional" do
+        subject[:takesvalue].should == :optional
       end
     end
 
@@ -103,8 +103,8 @@ describe OptProc::OptionArguments do
         convert_arguments old_arguments
       end
 
-      it "should not have :valuereq" do
-        subject[:valuereq].should == false
+      it "should not have :takesvalue" do
+        subject[:takesvalue].should == false
       end
     end
 
@@ -116,8 +116,8 @@ describe OptProc::OptionArguments do
         convert_arguments old_arguments
       end
 
-      it "should not have :valuereq" do
-        subject[:valuereq].should == false
+      it "should not have :takesvalue" do
+        subject[:takesvalue].should == false
       end
     end
 
@@ -128,8 +128,8 @@ describe OptProc::OptionArguments do
         convert_arguments old_arguments
       end
 
-      it "should not have :valuereq" do
-        subject[:valuereq].should == false
+      it "should not have :takesvalue" do
+        subject[:takesvalue].should == false
       end
 
       it "should have no value type" do
@@ -146,8 +146,8 @@ describe OptProc::OptionArguments do
           convert_arguments old_arguments
         end
 
-        it "should have :valuereq" do
-          subject[:valuereq].should == true
+        it "should have :takesvalue" do
+          subject[:takesvalue].should == true
         end
 
         it "should have valuetype #{converted_type.inspect}" do
@@ -170,8 +170,8 @@ describe OptProc::OptionArguments do
         convert_arguments old_arguments
       end
 
-      it "should not have :valuereq" do
-        subject[:valuereq].should == false
+      it "should not have :takesvalue" do
+        subject[:takesvalue].should == false
       end
 
       it "should have valuetype :boolean" do
@@ -201,7 +201,7 @@ describe OptProc::OptionArguments do
           :regexps => [ Regexp.new('--fo+'), Regexp.new('--ba*r') ],
           :tags => [ '--foo', '-b' ],
           :rcnames => [ 'foo', 'foobar' ],
-          :valuereq => :optional,
+          :takesvalue => :optional,
           :valuetype => :float,
           :default => 8899,
           :process => process,
@@ -210,7 +210,7 @@ describe OptProc::OptionArguments do
         convert_arguments @orig_arguments
       end
 
-      [ :regexps, :tags, :rcnames, :valuereq, :valuetype, :default, :process, :postproc ].each do |field|
+      [ :regexps, :tags, :rcnames, :takesvalue, :valuetype, :default, :process, :postproc ].each do |field|
         it "should match field #{field}" do
           subject[field].should eql @orig_arguments[field]
         end

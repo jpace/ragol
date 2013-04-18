@@ -11,8 +11,8 @@ module Synoption
     def initialize name, tag, description, default, options = Hash.new
       @tag = tag
       @description = description
-      takesvalue = if options.has_key?(:valuereq)
-                     options[:valuereq]
+      takesvalue = if options.has_key?(:takesvalue)
+                     options[:takesvalue]
                    else
                      true
                    end

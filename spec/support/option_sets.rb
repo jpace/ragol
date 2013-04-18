@@ -100,7 +100,7 @@ module Synoption
 
     class KiloOption < Synoption::Option
       def initialize 
-        super :kilo, '-k', "amount of dust", nil, { :valuereq => :optional }
+        super :kilo, '-k', "amount of dust", nil, { :takesvalue => :optional }
       end
     end
     

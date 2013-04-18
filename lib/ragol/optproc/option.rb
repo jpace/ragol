@@ -23,7 +23,7 @@ module OptProc
       @description = 'none'
       options = Hash.new
       options[:process] = blk || optargs.process
-      options[:takesvalue] = optargs.valuereq
+      options[:takesvalue] = optargs.takesvalue
       options[:regexps] = optargs.regexps
       options[:unsets] = optargs.unsets
       options[:tags] = optargs.tags

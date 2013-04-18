@@ -20,7 +20,7 @@ module OptProc
     attr_reader :regexps
     attr_reader :tags
     attr_reader :unsets
-    attr_reader :valuereq
+    attr_reader :takesvalue
     attr_reader :valuetype
 
     OLD_OPTIONS = {
@@ -36,7 +36,7 @@ module OptProc
       :regexps => [ Regexp.new('--fo+'), Regexp.new('--ba*r') ],
       :tags => [ '--foo', '-b' ],
       :rcnames => [ 'foo', 'foobar' ],
-      :valuereq => [ true, :optional, false ],
+      :takesvalue => [ true, :optional, false ],
       :valuetype => [ :boolean, :string, :float, :integer, :fixnum, :regexp ],
       :default => nil,
       :process => Proc.new { },
@@ -52,10 +52,10 @@ module OptProc
         end
 
         if valuetype == :boolean
-          args[:valuereq] = false
+          args[:takesvalue] = false
         else
-          valuereq = origargs[:arg].find { |x| [ :optional, :required, :none ].include?(x) }
-          args[:valuereq] = case valuereq
+          takesvalue = origargs[:arg].find { |x| [ :optional, :required, :none ].include?(x) }
+          args[:takesvalue] = case takesvalue
                             when :optional
                               :optional
                             when :required
@@ -65,7 +65,7 @@ module OptProc
                             end
         end
       else
-        args[:valuereq] = origargs[:valuereq] || false
+        args[:takesvalue] = origargs[:takesvalue] || origargs[:valuereq] || false
         args[:valuetype] = origargs[:valuetype]
       end
 
@@ -95,7 +95,7 @@ module OptProc
       newargs = self.class.convert_arguments args
 
       @rcnames = newargs[:rcnames]
-      @valuereq = newargs[:valuereq]
+      @takesvalue = newargs[:takesvalue]
       
       @regexps = newargs[:regexps]
       @tags = newargs[:tags]
