@@ -17,8 +17,13 @@ module Synoption
                      true
                    end
 
-      tags = [ tag, '--' + name.to_s.gsub('_', '-') ]
-      super name, default, tags, options[:negate], options[:regexp], options[:unsets], options[:process], takesvalue
+      optargs = options.dup
+      optargs[:takesvalue] = takesvalue
+      optargs[:regexps] ||= options[:regexp]
+      optargs[:negates] ||= options[:negate]
+      optargs[:tags] = [ tag, '--' + name.to_s.gsub('_', '-') ]
+      
+      super name, default, optargs
     end
   end
 end

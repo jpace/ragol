@@ -19,9 +19,19 @@ module OptProc
 
     def initialize(optargs, &blk)
       @rcnames = [ optargs.rcnames ].flatten
-      process = blk || optargs.process
+
       @description = 'none'
-      super nil, nil, optargs.tags, nil, optargs.regexps, optargs.unsets, process, optargs.valuereq
+      options = Hash.new
+      options[:process] = blk || optargs.process
+      options[:takesvalue] = optargs.valuereq
+      options[:regexps] = optargs.regexps
+      options[:unsets] = optargs.unsets
+      options[:tags] = optargs.tags
+      
+      tag = nil
+      name = nil
+      
+      super tag, name, options
     end
 
     def name

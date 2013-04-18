@@ -14,18 +14,23 @@ module Ragol
     attr_reader :default
     attr_reader :matchers
     
-    def initialize name, default, tags, negates, regexps, unsets, process, takesvalue
+    def initialize name, default, options = Hash.new
       @name = name
       @default = default
 
-      tagsmatch = tags && Ragol::Matcher.new(tags)
-      negatesmatch = negates && Ragol::Matcher.new(negates)
-      regexpsmatch = regexps && Ragol::Matcher.new(regexps)
+      tagsmatch = to_matcher options[:tags]
+      negatesmatch = to_matcher options[:negates]
+      regexpsmatch = to_matcher options[:regexps]
 
       @matchers = Ragol::Matchers.new tagsmatch, negatesmatch, regexpsmatch
-      @unsets = unsets
-      @process = process
-      @takesvalue = takesvalue
+
+      @unsets = options[:unsets]
+      @process = options[:process]
+      @takesvalue = options[:takesvalue]
+    end
+
+    def to_matcher elements
+      elements && Ragol::Matcher.new(elements)
     end
 
     def takes_value?
