@@ -73,12 +73,9 @@ module OptProc
       
       args
     end
-
-    attr_reader :newargs
     
     def initialize args = Hash.new
-      @newargs = self.class.convert_arguments args
-      self.merge! newargs
+      merge! self.class.convert_arguments(args)
     end
   end
 end

@@ -15,7 +15,6 @@ module Ragol
     attr_reader :matchers
     
     def initialize name, default, options = Hash.new
-      @name = name
       @default = default
 
       tagsmatch = to_matcher options[:tags]
@@ -23,10 +22,16 @@ module Ragol
       regexpsmatch = to_matcher options[:regexps]
 
       @matchers = Ragol::Matchers.new tagsmatch, negatesmatch, regexpsmatch
+      @name = name || @matchers.name
 
       @unsets = options[:unsets]
       @process = options[:process]
       @takesvalue = options[:takesvalue]
+      @rcnames = [ options[:rcnames] ].flatten
+    end
+
+    def match_rc? field
+      @rcnames.include?(field)
     end
 
     def to_matcher elements

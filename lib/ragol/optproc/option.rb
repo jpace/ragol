@@ -23,6 +23,7 @@ module OptProc
       alias_method :old_new, :new
       def new(*args, &blk)
         optargs = OptionArguments.new(*args)
+        optargs[:process] = blk if blk
 
         opttype = optargs[:valuetype]
         clssym = TYPES_TO_CLASSES[opttype]
@@ -33,31 +34,17 @@ module OptProc
                    Option
                  end
 
-        optcls.old_new(optargs, &blk)
+        optcls.old_new(optargs)
       end
     end
 
-    def initialize(optargs, &blk)
-      newargs = optargs.newargs
-      @rcnames = [ optargs[:rcnames] ].flatten
-
+    def initialize(optargs)
       @description = 'none'
 
-      options = optargs.dup
-      options[:process] = blk if blk
-      
       tag = nil
       name = nil
       
-      super tag, name, options
-    end
-
-    def name
-      @matchers.name
-    end
-
-    def match_rc? field
-      @rcnames && @rcnames.include?(field)
+      super tag, name, optargs
     end
   end
 end
