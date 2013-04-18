@@ -33,25 +33,21 @@ module OptProc
       :process => Proc.new { |val| },
       :postproc => Proc.new { |optset, results, unprocessed| }
     }
-
-    def self.convert_value_type args, valueargs
-      args[:valuetype] = Ragol::HashUtil.hash_array_value VAR_TYPES, valueargs
-      args[:takesvalue] = if args[:valuetype] == :boolean
-                            false
-                          else
-                            hasvaluetype = args[:valuetype] != nil
-                            takes = { :optional => :optional, :required => true, :none => hasvaluetype, nil => hasvaluetype }
-                            Ragol::HashUtil.hash_array_value takes, valueargs
-                          end
-    end
     
-    def self.convert_arguments origargs
-      args = Hash.new
-      
+    def initialize origargs = Hash.new
+      super()
+
       if origargs[:arg]
-        convert_value_type args, origargs[:arg]
+        self[:valuetype] = Ragol::HashUtil.hash_array_value VAR_TYPES, origargs[:arg]
+        self[:takesvalue] = if self[:valuetype] == :boolean
+                              false
+                            else
+                              hasvaluetype = self[:valuetype] != nil
+                              takes = { :optional => :optional, :required => true, :none => hasvaluetype, nil => hasvaluetype }
+                              Ragol::HashUtil.hash_array_value takes, origargs[:arg]
+                            end
       else
-        Ragol::HashUtil.copy_hash args, origargs, [ [ :takesvalue, :valuereq ], [ :valuetype ] ]
+        Ragol::HashUtil.copy_hash self, origargs, [ [ :takesvalue, :valuereq ], [ :valuetype ] ]
       end
 
       fields = [
@@ -63,14 +59,7 @@ module OptProc
                 [ :default ],
                 [ :unsets, :unset ],
                ]
-      Ragol::HashUtil.copy_hash args, origargs, fields
-      
-      args
-    end
-    
-    def initialize args = Hash.new
-      super()
-      merge! self.class.convert_arguments(args)
+      Ragol::HashUtil.copy_hash self, origargs, fields
     end
   end
 end

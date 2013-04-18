@@ -8,7 +8,7 @@ require 'ragol/common'
 describe OptProc::OptionArguments do
   describe ".convert_arguments" do
     def convert_arguments old_arguments
-      @new_arguments = OptProc::OptionArguments.convert_arguments old_arguments
+      @new_arguments = OptProc::OptionArguments.new old_arguments
     end
 
     subject { @new_arguments }
