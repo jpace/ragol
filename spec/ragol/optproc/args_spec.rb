@@ -129,7 +129,7 @@ describe OptProc::OptionArguments do
       end
 
       it "should not have :takesvalue" do
-        subject[:takesvalue].should == false
+        subject[:takesvalue].should == nil
       end
 
       it "should have no value type" do

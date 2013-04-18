@@ -1,16 +1,18 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
+require 'ragol/common/hash'
+
 module OptProc
   class OptionArguments < Hash
-    VAR_TYPES = [
-      :boolean,
-      :string,
-      :float,
-      :integer,
-      :fixnum,
-      :regexp
-    ]
+    VAR_TYPES = {
+      :boolean => :boolean,
+      :string => :string,
+      :float => :float,
+      :integer => :fixnum,
+      :fixnum => :fixnum,
+      :regexp => :regexp,
+    }
 
     OLD_OPTIONS = {
       :regexps => [ Regexp.new('--fo+'), Regexp.new('--ba*r') ],
@@ -28,15 +30,15 @@ module OptProc
       :takesvalue => [ true, :optional, false ],
       :valuetype => [ :boolean, :string, :float, :integer, :fixnum, :regexp ],
       :default => nil,
-      :process => Proc.new { },
-      :postproc => Proc.new { }
+      :process => Proc.new { |val| },
+      :postproc => Proc.new { |optset, results, unprocessed| }
     }
     
     def self.convert_arguments origargs
       args = Hash.new
       
       if origargs[:arg]
-        if valuetype = origargs[:arg].find { |x| VAR_TYPES.include?(x) }
+        if valuetype = origargs[:arg].find { |x| VAR_TYPES.keys.include?(x) }
           args[:valuetype] = valuetype == :integer ? :fixnum : valuetype
         end
 
@@ -45,17 +47,16 @@ module OptProc
         else
           takesvalue = origargs[:arg].find { |x| [ :optional, :required, :none ].include?(x) }
           args[:takesvalue] = case takesvalue
-                            when :optional
-                              :optional
-                            when :required
-                              true
-                            when :none, nil
-                              valuetype != nil
-                            end
+                              when :optional
+                                :optional
+                              when :required
+                                true
+                              when :none, nil
+                                valuetype != nil
+                              end
         end
       else
-        args[:takesvalue] = origargs[:takesvalue] || origargs[:valuereq] || false
-        args[:valuetype] = origargs[:valuetype]
+        Ragol::HashUtil.copy_hash args, origargs, [ [ :takesvalue, :valuereq ], [ :valuetype ] ]
       end
 
       fields = [
@@ -67,11 +68,12 @@ module OptProc
                 [ :default ],
                 [ :unsets, :unset ],
                ]
-      fields.each do |fieldnames|
-        args[fieldnames.first] = origargs[fieldnames.find { |x| origargs[x] }]
-      end
+      Ragol::HashUtil.copy_hash args, origargs, fields
       
       args
+    end
+
+    def self.convert_value_type to_hash, from_hash
     end
     
     def initialize args = Hash.new
