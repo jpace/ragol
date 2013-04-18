@@ -16,7 +16,6 @@ describe Synoption::Option do
     end
 
     its(:name) { should eql :limit }
-    its(:tag) { should eql '-l' }
     its(:default) { should eql 777 }
     its(:description) { should eql 'the number of log entries' }
   end

@@ -18,7 +18,6 @@ describe Synoption::FixnumOption do
     subject(:option) { create_option }
 
     its(:name) { should eql :delta }
-    its(:tag) { should eql '-d' }
     its(:default) { should eql 317 }
     its(:description) { should eql 'mouth of a river' }
   end

@@ -18,7 +18,6 @@ describe Synoption::FloatOption do
     subject(:option) { create_option }
 
     its(:name) { should eql :hotel }
-    its(:tag) { should eql '-h' }
     its(:default) { should eql 8.79 }
     its(:description) { should eql 'an upscale motel' }
   end

@@ -18,7 +18,6 @@ describe Synoption::BooleanOption do
     subject(:option) { create_option }
 
     its(:name) { should eql :foxtrot }
-    its(:tag) { should eql '-f' }
     its(:default) { should == false }
     its(:description) { should eql 'a dance' }
   end

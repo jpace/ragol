@@ -6,10 +6,8 @@ require 'ragol/common/option'
 module Synoption
   class Option < Ragol::Option
     attr_reader :description
-    attr_reader :tag
 
     def initialize name, tag, description, default, options = Hash.new
-      @tag = tag
       @description = description
       takesvalue = if options.has_key?(:takesvalue)
                      options[:takesvalue]
