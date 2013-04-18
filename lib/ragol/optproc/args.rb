@@ -33,28 +33,23 @@ module OptProc
       :process => Proc.new { |val| },
       :postproc => Proc.new { |optset, results, unprocessed| }
     }
+
+    def self.convert_value_type args, valueargs
+      args[:valuetype] = Ragol::HashUtil.hash_array_value VAR_TYPES, valueargs
+      args[:takesvalue] = if args[:valuetype] == :boolean
+                            false
+                          else
+                            hasvaluetype = args[:valuetype] != nil
+                            takes = { :optional => :optional, :required => true, :none => hasvaluetype, nil => hasvaluetype }
+                            Ragol::HashUtil.hash_array_value takes, valueargs
+                          end
+    end
     
     def self.convert_arguments origargs
       args = Hash.new
       
       if origargs[:arg]
-        if valuetype = origargs[:arg].find { |x| VAR_TYPES.keys.include?(x) }
-          args[:valuetype] = valuetype == :integer ? :fixnum : valuetype
-        end
-
-        if valuetype == :boolean
-          args[:takesvalue] = false
-        else
-          takesvalue = origargs[:arg].find { |x| [ :optional, :required, :none ].include?(x) }
-          args[:takesvalue] = case takesvalue
-                              when :optional
-                                :optional
-                              when :required
-                                true
-                              when :none, nil
-                                valuetype != nil
-                              end
-        end
+        convert_value_type args, origargs[:arg]
       else
         Ragol::HashUtil.copy_hash args, origargs, [ [ :takesvalue, :valuereq ], [ :valuetype ] ]
       end
@@ -72,11 +67,9 @@ module OptProc
       
       args
     end
-
-    def self.convert_value_type to_hash, from_hash
-    end
     
     def initialize args = Hash.new
+      super()
       merge! self.class.convert_arguments(args)
     end
   end

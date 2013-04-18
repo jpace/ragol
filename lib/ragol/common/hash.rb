@@ -8,5 +8,9 @@ module Ragol
         to_hash[fieldnames.first] = from_hash[fieldnames.find { |x| from_hash[x] }]
       end
     end
+
+    def self.hash_array_value hash, array
+      hash[(array & hash.keys)[0]]
+    end
   end
 end
