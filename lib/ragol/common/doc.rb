@@ -1,10 +1,9 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'rubygems'
 require 'logue/loggable'
 
-module Synoption
+module Ragol
   # documentation for an option.
   class Doc
     include Logue::Loggable

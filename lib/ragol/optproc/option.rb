@@ -3,7 +3,7 @@
 
 require 'ragol/optproc/args'
 require 'ragol/common/option'
-require 'ragol/synoption/doc'
+require 'ragol/common/doc'
 
 module OptProc
   class Option < Ragol::Option
@@ -38,7 +38,7 @@ module OptProc
     end
       
     def to_doc io
-      doc = Synoption::Doc.new self
+      doc = Ragol::Doc.new self
       doc.to_doc io
     end
   end

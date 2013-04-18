@@ -3,6 +3,7 @@
 
 require 'ragol/synoption/doc'
 require 'ragol/common/option'
+require 'ragol/common/doc'
 
 module Synoption
   class Option < Ragol::Option
@@ -23,7 +24,7 @@ module Synoption
     end
       
     def to_doc io
-      doc = Doc.new self
+      doc = Ragol::Doc.new self
       doc.to_doc io
     end
   end
