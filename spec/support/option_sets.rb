@@ -68,13 +68,6 @@ module Synoption
     def create_defgh_option_set
       DefghOptionSet.new
     end
-
-    def process_option args
-      optset = Synoption::OptionSet.new
-      def optset.name; 'testing'; end
-      optset.add create_option
-      @results = optset.process args
-    end
     
     class IndiaOption < Synoption::BooleanOption
       def initialize 
@@ -111,6 +104,13 @@ module Synoption
 
     def create_ik_option_set
       IkOptionSet.new
+    end
+
+    def process_option args
+      optset = Synoption::OptionSet.new
+      def optset.name; 'testing'; end
+      optset.add create_option
+      @results = optset.process args
     end
   end
 end
