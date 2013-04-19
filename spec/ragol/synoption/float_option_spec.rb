@@ -5,8 +5,6 @@ require 'ragol/synoption/float_option'
 require 'ragol/synoption/set'
 require 'support/option_sets'
 
-# Logue::Log.level = Logue::Log::INFO
-
 describe Synoption::FloatOption do
   include Synoption::OptionTestSets
 

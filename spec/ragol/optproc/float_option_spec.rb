@@ -3,8 +3,7 @@
 
 require 'ragol/optproc/float_option'
 require 'ragol/optproc/common'
-
-Logue::Log.level = Logue::Log::INFO
+require 'spec_helper'
 
 describe OptProc::FloatOption do
   include_context "common optproc"

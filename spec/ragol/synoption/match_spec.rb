@@ -2,8 +2,7 @@
 # -*- ruby -*-
 
 require 'ragol/synoption/match'
-
-Logue::Log.level = Logue::Log::INFO
+require 'spec_helper'
 
 describe "Synoption::OptionMatch" do
   def match? tag

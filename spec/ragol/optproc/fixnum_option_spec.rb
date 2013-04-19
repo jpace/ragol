@@ -5,8 +5,6 @@ require 'ragol/optproc/fixnum_option'
 require 'ragol/optproc/common'
 require 'spec_helper'
 
-Logue::Log.level = Logue::Log::INFO
-
 describe OptProc::FixnumOption do
   include_context "common optproc"
 

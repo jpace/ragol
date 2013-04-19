@@ -4,8 +4,7 @@
 require 'ragol/synoption/boolean_option'
 require 'ragol/synoption/set'
 require 'support/option_sets'
-
-# Logue::Log.level = Logue::Log::INFO
+require 'spec_helper'
 
 describe Synoption::BooleanOption do
   include Synoption::OptionTestSets

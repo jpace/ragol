@@ -4,8 +4,7 @@
 require 'ragol/synoption/set'
 require 'ragol/synoption/option'
 require 'support/option_sets'
-
-Logue::Log.level = Logue::Log::INFO
+require 'spec_helper'
 
 describe Synoption::OptionSet do
   include Logue::Loggable, Synoption::OptionTestSets

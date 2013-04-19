@@ -3,8 +3,7 @@
 
 require 'ragol/optproc/boolean_option'
 require 'ragol/optproc/common'
-
-Logue::Log.level = Logue::Log::INFO
+require 'spec_helper'
 
 describe OptProc::BooleanOption do
   include_context "common optproc"

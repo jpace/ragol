@@ -2,8 +2,7 @@
 # -*- ruby -*-
 
 require 'ragol/common/matcher'
-
-Logue::Log.level = Logue::Log::INFO
+require 'spec_helper'
 
 describe Ragol::Matcher do
   describe "#score" do
