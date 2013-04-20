@@ -36,8 +36,7 @@ module Ragol
       tag_matches = Hash.new { |h, k| h[k] = Array.new }
       negative_match = nil
       regexp_match = nil
-      
-      match_types = Hash.new
+
       options.each do |opt|
         if mt = opt.matchers.match_type?(results.current_arg)
           case mt[0]

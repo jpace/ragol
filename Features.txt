@@ -185,3 +185,4 @@ Fri Apr 19 19:24:57 2013
 Sat Apr 20 09:07:40 2013
 
   Refactored common tests for boolean options.
+  Refactored common float tests.

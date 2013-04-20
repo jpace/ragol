@@ -23,7 +23,7 @@ module Ragol
           end
         elsif tag.length > elmt.length
           next 
-        elsif idx = elmt.index(tag)
+        elsif (idx = elmt.index(tag)) == 0
           score = tag.length == elmt.length ? 1.0 : tag.length * 0.01
           return [ :string, score ]
         end

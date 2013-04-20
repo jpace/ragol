@@ -4,6 +4,7 @@
 require 'ragol/synoption/float_option'
 require 'ragol/synoption/set'
 require 'support/option_sets'
+require 'spec_helper'
 
 describe Synoption::FloatOption do
   include Synoption::OptionTestSets
@@ -20,37 +21,9 @@ describe Synoption::FloatOption do
     its(:description) { should eql 'an upscale motel' }
   end
 
-  describe "#process" do
-    subject(:results) { @results }
-
-    valid_tags = %w{ -h --hotel }
-    
-    valid_tags.each do |tag|
-      context "with valid tag #{tag}" do
-        before :all do
-          process_option [ tag, '21.34' ]
-        end
-
-        its(:hotel) { should == 21.34 }
-        it "should have no remaining arguments" do
-          subject.unprocessed.should be_empty
-        end
-      end
-    end
-
-    context "with --tag=value" do
-      before :all do
-        process_option %w{ --hotel=21.34 }
-      end
-      
-      its(:hotel) { should == 21.34 }
-    end
-    
-    valid_tags.each do |tag|
-      it "raises error without required argument for tag #{tag}" do
-        args = [ tag ]
-        expect { process_option(args) }.to raise_error(RuntimeError, "value expected for option: -h, --hotel")
-      end
-    end
+  subject(:results) { @results }
+  
+  it_behaves_like "a float option" do
+    let(:value) { @results.hotel }
   end
 end

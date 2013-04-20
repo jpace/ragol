@@ -20,6 +20,10 @@ describe Ragol::Matcher do
       it "should not match" do
         @matcher.score('-y').should be_nil
       end
+      
+      it "should not match" do
+        @matcher.score('-f').should be_nil
+      end
     end
     
     context "when string long tag" do
