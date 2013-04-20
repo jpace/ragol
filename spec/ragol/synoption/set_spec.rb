@@ -9,16 +9,6 @@ require 'spec_helper'
 describe Synoption::OptionSet do
   include Logue::Loggable, Synoption::OptionTestSets
 
-  shared_examples "defined methods" do |valid_methods, invalid_methods|
-    valid_methods.each do |methname|
-      it("has method #{methname}") { subject.method(methname).should be_true }
-    end
-
-    invalid_methods.each do |methname|
-      it("does not have method #{methname}") { expect { subject.method(methname) }.to raise_error(NameError) }
-    end
-  end
-
   describe "#method" do
     describe "OptionSet class (not subclass)" do
       subject { create_abc_option_set.process Array.new }

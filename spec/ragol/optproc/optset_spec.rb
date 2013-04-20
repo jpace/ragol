@@ -4,6 +4,7 @@
 require 'ragol/optproc/optset'
 require 'ragol/common'
 require 'ragol/optproc/common'
+require 'ragol/optproc/args'
 
 describe OptProc::OptionSet do
   include_context "common optproc"
@@ -11,6 +12,24 @@ describe OptProc::OptionSet do
   let(:optset) do
     optdata = option_data
     OptProc::OptionSet.new optdata
+  end
+
+  describe "#method" do
+    describe "OptionSet class (not subclass)" do
+      def create_abc_xyz_option_set
+        optdata = Array.new
+        add_abc_opt optdata
+        add_xyz_opt optdata
+        OptProc::OptionSet.new optdata
+      end
+
+      subject { create_abc_xyz_option_set.process Array.new }
+
+      valid_methods = [ :abc, :xyz ]
+      invalid_methods = [ :bfd ]
+      
+      it_behaves_like "defined methods", valid_methods, invalid_methods
+    end
   end
 
   describe "#process" do
