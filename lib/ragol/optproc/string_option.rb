@@ -10,10 +10,5 @@ module OptProc
     def value_regexp
       REGEXP
     end
-    
-    def convert md
-      return unless val = md && md[-1]
-      val
-    end
   end
 end

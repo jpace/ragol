@@ -28,6 +28,16 @@ describe OptProc::StringOption do
         should eq 'xyz'
       end
 
+      it "takes an argument with =" do
+        process [ '--str="xyz"' ]
+        should eq 'xyz'
+      end
+
+      it "takes an argument with =" do
+        process [ "--str='xyz'" ]
+        should eq 'xyz'
+      end
+
       it "takes an argument matching tag" do
         process %w{ --str -foo }
         should eq '-foo'
