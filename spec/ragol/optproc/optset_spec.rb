@@ -29,12 +29,12 @@ describe OptProc::OptionSet do
       context "when argument is invalid" do
         it "should error on invalid long arg" do
           args = %w{ --ghi }
-          expect { optset.process args }.to raise_error(Ragol::OptionException, "testing: invalid option '--ghi'")
+          expect { optset.process args }.to raise_error(Ragol::OptionException, "optproc::optionset: invalid option '--ghi'")
         end
 
         it "should error on invalid short arg" do
           args = %w{ -d }
-          expect { optset.process args }.to raise_error(Ragol::OptionException, "testing: invalid option '-d'")
+          expect { optset.process args }.to raise_error(Ragol::OptionException, "optproc::optionset: invalid option '-d'")
         end
       end
 

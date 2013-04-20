@@ -30,8 +30,6 @@ shared_context "common optproc" do
 
   subject { @value }
 
-  let(:option) { OptProc::Option.new option_data }
-  
   def process args
     optset = OptProc::OptionSet.new [ option_data ]
     optset.process args

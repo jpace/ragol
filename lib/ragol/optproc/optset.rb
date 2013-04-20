@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/optproc/option'
+require 'ragol/common/option'
 require 'ragol/common/option_set'
 
 module OptProc
@@ -12,13 +12,22 @@ module OptProc
     
     def initialize data
       options = data.collect do |optdata|
-        OptProc::Option.new optdata
+        optargs = OptionArguments.new(optdata)
+
+        opttype = optargs[:valuetype]
+        clstype = OptionArguments::VAR_TYPES[opttype]
+
+        if clstype
+          clsstr = clstype.to_s
+          require 'ragol/common/' + clsstr + '_option'
+          clssym = (clsstr.capitalize + 'Option').to_sym
+          optcls = ::Ragol.const_get(clssym)
+          optcls.new(optargs)
+        else
+          Ragol::Option.new(optargs)
+        end
       end
       super(*options)
-    end
-
-    def name
-      'testing'
     end
 
     # this is a legacy method; process should be used instead.

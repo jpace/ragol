@@ -1,8 +1,9 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/optproc/option'
+require 'ragol/common/option'
 require 'ragol/optproc/common'
+require 'ragol/optproc/args'
 require 'ragol/common'
 
 describe OptProc::OptionArguments do

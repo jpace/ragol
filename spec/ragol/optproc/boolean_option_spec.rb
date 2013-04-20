@@ -5,7 +5,7 @@ require 'ragol/common/boolean_option'
 require 'ragol/optproc/common'
 require 'spec_helper'
 
-describe OptProc::Option do
+describe Ragol::Option do
   include_context "common optproc"
 
   def option_data
@@ -17,15 +17,8 @@ describe OptProc::Option do
     }      
   end
 
-  context "argument" do
-    it "should default to nil" do
-      opt = OptProc::Option.new option_data
-      opt.default.should == nil
-    end
-  end
-
   it_behaves_like "a boolean option" do
     let(:value) { @value }
-    let(:option) { OptProc::Option.new option_data }
+    let(:option) { OptProc::OptionSet.new([option_data]).options[0] }
   end
 end
