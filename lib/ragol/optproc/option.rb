@@ -26,6 +26,9 @@ module OptProc
         elsif clstype == :float
           require 'ragol/common/float_option'
           return Ragol::FloatOption.new(optargs)
+        elsif clstype == :regexp
+          require 'ragol/common/regexp_option'
+          return Ragol::RegexpOption.new(optargs)
         end
 
         optcls = if clstype

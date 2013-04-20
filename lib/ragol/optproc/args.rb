@@ -29,6 +29,7 @@ module OptProc
       :rcnames => [ 'foo', 'foobar' ],
       :takesvalue => [ true, :optional, false ],
       :valuetype => [ :boolean, :string, :float, :integer, :fixnum, :regexp ],
+      :valueregexp => Regexp.new('(one|two|three)'),
       :default => nil,
       :process => Proc.new { |val| },
       :postproc => Proc.new { |optset, results, unprocessed| },
@@ -39,7 +40,13 @@ module OptProc
       super()
 
       if origargs[:arg]
-        self[:valuetype] = Ragol::HashUtil.hash_array_value VAR_TYPES, origargs[:arg]
+        if re = origargs[:arg].find { |x| x.kind_of?(Regexp) }
+          self[:valueregexp] = re
+          self[:valuetype] = :regexp
+        else
+          self[:valuetype] = Ragol::HashUtil.hash_array_value VAR_TYPES, origargs[:arg]
+        end
+        
         self[:takesvalue] = if self[:valuetype] == :boolean
                               false
                             else
@@ -48,7 +55,7 @@ module OptProc
                               Ragol::HashUtil.hash_array_value takes, origargs[:arg]
                             end
       else
-        Ragol::HashUtil.copy_hash self, origargs, [ [ :takesvalue, :valuereq ], [ :valuetype ] ]
+        Ragol::HashUtil.copy_hash self, origargs, [ [ :takesvalue, :valuereq ], [ :valuetype ], [ :valueregexp ] ]
       end
 
       fields = [
