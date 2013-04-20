@@ -21,30 +21,10 @@ describe Synoption::BooleanOption do
     its(:description) { should eql 'a dance' }
   end
 
-  describe "#process" do
-    subject(:results) { @results }
-    
-    valid_tags = %w{ -f --foxtrot }
-    
-    valid_tags.each do |tag|
-      context "with valid tag #{tag}" do
-        before :all do
-          process_option [ tag, 'foo' ]
-        end
-        
-        its(:foxtrot) { should == true }
-        its(:unprocessed) { should eql %w{ foo } }
-      end
-    end
-
-    valid_tags.each do |tag|
-      before :all do
-        process_option [ tag, 'nextarg' ]
-      end
-      
-      it "should not take the following argument for tag #{tag}" do
-        results.unprocessed.should eql %w{ nextarg }
-      end
-    end
+  subject(:results) { @results }
+  
+  it_behaves_like "a boolean option" do
+    let(:value) { @results.foxtrot }
+    let(:option) { create_option }
   end
 end

@@ -20,11 +20,9 @@ describe Synoption::FixnumOption do
     its(:description) { should eql 'mouth of a river' }
   end
 
-  describe "#process" do
-    subject(:results) { @results }
-
-    it_behaves_like "a fixnum option" do
-      let(:value) { @results.delta }
-    end
+  subject(:results) { @results }
+  
+  it_behaves_like "a fixnum option" do
+    let(:value) { @results.delta }
   end
 end

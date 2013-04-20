@@ -8,40 +8,24 @@ require 'spec_helper'
 describe OptProc::BooleanOption do
   include_context "common optproc"
 
-  context "argument" do
-    def option_data
-      {
-        :tags => %w{ --bool },
-        :arg  => [ :boolean ],
-        :set  => Proc.new { |val| @value = true },
-        :description => "this is something",
-      }      
-    end
+  def option_data
+    {
+      :tags => %w{ -f --foxtrot },
+      :arg  => [ :boolean ],
+      :set  => Proc.new { |val| @value = true },
+      :description => "a dance",
+    }      
+  end
 
+  context "argument" do
     it "should default to nil" do
       opt = OptProc::Option.new option_data
       opt.default.should == nil
     end
+  end
 
-    it "should be true" do
-      process [ '--bool' ]
-      should eq true
-    end
-    
-    it "should be true" do
-      args = %w{ --bool foo }
-      process args
-      should eq true
-      args.size.should == 1
-    end
-
-    it "should have documentation" do
-      opt = OptProc::Option.new option_data
-      sio = StringIO.new
-      opt.to_doc sio
-      exp = String.new
-      exp << "  --bool                   : this is something\n"
-      sio.string.should eql exp
-    end
+  it_behaves_like "a boolean option" do
+    let(:value) { @value }
+    let(:option) { OptProc::Option.new option_data }
   end
 end

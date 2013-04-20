@@ -181,3 +181,7 @@ Thu Apr 18 18:15:31 2013
 Fri Apr 19 19:24:57 2013
 
   Began to refactor common expected behavior.
+
+Sat Apr 20 09:07:40 2013
+
+  Refactored common tests for boolean options.
