@@ -7,7 +7,7 @@ require 'ragol/synoption/set'
 module Synoption
   module OptionTestSets
     def create_abc_option_set charlie_options = Hash.new
-      bravo = Synoption::Option.new :bravo, '-x', "Italian commendations",    nil
+      bravo = Synoption::Option.new :bravo, '-x', "Italian commendations", nil
       alpha = Synoption::Option.new :alpha, '-a', "first Greek letter",  nil
       charlie = Synoption::Option.new :charlie, '-t', "Charles' nickname", nil, charlie_options
       
@@ -108,7 +108,6 @@ module Synoption
 
     def process_option args
       optset = Synoption::OptionSet.new
-      def optset.name; 'testing'; end
       optset.add create_option
       @results = optset.process args
     end
