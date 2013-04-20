@@ -9,10 +9,39 @@ module Ragol
   class OptionSet
     include Logue::Loggable
 
-    attr_reader :options
+    # maps from an OptionSet class to the valid options for that class.
+    @@options_for_class = Hash.new { |h, k| h[k] = Array.new }
 
+    def self.has_option name, optcls, optargs = Hash.new
+      @@options_for_class[self] << { :name => name, :class => optcls, :args => optargs }
+    end
+
+    def self.options_for_class cls
+      @@options_for_class[cls]
+    end
+
+    attr_reader :options
+    
     def initialize(*options)
       @options = options
+
+      cls = self.class
+      while cls <= OptionSet
+        opts = self.class.options_for_class(cls)
+        
+        opts.each do |option|
+          args = option[:args]
+          opt = option[:class].new(*args)
+          
+          add opt
+        end
+        
+        cls = cls.superclass
+      end
+    end
+
+    def name
+      @name ||= self.class.to_s.sub(%r{.*?(\w+)OptionSet}, '\1').downcase
     end
 
     def inspect
