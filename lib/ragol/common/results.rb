@@ -2,7 +2,7 @@
 # -*- ruby -*-
 
 require 'logue/loggable'
-require 'ragol/synoption/option'
+require 'ragol/common/option'
 require 'ragol/common/argslist'
 
 module Ragol
