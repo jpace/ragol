@@ -1,11 +1,11 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/optproc/float_option'
+require 'ragol/optproc/option'
 require 'ragol/optproc/common'
 require 'spec_helper'
 
-describe OptProc::FloatOption do
+describe OptProc::Option do
   include_context "common optproc"
 
   context "argument" do

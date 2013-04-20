@@ -20,6 +20,12 @@ module OptProc
         if clstype == :fixnum
           require 'ragol/common/fixnum_option'
           return Ragol::FixnumOption.new(optargs)
+        elsif clstype == :boolean
+          require 'ragol/common/boolean_option'
+          return Ragol::BooleanOption.new(optargs)
+        elsif clstype == :float
+          require 'ragol/common/float_option'
+          return Ragol::FloatOption.new(optargs)
         end
 
         optcls = if clstype

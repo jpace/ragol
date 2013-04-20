@@ -1,11 +1,11 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/optproc/option'
+require 'ragol/common/option'
 
-module OptProc
-  class FixnumOption < Option
-    REGEXP = Regexp.new '^ ([\-\+]?\d+) $ ', Regexp::EXTENDED
+module Ragol
+  class FloatOption < Option
+    REGEXP = Regexp.new '^ ([\-\+]?\d* (?:\.\d+)?) $ ', Regexp::EXTENDED
     
     def value_regexp
       REGEXP
@@ -13,7 +13,7 @@ module OptProc
     
     def convert md
       return unless val = md && md[-1]
-      val.to_i
+      val.to_f
     end
   end
 end

@@ -1,11 +1,11 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/optproc/boolean_option'
+require 'ragol/common/boolean_option'
 require 'ragol/optproc/common'
 require 'spec_helper'
 
-describe OptProc::BooleanOption do
+describe OptProc::Option do
   include_context "common optproc"
 
   def option_data
