@@ -16,6 +16,12 @@ module OptProc
 
         opttype = optargs[:valuetype]
         clstype = OptionArguments::VAR_TYPES[opttype]
+
+        if clstype == :fixnum
+          require 'ragol/common/fixnum_option'
+          return Ragol::FixnumOption.new(optargs)
+        end
+
         optcls = if clstype
                    clsstr = clstype.to_s
                    'ragol/optproc/' + clsstr + '_option'
