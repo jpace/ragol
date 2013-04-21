@@ -77,7 +77,7 @@ module Synoption
     
     class JulietOption < Synoption::Option
       def initialize 
-        super :juliet, '-j', "romeo's girlfriend", nil, { :regexp => Regexp.new('^-\d+$') }
+        super :juliet, '-j', "romeo's girlfriend", nil, { :regexp => Regexp.new('^-(\d+)$') }
       end
     end
     

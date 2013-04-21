@@ -38,6 +38,16 @@ describe OptProc::OptionSet do
     it_behaves_like "an option set"
   end
 
+  context "when options contain short arguments" do
+    def process args
+      @results = create_fij_option_set.process args
+    end
+    
+    subject { @results }
+    
+    it_behaves_like "an option set with short arguments"
+  end
+
   describe "#process" do
     def process args
       optset.process args

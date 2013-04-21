@@ -40,43 +40,13 @@ describe Synoption::OptionSet do
   end
 
   context "when options contain short arguments" do
-    describe "#process" do
-      def process args
-        @results = create_fij_option_set.process args
-      end
-
-      subject { @results }
-
-      context "with separated arguments" do
-        before :all do
-          process %w{ -f -i }
-        end
-
-        its(:foxtrot) { should be_true }
-        its(:india) { should be_true }
-        its(:juliet) { should be_nil }
-      end
-
-      context "with joined arguments" do
-        before :all do
-          process %w{ -fi }
-        end
-
-        its(:foxtrot) { should be_true }
-        its(:india) { should be_true }
-        its(:juliet) { should be_nil }
-      end
-
-      context "with number" do
-        before :all do
-          process %w{ -36fi }
-        end
-
-        its(:foxtrot) { should be_true }
-        its(:india) { should be_false }
-        its(:juliet) { should eql '-36' }
-      end
+    def process args
+      @results = create_fij_option_set.process args
     end
+
+    subject { @results }
+
+    it_behaves_like "an option set with short arguments"
   end
 
   context "when one option unsets another" do

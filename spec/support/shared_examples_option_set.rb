@@ -48,3 +48,37 @@ shared_examples "an option set" do
     end
   end
 end
+
+shared_examples "an option set with short arguments" do
+  describe "#process" do
+    context "with separated arguments" do
+      before :all do
+        process %w{ -f -i }
+      end
+
+      its(:foxtrot) { should be_true }
+      its(:india) { should be_true }
+      its(:juliet) { should be_nil }
+    end
+
+    context "with joined arguments" do
+      before :all do
+        process %w{ -fi }
+      end
+
+      its(:foxtrot) { should be_true }
+      its(:india) { should be_true }
+      its(:juliet) { should be_nil }
+    end
+
+    context "with number" do
+      before :all do
+        process %w{ -36fi }
+      end
+
+      its(:foxtrot) { should be_true }
+      its(:india) { should be_false }
+      its(:juliet) { should eql '36' }
+    end
+  end
+end

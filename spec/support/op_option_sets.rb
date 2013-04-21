@@ -3,7 +3,7 @@ require 'ragol/optproc/optset'
 
 module OptProc
   module OptionTestSets
-    def create_abc_option_set
+    def create_abc_option_set charlie_options = Hash.new
       optdata = Array.new
       @alpha = nil
       optdata << {
@@ -22,9 +22,33 @@ module OptProc
         :tags => %w{ -c --charlie },
         :arg  => [ :string ],
         :set  => Proc.new { |v| @charlie = v }
-      }
+      }.merge(charlie_options)
       optset = OptProc::OptionSet.new optdata
       def optset.name; 'abc'; end
+      optset
+    end
+
+    def create_fij_option_set
+      optdata = Array.new
+      @foxtrot = nil
+      optdata << {
+        :tags => %w{ -f --foxtrot },
+        :set  => Proc.new { @foxtrot = true }
+      }
+      @india = nil
+      optdata << {
+        :tags => %w{ -i --india },
+        :set  => Proc.new { |v| @india = true }
+      }
+      @juliet = nil
+      optdata << {
+        :tags => %w{ -j --juliet },
+        :arg  => [ :string ],
+        :set  => Proc.new { |v| @juliet = v },
+        :regexp => Regexp.new('^-(\d+)$')
+      }
+      optset = OptProc::OptionSet.new optdata
+      def optset.name; 'fij'; end
       optset
     end
   end
