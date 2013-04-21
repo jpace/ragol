@@ -139,3 +139,32 @@ shared_examples "an option set with unset options" do
     end
   end
 end
+
+shared_examples "an option set with partially matching options" do
+  describe "#process" do
+    context "when arguments are full" do
+      before :all do
+        process %w{ --delay 44 --delta 6 }
+      end
+      
+      its(:delay) { should eql '44' }
+      its(:delta) { should eql 6 }
+    end
+
+    context "when arguments are partial" do
+      before :all do
+        process %w{ --dela 144 --delt 37 }
+      end
+      
+      its(:delay) { should eql '144' }
+      its(:delta) { should eql 37 }
+    end
+
+    context "when arguments are conflicting partial" do
+      it "should error on ambiguous options" do
+        args = %w{ --del 144 --del 37 }
+        expect { process(args) }.to raise_error(RuntimeError, "ambiguous match of '--del'; matches options: (-d, --delta), (-y, --delay)")
+      end
+    end
+  end
+end

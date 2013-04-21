@@ -79,74 +79,12 @@ describe OptProc::OptionSet do
 
     subject { @results }
 
-    describe "#process" do
-      context "when arguments are full" do
-        before :all do
-          process %w{ --delay 44 --delta 6 }
-        end
-        
-        its(:delay) { should eql '44' }
-        its(:delta) { should eql 6 }
-      end
-
-      context "when arguments are partial" do
-        before :all do
-          process %w{ --dela 144 --delt 37 }
-        end
-        
-        its(:delay) { should eql '144' }
-        its(:delta) { should eql 37 }
-      end
-
-      context "when arguments are conflicting partial" do
-        it "should error on ambiguous options" do
-          args = %w{ --del 144 --del 37 }
-          expect { process(args) }.to raise_error(RuntimeError, "ambiguous match of '--del'; matches options: (-d, --delta), (-y, --delay)")
-        end
-      end
-    end
+    it_behaves_like "an option set with partially matching options"
   end
 
   describe "#process" do
     def process args
       optset.process args
-    end
-
-    context "when options are incomplete" do
-      def option_data
-        optdata = Array.new
-        add_abc_opt optdata
-
-        @abcdef = false
-        optdata << {
-          :tags => %w{ --abcdef },
-          :set  => Proc.new { @abcdef = true }
-        }
-
-        add_xyz_opt optdata
-        optdata
-      end
-
-      it "should use the full unambiguous option" do
-        args = %w{ --abc }
-        process args
-        abc.should be_true
-        @abcdef.should be_false
-        xyz.should be_false
-      end
-
-      it "should use the short unambiguous option" do
-        args = %w{ --xy }
-        process args
-        abc.should be_false
-        @abcdef.should be_false
-        xyz.should be_true
-      end
-
-      it "should error on ambiguous options" do
-        args = %w{ --ab }
-        expect { process(args) }.to raise_error(RuntimeError, "ambiguous match of '--ab'; matches options: (-a, --abc), (--abcdef)")
-      end
     end
 
     context "when regexp" do
