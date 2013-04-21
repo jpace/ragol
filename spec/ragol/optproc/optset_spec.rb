@@ -120,16 +120,21 @@ describe OptProc::OptionSet do
 
   describe "#process" do
     def option_data
-      @context = nil
       optdata = Array.new
+
+      @context = nil
       optdata << {
         :tags => %w{ -C --context },
         :res  => %r{ ^ - ([1-9]\d*) $ }x,
         :arg  => [ :optional, :integer ],
         :set  => Proc.new { |val, opt, args| @context = val || 2 },
       }
+      @abc = nil
+      optdata << {
+        :tags => %w{ -a --abc },
+        :set  => Proc.new { |v| @abc = v }
+      }
       
-      add_abc_opt optdata
       optdata
     end
     
@@ -161,7 +166,7 @@ describe OptProc::OptionSet do
       args = %w{ -17 -a }
       process args
       @context.should eq 17
-      abc.should be_true
+      @abc.should be_true
       args.should be_empty
     end
   end
