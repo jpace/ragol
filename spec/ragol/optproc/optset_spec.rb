@@ -41,6 +41,12 @@ describe OptProc::OptionSet do
         optdata
       end
 
+      def process args
+        @results = create_abc_option_set.process args
+      end
+
+      subject(:results) { @results }
+
       context "when argument is invalid" do
         it "should error on invalid long arg" do
           args = %w{ --ghi }
@@ -54,30 +60,26 @@ describe OptProc::OptionSet do
       end
 
       describe "first option" do
-        it "should use the long arg" do
-          process %w{ --abc }
-          abc.should be_true
-          xyz.should be_false
-        end  
-
-        it "should use the short arg" do
-          process %w{ -a }
-          abc.should be_true
-          xyz.should be_false
+        %w{ -a --alpha }.each do |arg|
+          it "should handle arg #{arg}" do
+            process [ arg ]
+            @results.alpha.should be_true
+            @results.bravo.should be_false
+            @results.charlie.should be_false
+            @results.unprocessed.should be_empty
+          end
         end
       end
 
       describe "second option" do
-        it "should use the long arg" do
-          process %w{ --xyz }
-          abc.should be_false
-          xyz.should be_true
-        end  
-
-        it "should use the short arg" do
-          process %w{ -x }
-          abc.should be_false
-          xyz.should be_true
+        %w{ -b --bravo }.each do |arg|
+          it "should handle arg #{arg}" do
+            process [ arg ]
+            @results.alpha.should be_false
+            @results.bravo.should be_true
+            @results.charlie.should be_false
+            @results.unprocessed.should be_empty
+          end
         end
       end
 
