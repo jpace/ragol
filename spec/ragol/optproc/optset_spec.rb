@@ -48,6 +48,16 @@ describe OptProc::OptionSet do
     it_behaves_like "an option set with short arguments"
   end
 
+  context "when one option unsets another" do
+    def process args
+      @results = create_abc_option_set(:unsets => 'bravo').process args
+    end
+
+    subject { @results }
+
+    it_behaves_like "an option set with unset options"
+  end
+
   describe "#process" do
     def process args
       optset.process args
@@ -230,31 +240,6 @@ describe OptProc::OptionSet do
         args = %w{ -123 }
         process args
         subject.should eql '123'
-      end
-    end
-
-    context "when one option unsets another" do
-      def option_data
-        optdata = Array.new
-        @ghi = nil
-        optdata << {
-          :tags => %w{ -g --ghi },
-          :set  => Proc.new { @ghi = true },
-          :unset => 'xyz',
-        }
-        add_xyz_opt optdata
-        optdata
-      end
-
-      [ %w{ --ghi --xyz }, %w{ --xyz --ghi } ].each do |args|
-        it "should unset option for #{args}" do
-          results = optset.process args
-          @ghi.should == true
-          results.value('xyz').should be_nil
-          # this doesn't work, because there is no 'unset' block to call.
-          # @xyz.should == false
-          args.should be_empty
-        end
       end
     end
   end

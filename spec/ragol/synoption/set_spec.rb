@@ -55,48 +55,8 @@ describe Synoption::OptionSet do
     end
 
     subject { @results }
-    
-    describe "#process" do
-      context "when there is no option to unset" do
-        before :all do
-          process %w{ --bravo foo }
-        end
 
-        its(:alpha) { should be_nil }
-        its(:bravo) { should eql 'foo' }
-        its(:charlie) { should be_nil }
-      end
-
-      context "when there is only an option to unset" do
-        before :all do
-          process %w{ --charlie bar }
-        end
-
-        its(:alpha) { should be_nil }
-        its(:bravo) { should be_nil }
-        its(:charlie) { should eql 'bar' }
-      end
-
-      context "when the option order is the unset option, then the option to be unset" do
-        before :all do
-          process %w{ --charlie baz --bravo foo }
-        end
-
-        its(:alpha) { should be_nil }
-        its(:bravo) { should be_nil }
-        its(:charlie) { should eql 'baz' }
-      end
-
-      context "when the option order is the option to be unset, then the unset option" do
-        before :all do
-          process %w{ --bravo foo --charlie bar }
-        end
-
-        its(:alpha) { should be_nil }
-        its(:bravo) { should be_nil }
-        its(:charlie) { should eql 'bar' }
-      end
-    end
+    it_behaves_like "an option set with unset options"
   end
 
   context ":has_option" do
