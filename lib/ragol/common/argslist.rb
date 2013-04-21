@@ -11,7 +11,8 @@ module Ragol
 
     def next_arg
       curr = @args.shift
-      re = Regexp.new('^-(?:(\d+)(\D)|([a-zA-Z])(\w+))')
+      re = Regexp.new('^- (?:(\d+)(\D+) | ([a-zA-Z])(\w+) )', Regexp::EXTENDED)
+
       if md = re.match(curr)
         mi = md[1] ? 1 : 3
         arg, newarg = ('-' + md[mi]), ('-' + md[mi + 1])

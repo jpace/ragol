@@ -73,11 +73,21 @@ shared_examples "an option set with short arguments" do
 
     context "with number" do
       before :all do
+        process %w{ -36if }
+      end
+
+      its(:foxtrot) { should be_true }
+      its(:india) { should be_true }
+      its(:juliet) { should eql '36' }
+    end
+
+    context "with number" do
+      before :all do
         process %w{ -36fi }
       end
 
       its(:foxtrot) { should be_true }
-      its(:india) { should be_false }
+      its(:india) { should be_true }
       its(:juliet) { should eql '36' }
     end
   end
