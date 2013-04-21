@@ -71,24 +71,16 @@ shared_examples "an option set with short arguments" do
       its(:juliet) { should be_nil }
     end
 
-    context "with number" do
-      before :all do
-        process %w{ -36if }
+    context "with number and short options" do
+      %w{ -36if -36fi }.each do |arg|
+        before :all do
+          process [ arg ]
+        end
+        
+        its(:foxtrot) { should be_true }
+        its(:india) { should be_true }
+        its(:juliet) { should eql '36' }
       end
-
-      its(:foxtrot) { should be_true }
-      its(:india) { should be_true }
-      its(:juliet) { should eql '36' }
-    end
-
-    context "with number" do
-      before :all do
-        process %w{ -36fi }
-      end
-
-      its(:foxtrot) { should be_true }
-      its(:india) { should be_true }
-      its(:juliet) { should eql '36' }
     end
   end
 end
