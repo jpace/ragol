@@ -5,6 +5,7 @@ module OptProc
   module OptionTestSets
     def create_abc_option_set charlie_options = Hash.new
       optdata = Array.new
+
       @alpha = nil
       optdata << {
         :tags => %w{ -a --alpha },
@@ -23,6 +24,7 @@ module OptProc
         :arg  => [ :string ],
         :set  => Proc.new { |v| @charlie = v }
       }.merge(charlie_options)
+
       optset = OptProc::OptionSet.new optdata
       def optset.name; 'abc'; end
       optset
@@ -30,6 +32,7 @@ module OptProc
 
     def create_fij_option_set
       optdata = Array.new
+
       @foxtrot = nil
       optdata << {
         :tags => %w{ -f --foxtrot },
@@ -47,8 +50,29 @@ module OptProc
         :set  => Proc.new { |v| @juliet = v },
         :regexp => Regexp.new('^-(\d+)$')
       }
+
       optset = OptProc::OptionSet.new optdata
       def optset.name; 'fij'; end
+      optset
+    end
+
+    def create_ik_option_set
+      optdata = Array.new
+
+      @kilo = nil
+      optdata << {
+        :tags => %w{ -k, --kilo },
+        :arg  => [ :string, :optional ],
+        :set  => Proc.new { |v| @kilo = v }
+      }
+      @india = nil
+      optdata << {
+        :tags => %w{ -i, --india },
+        :set  => Proc.new { |v| @india = true }
+      }
+
+      optset = OptProc::OptionSet.new optdata
+      def optset.name; 'ik'; end
       optset
     end
   end

@@ -109,66 +109,24 @@ describe OptProc::OptionSet do
   end
 
   describe "#process" do
-    def option_data
-      @strval = nil
-      optdata = Array.new
-      optdata << {
-        :tags => %w{ --sopt },
-        :arg  => [ :string, :optional ],
-        :set  => Proc.new { |v| @strval = v }
-      }
-      
-      add_abc_opt optdata
-      optdata
-    end
-    
     def process args
-      optset.process args
+      @results = create_ik_option_set.process args
     end
 
-    it "takes an argument" do
-      process %w{ --sopt xyz }
-      @strval.should eq 'xyz'
-      abc.should be_false
-    end
+    subject { @results }
 
-    it "takes an argument with =" do
-      process %w{ --sopt=xyz }
-      @strval.should eq 'xyz'
-      abc.should be_false
-    end
-
-    it "ignores a missing argument" do
-      process %w{ --sopt }
-      @strval.should be_nil
-    end
-
-    it "ignores a following --abc option" do
-      args = %w{ --sopt --abc }
-      process args
-      @strval.should be_true
-      abc.should be_true
-      args.should be_empty
-    end
-
-    it "ignores a following -a option" do
-      args = %w{ --sopt -a }
-      process args
-      @strval.should be_true
-      abc.should be_true
-      args.should be_empty
-    end
+    it_behaves_like "an option set containing an option with an optional value"
   end
 
   describe "#process" do
     def option_data
-      @reval = nil
+      @context = nil
       optdata = Array.new
       optdata << {
         :tags => %w{ -C --context },
         :res  => %r{ ^ - ([1-9]\d*) $ }x,
         :arg  => [ :optional, :integer ],
-        :set  => Proc.new { |val, opt, args| @reval = val || 2 },
+        :set  => Proc.new { |val, opt, args| @context = val || 2 },
       }
       
       add_abc_opt optdata
@@ -181,28 +139,28 @@ describe OptProc::OptionSet do
 
     it "takes a tag argument" do
       process %w{ --context 17 }
-      @reval.should eq 17
+      @context.should eq 17
     end
 
     it "takes a tag argument" do
       process %w{ -C 17 }
-      @reval.should eq 17
+      @context.should eq 17
     end
 
     it "ignores missing tag argument" do
       process %w{ --context }
-      @reval.should eq 2
+      @context.should eq 2
     end
 
     it "takes the regexp value (not argument)" do
       process %w{ -17 }
-      @reval.should eq 17
+      @context.should eq 17
     end
 
     it "takes the regexp value with following -o" do
       args = %w{ -17 -a }
       process args
-      @reval.should eq 17
+      @context.should eq 17
       abc.should be_true
       args.should be_empty
     end

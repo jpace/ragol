@@ -67,39 +67,35 @@ describe Synoption::OptionSet do
 
       subject { @results }
 
-      context "when options are not interlinked" do
-        describe "#process" do
-          context "when arguments are valid" do
-            before :all do
-              process %w{ --echo foo }
-            end
+      context "when arguments are valid" do
+        before :all do
+          process %w{ --echo foo }
+        end
 
-            its(:delta) { should eql 317 }
-            its(:echo) { should eql 'foo' }
-            its(:foxtrot) { should be_false }
-          end
+        its(:delta) { should eql 317 }
+        its(:echo) { should eql 'foo' }
+        its(:foxtrot) { should be_false }
+      end
 
-          describe "multiple invocations" do
-            context "first invocation" do
-              before :all do
-                process %w{ --echo foo }
-              end
-              
-              its(:delta) { should eql 317 }
-              its(:echo) { should eql 'foo' }
-              its(:foxtrot) { should be_false }
-            end
-            
-            context "second invocation" do
-              before :all do
-                process %w{ --foxtrot bar }
-              end
-              
-              its(:delta) { should eql 317 }
-              its(:echo) { should eql 'default default' }
-              its(:foxtrot) { should be_true }
-            end
+      describe "multiple invocations" do
+        context "first invocation" do
+          before :all do
+            process %w{ --echo foo }
           end
+          
+          its(:delta) { should eql 317 }
+          its(:echo) { should eql 'foo' }
+          its(:foxtrot) { should be_false }
+        end
+        
+        context "second invocation" do
+          before :all do
+            process %w{ --foxtrot bar }
+          end
+          
+          its(:delta) { should eql 317 }
+          its(:echo) { should eql 'default default' }
+          its(:foxtrot) { should be_true }
         end
       end
     end
@@ -181,27 +177,6 @@ describe Synoption::OptionSet do
 
     subject { @results }
 
-    %w{ -k --kilo }.each do |val|
-      it "matches #{val} with no following argument" do
-        process [ val ]
-        @results.kilo.should == nil
-        @results.india.should be_false
-        @results.unprocessed.should be_empty
-      end
-
-      it "matches #{val} with following argument" do
-        process [ val, 'abc' ]
-        @results.kilo.should eql 'abc'
-        @results.india.should be_false
-        @results.unprocessed.should be_empty
-      end
-
-      it "matches #{val} with following option" do
-        process [ val, '-i' ]
-        @results.kilo.should eql true
-        @results.india.should be_true
-        @results.unprocessed.should be_empty
-      end
-    end
+    it_behaves_like "an option set containing an option with an optional value"
   end
 end

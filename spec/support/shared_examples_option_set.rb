@@ -168,3 +168,42 @@ shared_examples "an option set with partially matching options" do
     end
   end
 end
+
+shared_examples "an option set containing an option with an optional value" do
+  %w{ -k --kilo }.each do |val|
+    it "matches #{val} with no following argument" do
+      process [ val ]
+      @results.kilo.should == nil
+      @results.india.should be_false
+      @results.unprocessed.should be_empty
+    end
+
+    it "matches #{val} with following argument" do
+      process [ val, 'abc' ]
+      @results.kilo.should eql 'abc'
+      @results.india.should be_false
+      @results.unprocessed.should be_empty
+    end
+
+    it "matches #{val} with following -i" do
+      process [ val, '-i' ]
+      @results.kilo.should eql true
+      @results.india.should be_true
+      @results.unprocessed.should be_empty
+    end
+
+    it "matches #{val} with following --india" do
+      process [ val, '--india' ]
+      @results.kilo.should eql true
+      @results.india.should be_true
+      @results.unprocessed.should be_empty
+    end
+  end
+
+  it "matches --kilo=value with no argument" do
+    process %w{ --kilo=xyz }
+    @results.kilo.should eql 'xyz'
+    @results.india.should be_false
+    @results.unprocessed.should be_empty
+  end
+end
