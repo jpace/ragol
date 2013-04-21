@@ -58,6 +58,55 @@ describe OptProc::OptionSet do
     it_behaves_like "an option set with unset options"
   end
 
+  context "when options partially match" do
+    def process args
+      optdata = Array.new
+      @delta = nil
+      optdata << {
+        :tags => %w{ -d --delta },
+        :default => 314,
+        :valuetype => :fixnum,
+        :process => Proc.new { |v| @delta = v }
+      }
+      @delay = nil
+      optdata << {
+        :tags => %w{ -y --delay },
+        :valuetype => :string,
+        :process => Proc.new { |v| @delay = v }
+      }
+      @results = OptProc::OptionSet.new(optdata).process args
+    end
+
+    subject { @results }
+
+    describe "#process" do
+      context "when arguments are full" do
+        before :all do
+          process %w{ --delay 44 --delta 6 }
+        end
+        
+        its(:delay) { should eql '44' }
+        its(:delta) { should eql 6 }
+      end
+
+      context "when arguments are partial" do
+        before :all do
+          process %w{ --dela 144 --delt 37 }
+        end
+        
+        its(:delay) { should eql '144' }
+        its(:delta) { should eql 37 }
+      end
+
+      context "when arguments are conflicting partial" do
+        it "should error on ambiguous options" do
+          args = %w{ --del 144 --del 37 }
+          expect { process(args) }.to raise_error(RuntimeError, "ambiguous match of '--del'; matches options: (-d, --delta), (-y, --delay)")
+        end
+      end
+    end
+  end
+
   describe "#process" do
     def process args
       optset.process args

@@ -56,6 +56,9 @@ module OptProc
                             end
       else
         Ragol::HashUtil.copy_hash self, origargs, [ [ :takesvalue, :valuereq ], [ :valuetype ], [ :valueregexp ] ]
+        if self[:valuetype]
+          self[:takesvalue] ||= true
+        end
       end
 
       fields = [
