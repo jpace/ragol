@@ -82,6 +82,17 @@ shared_examples "an option set with short arguments" do
         its(:juliet) { should eql '36' }
       end
     end
+
+    context "with joined arguments and other arguments" do
+      before :all do
+        process %w{ -fi foo bar }
+      end
+
+      its(:foxtrot) { should be_true }
+      its(:india) { should be_true }
+      its(:juliet) { should be_nil }
+      its(:unprocessed) { should eql %w{ foo bar } }
+    end
   end
 end
 
