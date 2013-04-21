@@ -5,20 +5,23 @@ module OptProc
   module OptionTestSets
     def create_abc_option_set
       optdata = Array.new
-      @alpha = false
+      @alpha = nil
       optdata << {
         :tags => %w{ -a --alpha },
-        :set  => Proc.new { @alpha = true }
+        :arg  => [ :string ],
+        :set  => Proc.new { |v| @alpha = v }
       }
-      @bravo = false
+      @bravo = nil
       optdata << {
         :tags => %w{ -b --bravo },
-        :set  => Proc.new { @bravo = true }
+        :arg  => [ :string ],
+        :set  => Proc.new { |v| @bravo = v }
       }
       @charlie = false
       optdata << {
         :tags => %w{ -c --charlie },
-        :set  => Proc.new { @charlie = true }
+        :arg  => [ :string ],
+        :set  => Proc.new { |v| @charlie = v }
       }
       optset = OptProc::OptionSet.new optdata
       def optset.name; 'abc'; end

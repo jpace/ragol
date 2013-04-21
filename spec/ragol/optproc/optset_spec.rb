@@ -28,6 +28,60 @@ describe OptProc::OptionSet do
     end
   end
 
+  context "when options are isolated" do
+    def process args
+      @results = create_abc_option_set.process args
+    end
+
+    subject(:results) { @results }
+
+    describe "#process" do
+      context "when arguments are valid" do
+        before :all do
+          process %w{ --bravo foo bar baz }
+        end
+
+        its(:bravo) { should eql 'foo' }
+
+        [ :alpha, :charlie ].each do |opt|
+          its(opt) { should be_nil }
+        end
+
+        its(:unprocessed) { should eql %w{ bar baz } }
+      end
+
+      context "when arguments are invalid" do
+        %w{ -y --bar }.each do |tag|
+          it "throws error for invalid tag #{tag}" do
+            expect { process [ tag, 'foo' ] }.to raise_error(Ragol::OptionException, "abc: invalid option '#{tag}'")
+          end
+        end
+      end
+
+      context "when arguments contain double dash" do
+        before :all do
+          process %w{ --alpha bar -- --charlie foo }
+        end
+
+        it "sets option preceding --" do
+          results.alpha.should eql 'bar'
+        end
+
+        it "ignores unspecified option" do
+          results.charlie.should be_nil
+        end
+
+        it("ignores option following --") do 
+          results.bravo.should be_nil
+        end
+
+        it "does not include -- in unprocessed" do
+          results.unprocessed.should eql %w{ --charlie foo }
+        end
+      end
+    end
+  end
+
   describe "#process" do
     def process args
       optset.process args
@@ -46,42 +100,6 @@ describe OptProc::OptionSet do
       end
 
       subject(:results) { @results }
-
-      context "when argument is invalid" do
-        it "should error on invalid long arg" do
-          args = %w{ --ghi }
-          expect { optset.process args }.to raise_error(Ragol::OptionException, "optproc::optionset: invalid option '--ghi'")
-        end
-
-        it "should error on invalid short arg" do
-          args = %w{ -d }
-          expect { optset.process args }.to raise_error(Ragol::OptionException, "optproc::optionset: invalid option '-d'")
-        end
-      end
-
-      describe "first option" do
-        %w{ -a --alpha }.each do |arg|
-          it "should handle arg #{arg}" do
-            process [ arg ]
-            @results.alpha.should be_true
-            @results.bravo.should be_false
-            @results.charlie.should be_false
-            @results.unprocessed.should be_empty
-          end
-        end
-      end
-
-      describe "second option" do
-        %w{ -b --bravo }.each do |arg|
-          it "should handle arg #{arg}" do
-            process [ arg ]
-            @results.alpha.should be_false
-            @results.bravo.should be_true
-            @results.charlie.should be_false
-            @results.unprocessed.should be_empty
-          end
-        end
-      end
 
       describe "both options" do
         it "should use the long arg for both options" do
