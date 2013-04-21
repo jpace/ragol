@@ -54,6 +54,7 @@ describe Synoption::OptionSet do
 
         its(:foxtrot) { should be_true }
         its(:india) { should be_true }
+        its(:juliet) { should be_nil }
       end
 
       context "with joined arguments" do
@@ -63,6 +64,7 @@ describe Synoption::OptionSet do
 
         its(:foxtrot) { should be_true }
         its(:india) { should be_true }
+        its(:juliet) { should be_nil }
       end
 
       context "with number" do
