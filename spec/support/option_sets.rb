@@ -106,6 +106,21 @@ module Synoption
       IkOptionSet.new
     end
 
+    class DelayOption < Synoption::Option
+      def initialize
+        super :delay, '-y', "waiting period", nil
+      end
+    end
+
+    class DdOptionSet < Synoption::OptionSet
+      has_option :delta, DeltaOption
+      has_option :delay, DelayOption
+    end
+
+    def create_dd_option_set
+      DdOptionSet.new
+    end
+
     def process_option args
       optset = Synoption::OptionSet.new
       optset.add create_option

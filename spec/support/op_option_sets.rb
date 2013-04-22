@@ -75,5 +75,27 @@ module OptProc
       def optset.name; 'ik'; end
       optset
     end
+
+    def create_dd_option_set
+      optdata = Array.new
+
+      @delta = nil
+      optdata << {
+        :tags => %w{ -d --delta },
+        :default => 314,
+        :valuetype => :fixnum,
+        :process => Proc.new { |v| @delta = v }
+      }
+      @delay = nil
+      optdata << {
+        :tags => %w{ -y --delay },
+        :valuetype => :string,
+        :process => Proc.new { |v| @delay = v }
+      }
+
+      optset = OptProc::OptionSet.new optdata
+      def optset.name; 'dd'; end
+      optset
+    end
   end
 end

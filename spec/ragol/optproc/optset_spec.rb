@@ -60,21 +60,7 @@ describe OptProc::OptionSet do
 
   context "when options partially match" do
     def process args
-      optdata = Array.new
-      @delta = nil
-      optdata << {
-        :tags => %w{ -d --delta },
-        :default => 314,
-        :valuetype => :fixnum,
-        :process => Proc.new { |v| @delta = v }
-      }
-      @delay = nil
-      optdata << {
-        :tags => %w{ -y --delay },
-        :valuetype => :string,
-        :process => Proc.new { |v| @delay = v }
-      }
-      @results = OptProc::OptionSet.new(optdata).process args
+      @results = create_dd_option_set.process args
     end
 
     subject { @results }
@@ -103,7 +89,7 @@ describe OptProc::OptionSet do
       it "should match" do
         args = %w{ -123 }
         process args
-        subject.should eql '123'
+        should eql '123'
       end
     end
   end

@@ -34,7 +34,7 @@ describe Synoption::OptionSet do
       @results = create_abc_option_set.process args
     end
 
-    subject(:results) { @results }
+    subject { @results }
 
     it_behaves_like "an option set"
   end
@@ -150,19 +150,8 @@ describe Synoption::OptionSet do
   end
 
   context "when options partially match" do
-    class DelayOption < Synoption::Option
-      def initialize
-        super :delay, '-y', "waiting period", nil
-      end
-    end
-
-    class DdOptionSet < Synoption::OptionSet
-      has_option :delta, Synoption::OptionTestSets::DeltaOption
-      has_option :delay, DelayOption
-    end
-
     def process args
-      @results = DdOptionSet.new.process args
+      @results = create_dd_option_set.process args
     end
 
     subject { @results }

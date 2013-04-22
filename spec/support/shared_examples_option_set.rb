@@ -30,21 +30,10 @@ shared_examples "an option set" do
         process %w{ --alpha bar -- --charlie foo }
       end
 
-      it "sets option preceding --" do
-        results.alpha.should eql 'bar'
-      end
-
-      it "ignores unspecified option" do
-        results.charlie.should be_nil
-      end
-
-      it("ignores option following --") do 
-        results.bravo.should be_nil
-      end
-
-      it "does not include -- in unprocessed" do
-        results.unprocessed.should eql %w{ --charlie foo }
-      end
+      its(:alpha) { should eql 'bar' }
+      its(:charlie) { should be_nil }
+      its(:bravo) { should be_nil }
+      its(:unprocessed) { should eql %w{ --charlie foo } }
     end
   end
 end
