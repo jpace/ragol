@@ -42,4 +42,14 @@ shared_context "common optset tests" do
 
     it_behaves_like "an option set with partially matching options"
   end
+
+  context "when argument is optional" do
+    def process args
+      @results = create_ik_option_set.process args
+    end
+
+    subject { @results }
+
+    it_behaves_like "an option set containing an option with an optional value"
+  end
 end

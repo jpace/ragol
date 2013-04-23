@@ -30,16 +30,6 @@ describe OptProc::OptionSet do
 
   describe "#process" do
     def process args
-      @results = create_ik_option_set.process args
-    end
-
-    subject { @results }
-
-    it_behaves_like "an option set containing an option with an optional value"
-  end
-
-  describe "#process" do
-    def process args
       optset.process args
     end
 
