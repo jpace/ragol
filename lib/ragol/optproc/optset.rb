@@ -3,6 +3,7 @@
 
 require 'ragol/common/option'
 require 'ragol/common/option_set'
+require 'ragol/optproc/args'
 
 module OptProc
   class OptionSet < Ragol::OptionSet
