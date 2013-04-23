@@ -22,4 +22,24 @@ shared_context "common optset tests" do
 
     it_behaves_like "an option set"
   end
+
+  context "when options contain short arguments" do
+    def process args
+      @results = create_fij_option_set.process args
+    end
+    
+    subject { @results }
+    
+    it_behaves_like "an option set with short arguments"
+  end
+
+  context "when options partially match" do
+    def process args
+      @results = create_dd_option_set.process args
+    end
+
+    subject { @results }
+
+    it_behaves_like "an option set with partially matching options"
+  end
 end
