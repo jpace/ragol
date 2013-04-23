@@ -59,6 +59,26 @@ describe Synoption::OptionSet do
     it_behaves_like "an option set with unset options"
   end
 
+  context "when options partially match" do
+    def process args
+      @results = create_dd_option_set.process args
+    end
+
+    subject { @results }
+
+    it_behaves_like "an option set with partially matching options"
+  end
+
+  context "when argument is optional" do
+    def process args
+      @results = create_ik_option_set.process args
+    end
+
+    subject { @results }
+
+    it_behaves_like "an option set containing an option with an optional value"
+  end
+
   context ":has_option" do
     context "when direct subclass of OptionSet" do
       def process args
@@ -147,25 +167,5 @@ describe Synoption::OptionSet do
         end
       end
     end
-  end
-
-  context "when options partially match" do
-    def process args
-      @results = create_dd_option_set.process args
-    end
-
-    subject { @results }
-
-    it_behaves_like "an option set with partially matching options"
-  end
-
-  context "when argument is optional" do
-    def process args
-      @results = create_ik_option_set.process args
-    end
-
-    subject { @results }
-
-    it_behaves_like "an option set containing an option with an optional value"
   end
 end
