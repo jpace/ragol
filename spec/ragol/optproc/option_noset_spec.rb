@@ -20,6 +20,7 @@ describe OptProc::Option do
       args = %w{ --none xyz }
       result = process args
       result.value('none').should be_true
+      result.none.should be_true
     end
   end
 end
