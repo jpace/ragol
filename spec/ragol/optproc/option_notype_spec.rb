@@ -18,10 +18,10 @@ describe OptProc::Option do
 
     it "defaults to :none" do
       args = %w{ --undefn xyz }
-      result = process args
-      should eql 'setitwas'
+      process args
+      @value.should eql 'setitwas'
       args.should have(1).items
-      result.undefn.should be_true
+      results.undefn.should be_true
     end
   end
 end

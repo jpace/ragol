@@ -4,11 +4,14 @@
 require 'ragol/optproc/optset'
 
 shared_context "common optproc" do
-  subject { @value }
+  # subject { @value }
+  
+  let(:value) { @value }
+  let(:results) { @results }
 
   def process args
     optset = OptProc::OptionSet.new [ option_data ]
-    optset.process args
+    @results = optset.process args
   end
   
   def process_option args

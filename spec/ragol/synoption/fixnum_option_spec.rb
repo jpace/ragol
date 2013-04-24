@@ -24,5 +24,6 @@ describe Synoption::FixnumOption do
   
   it_behaves_like "a fixnum option" do
     let(:value) { @results.delta }
+    let(:results) { @results }
   end
 end

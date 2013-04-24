@@ -31,19 +31,16 @@ shared_examples "a fixnum option" do
     it "rejects a non-integer" do
       args = [ tag, '1.0' ]
       expect { process_option(args) }.to raise_error(RuntimeError, "invalid argument '1.0' for option: -d, --delta")
-      should be_nil
     end
   end
 
   it "rejects a non-integer as --delta=" do
     args = %w{ --delta=1.0 }
     expect { process_option(args) }.to raise_error(RuntimeError, "invalid argument '1.0' for option: -d, --delta")
-    should be_nil
   end
 
   it "rejects a non-integer as -d" do
     args = %w{ -d 1.0 }
     expect { process_option(args) }.to raise_error(RuntimeError, "invalid argument '1.0' for option: -d, --delta")
-    should be_nil
   end
 end

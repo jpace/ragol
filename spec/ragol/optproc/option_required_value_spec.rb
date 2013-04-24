@@ -19,12 +19,12 @@ describe OptProc::Option do
 
     it "takes an argument" do
       process %w{ --xyz abc }
-      should eq 'abc'
+      value.should eq 'abc'
     end
 
     it "takes an argument with equals" do
       process %w{ --xyz=abc }
-      should eq 'abc'
+      value.should eq 'abc'
     end
   end
 end

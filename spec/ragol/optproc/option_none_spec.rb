@@ -19,10 +19,10 @@ describe Ragol::Option do
 
     it "can take :none as argument" do
       args = %w{ --none xyz }
-      result = process args
-      should eql 'wasset'
+      process args
+      value.should eql 'wasset'
       args.should have(1).items
-      result.none.should be_true
+      results.none.should be_true
     end
   end
 end

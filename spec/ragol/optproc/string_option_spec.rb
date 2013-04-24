@@ -20,27 +20,27 @@ describe OptProc::Option do
       
       it "takes an argument" do
         process %w{ --str xyz }
-        should eq 'xyz'
+        value.should eq 'xyz'
       end
 
       it "takes an argument with =" do
         process %w{ --str=xyz }
-        should eq 'xyz'
+        value.should eq 'xyz'
       end
 
       it "takes an argument with =" do
         process [ '--str="xyz"' ]
-        should eq 'xyz'
+        value.should eq 'xyz'
       end
 
       it "takes an argument with =" do
         process [ "--str='xyz'" ]
-        should eq 'xyz'
+        value.should eq 'xyz'
       end
 
       it "takes an argument matching tag" do
         process %w{ --str -foo }
-        should eq '-foo'
+        value.should eq '-foo'
       end
 
       it "expects an argument" do
@@ -61,7 +61,7 @@ describe OptProc::Option do
       it "takes the argument" do
         args = %w{ --str foo }
         process args
-        should eql 'foo'
+        results.str.should eql 'foo'
         args.should have(0).items
       end
 
