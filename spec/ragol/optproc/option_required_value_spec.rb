@@ -20,11 +20,13 @@ describe OptProc::Option do
     it "takes an argument" do
       process %w{ --xyz abc }
       value.should eq 'abc'
+      results.xyz.should eq 'abc'
     end
 
     it "takes an argument with equals" do
       process %w{ --xyz=abc }
       value.should eq 'abc'
+      results.xyz.should eq 'abc'
     end
   end
 end

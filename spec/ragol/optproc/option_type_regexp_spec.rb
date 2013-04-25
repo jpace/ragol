@@ -21,21 +21,25 @@ describe OptProc::Option do
     it "takes a tag argument" do
       process %w{ --context 17 }
       value.should eq 17
+      results.context.should eq 17
     end
 
     it "takes a tag argument" do
       process %w{ -C 17 }
       value.should eq 17
+      results.context.should eq 17
     end
 
     it "ignores missing tag argument" do
       process %w{ --context }
       value.should eq 2
+      results.context.should eq nil
     end
 
     it "takes the regexp value (not argument)" do
       process %w{ -17 }
       value.should eq 17
+      results.context.should eq 17
     end
   end
 end

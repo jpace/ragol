@@ -11,11 +11,11 @@ shared_examples "a fixnum option" do
       end
 
       it "should have the results" do
-        @results.delta.should == 434
+        results.delta.should == 434
       end
 
       it "should have no unprocessed arguments" do
-        @results.unprocessed.should be_empty
+        results.unprocessed.should be_empty
       end
 
       it "should have the value" do
