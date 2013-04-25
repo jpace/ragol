@@ -15,9 +15,13 @@ module Synoption
       end
     end
 
-    def initialize(name, tag, description, default, options = Hash.new, &blk)
-      args = OptionArguments.new name, tag, description, default, options
+    def initialize(name, tag, description, deflt, options = Hash.new, &blk)
+      args = OptionArguments.new name, tag, description, deflt, options
       super args, &blk
+    end
+
+    def self.default
+      nil
     end
   end
 end

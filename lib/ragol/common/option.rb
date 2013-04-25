@@ -10,25 +10,34 @@ module Ragol
   class Option
     include Logue::Loggable
 
-    attr_reader :name
-    attr_reader :default
-    attr_reader :description
     attr_reader :matchers
+
+    attr_accessor :name
+    attr_accessor :default
+    attr_accessor :description
+    attr_accessor :tags
+    attr_accessor :negates
+    attr_accessor :regexps
     
-    def initialize options = Hash.new
-      tagsmatch = to_matcher options[:tags]
-      negatesmatch = to_matcher options[:negates]
-      regexpsmatch = to_matcher options[:regexps]
+    def initialize options = Hash.new, &blk
+      if blk
+        blk.call self
+      end
+
+      tagsmatch = to_matcher(@tags || options[:tags])
+      negatesmatch = to_matcher(@negates || options[:negates])
+      regexpsmatch = to_matcher(@regexps || options[:regexps])
 
       @matchers = Ragol::Matchers.new tagsmatch, negatesmatch, regexpsmatch
-      @name = options[:name] || @matchers.name
 
-      @default = options[:default]
-      @unsets = options[:unsets]
-      @process = options[:process]
-      @takesvalue = options[:takesvalue]
-      @rcnames = [ options[:rcnames] ].flatten
-      @description = options[:description]
+      @name ||= options[:name] || @matchers.name
+
+      @default ||= options[:default]
+      @unsets ||= options[:unsets]
+      @process ||= options[:process]
+      @takesvalue ||= options[:takesvalue]
+      @rcnames ||= [ options[:rcnames] ].flatten
+      @description ||= options[:description]
     end
 
     def match_rc? field

@@ -30,9 +30,19 @@ module Synoption
       end
     end
     
-    class FoxtrotOption < Synoption::BooleanOption
+    class XxxFoxtrotOption < Synoption::BooleanOption
       def initialize 
         super :foxtrot, '-f', "a dance"
+      end
+    end
+    
+    class FoxtrotOption < Synoption::BooleanOption
+      def initialize 
+        super(:foxtrot, '-f', "a dance") do |opt|
+          opt.name = :foxtrot
+          opt.tags = [ '--foxtrot', '-f' ]
+          opt.description = "a dance"
+        end
       end
     end
     
