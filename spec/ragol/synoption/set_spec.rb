@@ -3,7 +3,7 @@
 
 require 'ragol/synoption/set'
 require 'ragol/synoption/option'
-require 'support/option_sets'
+require 'support/so_option_sets'
 require 'spec_helper'
 
 describe Synoption::OptionSet do

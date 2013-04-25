@@ -2,7 +2,7 @@
 # -*- ruby -*-
 
 require 'ragol/synoption/fixnum_option'
-require 'support/option_sets'
+require 'support/so_option_sets'
 require 'spec_helper'
 
 describe Synoption::FixnumOption do

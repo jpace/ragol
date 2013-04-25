@@ -15,9 +15,9 @@ module Synoption
       end
     end
 
-    def initialize name, tag, description, default, options = Hash.new
+    def initialize(name, tag, description, default, options = Hash.new, &blk)
       args = OptionArguments.new name, tag, description, default, options
-      super args
+      super args, &blk
     end
   end
 end

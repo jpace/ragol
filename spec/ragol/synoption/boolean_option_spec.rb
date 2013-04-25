@@ -3,7 +3,7 @@
 
 require 'ragol/synoption/boolean_option'
 require 'ragol/synoption/set'
-require 'support/option_sets'
+require 'support/so_option_sets'
 require 'spec_helper'
 
 describe Synoption::BooleanOption do
