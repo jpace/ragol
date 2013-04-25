@@ -8,8 +8,12 @@ module Synoption
   # "-v" (verbose) is a boolean option, but "-r 3444" (revision) is a option
   # with a value.
   class BooleanOption < Option
-    def initialize name, tag, description, default = false, options = Hash.new, &blk
+    def initialize name, tag, description, deflt = false, options = Hash.new, &blk
       super
+    end
+
+    def default
+      false
     end
 
     def takes_value?
