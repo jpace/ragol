@@ -5,23 +5,23 @@ require 'ragol/common/option'
 require 'ragol/synoption/args'
 
 module Synoption
-  class Option < Ragol::Option
-    class << self
-      alias_method :old_new, :new
-      
-      def new(*args, &blk)
-        name, tag, description, default, options = *args
-        old_new(*args, &blk)
-      end
-    end
-
-    def initialize(name, tag, description, deflt, options = Hash.new, &blk)
+  module OptionInit
+    def initialize(*args, &blk)
+      name, tag, description, deflt, options = *args
+      options ||= Hash.new
+      deflt ||= default_value
       args = OptionArguments.new name, tag, description, deflt, options
       super args, &blk
     end
 
-    def self.default
+    def default_value
       nil
     end
+  end
+end
+
+module Synoption
+  class Option < Ragol::Option
+    include OptionInit
   end
 end

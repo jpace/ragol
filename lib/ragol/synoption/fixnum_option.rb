@@ -2,10 +2,13 @@
 # -*- ruby -*-
 
 require 'ragol/synoption/option'
+require 'ragol/common/fixnum_option'
 
 module Synoption
   # An option that has a fixnum (integer) as its value.
-  class FixnumOption < Option
+  class FixnumOption < Ragol::FixnumOption
+    include Synoption::OptionInit
+
     REGEXP = Regexp.new '^ ([\-\+]?\d+) $ ', Regexp::EXTENDED
     
     def value_regexp

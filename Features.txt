@@ -207,3 +207,8 @@ Wed Apr 24 19:01:06 2013
 Thu Apr 25 08:42:48 2013
 
   Refined tests.
+
+Fri Apr 26 18:29:28 2013
+
+  Added documentation.
+
