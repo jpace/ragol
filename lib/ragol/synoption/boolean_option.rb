@@ -1,8 +1,8 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
+require 'ragol/boolean_option'
 require 'ragol/synoption/option'
-require 'ragol/common/boolean_option'
 
 module Synoption
   # a boolean option maps to a single tag, not a tag and value. For example,

@@ -1,8 +1,8 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/common/option'
-require 'ragol/common/option_set'
+require 'ragol/option'
+require 'ragol/option_set'
 require 'ragol/optproc/args'
 
 module OptProc
@@ -20,7 +20,7 @@ module OptProc
 
         if clstype
           clsstr = clstype.to_s
-          require 'ragol/common/' + clsstr + '_option'
+          require 'ragol/' + clsstr + '_option'
           clssym = (clsstr.capitalize + 'Option').to_sym
           optcls = ::Ragol.const_get(clssym)
           optcls.new(optargs)

@@ -2,9 +2,9 @@
 # -*- ruby -*-
 
 require 'logue/loggable'
-require 'ragol/common/matcher'
-require 'ragol/common/matchers'
-require 'ragol/common/doc'
+require 'ragol/matcher'
+require 'ragol/matchers'
+require 'ragol/doc'
 
 module Ragol
   class Option

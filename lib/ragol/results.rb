@@ -2,8 +2,8 @@
 # -*- ruby -*-
 
 require 'logue/loggable'
-require 'ragol/common/option'
-require 'ragol/common/argslist'
+require 'ragol/option'
+require 'ragol/argslist'
 
 module Ragol
   class Results

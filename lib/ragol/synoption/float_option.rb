@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/common/float_option'
+require 'ragol/float_option'
 require 'ragol/synoption/option'
 
 module Synoption

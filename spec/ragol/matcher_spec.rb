@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/common/matcher'
+require 'ragol/matcher'
 require 'spec_helper'
 
 describe Ragol::Matcher do

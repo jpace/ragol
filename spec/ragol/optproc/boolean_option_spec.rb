@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/common/boolean_option'
+require 'ragol/boolean_option'
 require 'ragol/optproc/common'
 require 'spec_helper'
 

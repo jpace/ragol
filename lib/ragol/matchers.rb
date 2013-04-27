@@ -2,7 +2,7 @@
 # -*- ruby -*-
 
 require 'logue/loggable'
-require 'ragol/common/matcher'
+require 'ragol/matcher'
 
 module Ragol
   class Matchers

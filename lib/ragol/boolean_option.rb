@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/common/option'
+require 'ragol/option'
 
 module Ragol
   # a boolean option maps to a single tag, not a tag and value. For example,

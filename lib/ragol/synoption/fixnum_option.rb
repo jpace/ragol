@@ -1,8 +1,8 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
+require 'ragol/fixnum_option'
 require 'ragol/synoption/option'
-require 'ragol/common/fixnum_option'
 
 module Synoption
   # An option that has a fixnum (integer) as its value.

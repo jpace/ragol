@@ -1,4 +1,4 @@
-require 'ragol/common/option'
+require 'ragol/option'
 require 'ragol/optproc/optset'
 
 module OptProc

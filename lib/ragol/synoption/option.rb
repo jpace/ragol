@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/common/option'
+require 'ragol/option'
 require 'ragol/synoption/args'
 
 module Synoption

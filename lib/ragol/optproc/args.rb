@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/common/hash'
+require 'ragol/hash'
 
 module OptProc
   class OptionArguments < Hash

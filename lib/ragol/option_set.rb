@@ -2,8 +2,8 @@
 # -*- ruby -*-
 
 require 'logue/loggable'
-require 'ragol/common/results'
-require 'ragol/common/exception'
+require 'ragol/results'
+require 'ragol/exception'
 
 module Ragol
   class OptionSet
