@@ -3,7 +3,13 @@ ragol(1) - Ragol: Another GetOpt Library
 
 ## DESCRIPTION
 
-Ragol is a module for processing command-line options.
+Ragol is a module for processing command-line options. It supports much of the
+functionality of OptParse, and offers a more class-oriented structure for
+defining options.
+
+Options can have value types, such as float, fixnum, string, or regular
+expressions, resulting in the value being validated against the value type. An
+option can have a required or optional value.
 
 ## CLASSES
 
