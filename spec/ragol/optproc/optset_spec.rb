@@ -2,7 +2,6 @@
 # -*- ruby -*-
 
 require 'ragol/optproc/optset'
-require 'ragol/common'
 require 'ragol/optproc/common'
 require 'ragol/optproc/args'
 require 'spec_helper'

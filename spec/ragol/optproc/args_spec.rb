@@ -4,7 +4,6 @@
 require 'ragol/option'
 require 'ragol/optproc/common'
 require 'ragol/optproc/args'
-require 'ragol/common'
 
 describe OptProc::OptionArguments do
   describe ".convert_arguments" do

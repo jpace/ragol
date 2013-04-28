@@ -2,7 +2,6 @@
 # -*- ruby -*-
 
 require 'ragol/optproc/optproc'
-require 'ragol/common'
 
 describe "regexp option" do
   def create_set optdata
