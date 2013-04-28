@@ -2,7 +2,7 @@ require 'ragol/synoption/option'
 require 'ragol/synoption/fixnum_option'
 require 'ragol/synoption/boolean_option'
 require 'ragol/synoption/float_option'
-require 'ragol/synoption/set'
+require 'ragol/synoption/optset'
 
 module Synoption
   module OptionTestSets
@@ -26,13 +26,18 @@ module Synoption
 
     class EchoOption < Synoption::Option
       def initialize
-        super :echo, '-e', "description description", "default default"
+        super do |opt|
+          opt.name = :echo
+          opt.tags = [ '--echo', '-e' ]
+          opt.description = "description description"
+          opt.default = "default default"
+        end
       end
     end
     
     class FoxtrotOption < Synoption::BooleanOption
       def initialize 
-        super(:foxtrot, '-f', "a dance") do |opt|
+        super do |opt|
           opt.name = :foxtrot
           opt.tags = [ '--foxtrot', '-f' ]
           opt.description = "a dance"

@@ -2,7 +2,7 @@
 # -*- ruby -*-
 
 require 'ragol/synoption/float_option'
-require 'ragol/synoption/set'
+require 'ragol/synoption/optset'
 require 'support/so_option_sets'
 require 'spec_helper'
 

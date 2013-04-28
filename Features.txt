@@ -215,3 +215,7 @@ Fri Apr 26 18:29:28 2013
 Sat Apr 27 09:33:40 2013
 
   Added documentation.
+
+Sun Apr 28 13:50:37 2013
+
+  Refined tests to use block initialization.

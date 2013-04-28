@@ -2,7 +2,7 @@
 # -*- ruby -*-
 
 require 'ragol/option'
-require 'ragol/option_set'
+require 'ragol/optset'
 require 'ragol/optproc/args'
 
 module OptProc

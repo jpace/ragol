@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/option_set'
+require 'ragol/optset'
 
 module Synoption
   class OptionSet < Ragol::OptionSet

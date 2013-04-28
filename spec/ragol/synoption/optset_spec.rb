@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/synoption/set'
+require 'ragol/synoption/optset'
 require 'ragol/synoption/option'
 require 'support/so_option_sets'
 require 'spec_helper'
