@@ -219,3 +219,7 @@ Sat Apr 27 09:33:40 2013
 Sun Apr 28 13:50:37 2013
 
   Refined tests to use block initialization.
+
+Mon Apr 29 18:39:55 2013
+
+  Simplified has_option.

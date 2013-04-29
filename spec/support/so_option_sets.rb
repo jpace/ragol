@@ -46,9 +46,9 @@ module Synoption
     end
     
     class DefOptionSet < Synoption::OptionSet
-      has_option :echo, EchoOption
-      has_option :delta, DeltaOption
-      has_option :foxtrot, FoxtrotOption
+      has_option EchoOption
+      has_option DeltaOption
+      has_option FoxtrotOption
     end
 
     def create_def_option_set
@@ -70,8 +70,8 @@ module Synoption
     end
     
     class DefghOptionSet < DefOptionSet
-      has_option :golf, GolfOption
-      has_option :hotel, HotelOption
+      has_option GolfOption
+      has_option HotelOption
     end
 
     def create_defgh_option_set
@@ -91,9 +91,9 @@ module Synoption
     end
     
     class FijOptionSet < Synoption::OptionSet
-      has_option :foxtrot, FoxtrotOption
-      has_option :india, IndiaOption
-      has_option :juliet, JulietOption
+      has_option FoxtrotOption
+      has_option IndiaOption
+      has_option JulietOption
     end
 
     def create_fij_option_set
@@ -107,8 +107,8 @@ module Synoption
     end
     
     class IkOptionSet < Synoption::OptionSet
-      has_option :india, IndiaOption
-      has_option :kilo, KiloOption
+      has_option IndiaOption
+      has_option KiloOption
     end
 
     def create_ik_option_set
@@ -122,8 +122,8 @@ module Synoption
     end
 
     class DdOptionSet < Synoption::OptionSet
-      has_option :delta, DeltaOption
-      has_option :delay, DelayOption
+      has_option DeltaOption
+      has_option DelayOption
     end
 
     def create_dd_option_set

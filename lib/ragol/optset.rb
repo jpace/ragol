@@ -12,8 +12,8 @@ module Ragol
     # maps from an OptionSet class to the valid options for that class.
     @@options_for_class = Hash.new { |h, k| h[k] = Array.new }
 
-    def self.has_option name, optcls, optargs = Hash.new
-      @@options_for_class[self] << { :name => name, :class => optcls, :args => optargs }
+    def self.has_option optcls, optargs = Hash.new
+      @@options_for_class[self] << { :class => optcls, :args => optargs }
     end
 
     def self.options_for_class cls
