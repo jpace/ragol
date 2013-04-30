@@ -223,3 +223,7 @@ Sun Apr 28 13:50:37 2013
 Mon Apr 29 18:39:55 2013
 
   Simplified has_option.
+
+Tue Apr 30 18:35:34 2013
+
+  Added documentation and test.

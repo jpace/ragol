@@ -11,6 +11,17 @@ Options can have value types, such as float, fixnum, string, or regular
 expressions, resulting in the value being validated against the value type. An
 option can have a required or optional value.
 
+Unlike OptParse, Ragol supports regular expressions as the options themselves.
+For example, this option (from the context option for Glark) accepts a tag in
+the form "--123":
+
+```
+optdata << {
+  :regexp    => %r{ ^ - ([1-9]\d*) $ }x,
+  :valuetype => :integer,
+  :set       => Proc.new { |val| @context = val || 2 },
+}
+```
 ## CLASSES
 
 ### Ragol::Option
@@ -34,4 +45,3 @@ An option that takes a string.
 Jeff Pace (jeugenepace at gmail dot com)
 
 http://www.github.com/jpace/ragol
-
