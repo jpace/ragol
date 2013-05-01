@@ -4,6 +4,7 @@
 require 'logue/loggable'
 require 'ragol/results'
 require 'ragol/exception'
+require 'ragol/args'
 
 module Ragol
   class OptionSet
@@ -23,6 +24,27 @@ module Ragol
     attr_reader :options
     
     def initialize(*options)
+      # puts "options: #{options.inspect}"
+      if options[0] && options[0].kind_of?(Hash)
+        data = options[0][:data]
+        options = data.collect do |optdata|
+          optargs = OptionArguments.new(optdata)
+
+          opttype = optargs[:valuetype]
+          clstype = OptionArguments::VAR_TYPES[opttype]
+
+          if clstype
+            clsstr = clstype.to_s
+            require 'ragol/' + clsstr + '_option'
+            clssym = (clsstr.capitalize + 'Option').to_sym
+            optcls = ::Ragol.const_get(clssym)
+            optcls.new(optargs)
+          else
+            Ragol::Option.new(optargs)
+          end
+        end
+      end
+      
       @options = options
 
       cls = self.class

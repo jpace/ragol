@@ -1,14 +1,14 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/optproc/optset'
-require 'ragol/optproc/common'
+require 'ragol/optset'
+require 'ragol/common'
 require 'spec_helper'
 
-describe OptProc::OptionSet do
-  include OptProc::OptionTestSets
+describe Ragol::OptionSet do
+  include Ragol::OptionTestSets
   
-  include_context "common optproc"
+  include_context "ragol common optproc"
   include_context "common optset tests"
 
   let(:optset) do

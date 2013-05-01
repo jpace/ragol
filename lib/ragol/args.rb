@@ -3,7 +3,7 @@
 
 require 'ragol/hash'
 
-module OptProc
+module Ragol
   class OptionArguments < Hash
     VAR_TYPES = {
       :boolean => :boolean,

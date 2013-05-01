@@ -3,12 +3,12 @@
 
 require 'ragol/option'
 require 'ragol/optproc/common'
-require 'ragol/optproc/args'
+require 'ragol/args'
 
-describe OptProc::OptionArguments do
+describe Ragol::OptionArguments do
   describe ".convert_arguments" do
     def convert_arguments old_arguments
-      @new_arguments = OptProc::OptionArguments.new old_arguments
+      @new_arguments = Ragol::OptionArguments.new old_arguments
     end
 
     subject { @new_arguments }
