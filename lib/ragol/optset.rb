@@ -158,8 +158,8 @@ module Ragol
           break
         end
 
-        opt = set_option(results)
-        options_processed << opt
+        option = set_option(results)
+        options_processed << option
       end
 
       options_processed.each do |opt|

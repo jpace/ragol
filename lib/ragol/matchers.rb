@@ -49,7 +49,7 @@ module Ragol
                     if longtag = @tags.elements.find { |t| t[0, 2] == '--' }
                       longtag.sub(%r{^--}, '')
                     else
-                      @tags[0][1 .. -1]
+                      @tags.elements[0][1 .. -1]
                     end
                   elsif @regexps
                     @regexps.elements[0].to_s

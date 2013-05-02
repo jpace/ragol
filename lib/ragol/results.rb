@@ -18,7 +18,7 @@ module Ragol
       options.each do |option|
         @values[option.name] = option.default
         
-        singleton_class.define_method option.name do
+        define_singleton_method option.name do
           instance_eval do
             @values[option.name]
           end

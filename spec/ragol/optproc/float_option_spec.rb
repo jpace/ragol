@@ -1,7 +1,6 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/optproc/option'
 require 'ragol/optproc/common'
 require 'spec_helper'
 

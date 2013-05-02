@@ -18,7 +18,7 @@ end
 
 spec = Gem::Specification.new do |s| 
   s.name               = "ragol"
-  s.version            = "0.0.2"
+  s.version            = "0.0.3"
   s.author             = "Jeff Pace"
   s.email              = "jeugenepace@gmail.com"
   s.homepage           = "http://www.incava.org/projects/ragol"

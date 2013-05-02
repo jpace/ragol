@@ -20,6 +20,17 @@ module Ragol
     attr_accessor :regexps
     
     def initialize options = Hash.new, &blk
+      @tags = nil
+      @negates = nil
+      @regexps = nil
+      @name = nil
+      @default = nil
+      @unsets = nil
+      @process = nil
+      @takesvalue = nil
+      @rcnames = nil
+      @description = nil
+
       if blk
         blk.call self
       end

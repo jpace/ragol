@@ -5,7 +5,7 @@ require 'ragol/option'
 require 'ragol/optproc/common'
 require 'spec_helper'
 
-describe OptProc::Option do
+describe "OptProc::Option" do
   include_context "common optproc"
 
   context "argument" do

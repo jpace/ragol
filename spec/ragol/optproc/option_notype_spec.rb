@@ -1,11 +1,10 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/optproc/option'
 require 'ragol/optproc/common'
 require 'spec_helper'
 
-describe OptProc::Option do
+describe "OptProc::Option" do
   include_context "common optproc"
 
   describe "option without argument type" do
