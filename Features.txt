@@ -231,3 +231,7 @@ Tue Apr 30 18:35:34 2013
 Wed May  1 19:11:47 2013
 
   Added Ragol OptionSet tests.
+
+Thu May  2 08:27:08 2013
+
+  Refined tests.
