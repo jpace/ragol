@@ -24,6 +24,47 @@ optdata << {
 ```
 ## CLASSES
 
+### Ragol::OptionSet
+
+A set of options. This can be instantiated with an array of option data.
+
+Each element of the option data has the following fields:
+
+  * `:regexps`:
+    An array of regular expressions that will match the tag itself.
+
+  * `:tags`:
+    An array of tags as strings, either long form (--foo) or short (-f).
+
+  * `:rcnames`:
+    An array of names to match fields in an rc file.
+
+  * `:takesvalue`:
+    One of true, :optional, or false, denoting whether the tag takes a value.
+    The default is false.
+
+  * `:valuetype`:
+    The type of value that the option takes. Valid values: :boolean, :string,
+    :float, :integer, :fixnum, :regexp.
+
+  * `:valueregexp`:
+    The regular expression to match the value that the tag accepts.
+
+  * `:default`:
+    The default value.
+
+  * `:process`:
+    A proc to call when the option is set. The arguments are |val, optset,
+    args|; val is the value; optset is the set of options, and args is the array
+    of unprocessed arguments.
+
+  * `:postproc`:
+    A proc to call after all options are set. The arguments are |optset,
+    results, unprocessed|.
+
+  * `:description`:
+    The description of the option.
+
 ### Ragol::Option
 
 An option that does not take a value.
