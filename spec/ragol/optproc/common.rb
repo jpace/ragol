@@ -4,8 +4,6 @@
 require 'ragol/optproc/optset'
 
 shared_context "common optproc" do
-  # subject { @value }
-  
   let(:value) { @value }
   let(:results) { @results }
 

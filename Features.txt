@@ -239,3 +239,7 @@ Thu May  2 08:27:08 2013
 Fri May  3 19:37:42 2013
 
   Added documentation.
+
+Sat May  4 07:56:56 2013
+
+  Refined tests.

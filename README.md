@@ -65,6 +65,8 @@ Each element of the option data has the following fields:
   * `:description`:
     The description of the option.
 
+See examples for more.
+
 ### Ragol::Option
 
 An option that does not take a value.
@@ -80,6 +82,10 @@ An option that takes a float.
 ### Ragol::StringOption
 
 An option that takes a string.
+
+## EXAMPLES
+
+
 
 ## AUTHOR
 
