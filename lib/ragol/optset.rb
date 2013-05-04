@@ -159,7 +159,11 @@ module Ragol
         end
 
         option = set_option(results)
-        options_processed << option
+        if option
+          options_processed << option
+        else
+          break
+        end
       end
 
       options_processed.each do |opt|
