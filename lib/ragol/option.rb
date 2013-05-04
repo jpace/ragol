@@ -86,8 +86,7 @@ module Ragol
     end
 
     def do_match val
-      valuere = value_regexp
-      if valuere
+      if valuere = value_regexp
         unless md = valuere.match(val)
           raise "invalid argument '#{val}' for option: #{self}"
         end
@@ -108,19 +107,29 @@ module Ragol
       end
     end
 
+    def match_next_value_required results
+      val = results.shift_arg
+      val && do_match(val)
+    end
+
+    def match_next_value_optional results
+      return unless val = results.current_arg
+      return true if val[0] == '-'
+      return results.shift_arg unless valuere = value_regexp
+      
+      if md = valuere.match(results.current_arg)
+        results.shift_arg
+        md
+      else
+        true
+      end
+    end
+
     def match_next_value results
       if takes_value? == true
-        val = results.shift_arg
-        val && do_match(val)
-      elsif val = results.current_arg
-        if val[0] == '-'
-          true
-        else
-          results.shift_arg
-          do_match(val)
-        end
+        match_next_value_required results
       else
-        nil
+        match_next_value_optional results
       end
     end
 
