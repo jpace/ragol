@@ -4,24 +4,35 @@ ragol(1) - Ragol: Another GetOpt Library
 ## DESCRIPTION
 
 Ragol is a module for processing command-line options. It supports much of the
-functionality of OptParse, and offers a more class-oriented structure for
-defining options.
+functionality of OptParse, and has a more class-oriented structure for defining
+options.
 
 Options can have value types, such as float, fixnum, string, or regular
-expressions, resulting in the value being validated against the value type. An
-option can have a required or optional value.
+expressions, resulting in the value being validated against the value type, and
+converted when it is set as the option value. An option can have a required or
+optional value.
 
 Unlike OptParse, Ragol supports regular expressions as the options themselves.
-For example, this option (from the context option for Glark) accepts a tag in
+For example, this option (from the --context option for Glark) accepts a tag in
 the form "--123":
 
 ```
 optdata << {
-  :regexp    => %r{ ^ - ([1-9]\d*) $ }x,
-  :valuetype => :integer,
-  :set       => Proc.new { |val| @context = val || 2 },
+  :regexp => %r{ ^ - ([1-9]\d*) $ }x,
+  ...
 }
 ```
+
+Options can also be set from rc files, with the arguments being validated and
+converted.
+
+When an option is set, its associated :process block is run (if set), and the
+value is set for the option in the returned Results object. The Results object
+will have a method for each option, returning its converted value. After all
+options are set, their :postproc blocks are executed.
+
+
+
 ## CLASSES
 
 ### Ragol::OptionSet
@@ -65,7 +76,7 @@ Each element of the option data has the following fields:
   * `:description`:
     The description of the option.
 
-See examples for more.
+See examples for further explanation.
 
 ### Ragol::Option
 
@@ -84,6 +95,20 @@ An option that takes a float.
 An option that takes a string.
 
 ## EXAMPLES
+
+
+Unlike OptParse, Ragol supports regular expressions as the options themselves.
+For example, this option (from the --context option for Glark) accepts a tag in
+the form "--123":
+
+```
+optdata << {
+  :regexp => %r{ ^ - ([1-9]\d*) $ }x,
+  ...
+}
+```
+
+
 
 
 

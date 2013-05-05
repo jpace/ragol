@@ -146,8 +146,7 @@ module Ragol
       opt
     end
 
-    def process args
-      results = Ragol::Results.new options, args
+    def process args, results = Ragol::Results.new(options, args)
       options_processed = Array.new
       
       while !results.args_empty?
@@ -177,6 +176,22 @@ module Ragol
       if opt = find_by_name(key)
         results.unset_value opt.name
       end
+    end
+
+    def read_rclines lines, results = Ragol::Results.new(options, nil)
+      options_processed = Array.new
+      
+      lines.each do |line|
+        line.sub!(%r{\#.*}, '')
+        next if line.empty?
+        name, val = line.split(%r{\s*:\s*})
+        opt = @options.detect { |op| op.match_rc? name }
+        if opt
+          opt.set_option_value val, name, results
+        end
+      end
+
+      results
     end
   end
 end

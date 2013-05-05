@@ -6,7 +6,8 @@ module OptionTestData
     optdata << {
       :tags => %w{ -a --alpha },
       :arg  => [ :string ],
-      :set  => Proc.new { |v| @alpha = v }
+      :set  => Proc.new { |v| @alpha = v },
+      :rcname => [ 'alpha' ],
     }
     @bravo = nil
     optdata << {

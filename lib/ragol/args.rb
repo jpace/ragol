@@ -66,7 +66,7 @@ module Ragol
                 [ :tags ],
                 [ :process, :set ],
                 [ :postproc ],
-                [ :rcnames, :rc ],
+                [ :rcnames, :rcname, :rc ],
                 [ :default ],
                 [ :unsets, :unset ],
                 [ :description ],

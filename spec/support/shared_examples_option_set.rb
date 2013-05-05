@@ -36,6 +36,20 @@ shared_examples "an option set" do
       its(:unprocessed) { should eql %w{ --charlie foo } }
     end
   end
+
+  def readrc(*lines)
+    @results = create_abc_option_set.read_rclines lines
+  end
+
+  describe "#readrc" do
+    before :all do
+      readrc 'alpha: bar'
+    end
+    
+    its(:alpha) { should eql 'bar' }
+    its(:charlie) { should be_nil }
+    its(:bravo) { should be_nil }
+  end
 end
 
 shared_examples "an option set with short arguments" do
