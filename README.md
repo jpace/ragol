@@ -31,8 +31,6 @@ value is set for the option in the returned Results object. The Results object
 will have a method for each option, returning its converted value. After all
 options are set, their :postproc blocks are executed.
 
-
-
 ## CLASSES
 
 ### Ragol::OptionSet
@@ -96,21 +94,13 @@ An option that takes a string.
 
 ## EXAMPLES
 
-
-Unlike OptParse, Ragol supports regular expressions as the options themselves.
-For example, this option (from the --context option for Glark) accepts a tag in
-the form "--123":
-
-```
-optdata << {
-  :regexp => %r{ ^ - ([1-9]\d*) $ }x,
-  ...
-}
-```
-
-
-
-
+    @alpha = nil
+    optdata << {
+      :tags => %w{ -a --alpha },
+      :arg  => [ :string ],
+      :set  => Proc.new { |v| @alpha = v },
+      :rcname => [ 'alpha' ],
+    }
 
 ## AUTHOR
 

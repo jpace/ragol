@@ -18,7 +18,7 @@ end
 
 spec = Gem::Specification.new do |s| 
   s.name               = "ragol"
-  s.version            = "0.0.3"
+  s.version            = "1.0.0"
   s.author             = "Jeff Pace"
   s.email              = "jeugenepace@gmail.com"
   s.homepage           = "http://github.com/jpace/ragol"
@@ -30,7 +30,7 @@ spec = Gem::Specification.new do |s|
   s.test_files         = FileList["{test}/**/*test.rb"].to_a
   s.has_rdoc           = false
 
-  s.add_dependency("logue", ">= 0.0.1")
+  s.add_dependency("logue", ">= 1.0.0")
 end
  
 Gem::PackageTask.new(spec) do |pkg| 

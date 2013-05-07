@@ -24,7 +24,6 @@ module Ragol
     attr_reader :options
     
     def initialize(*options)
-      # puts "options: #{options.inspect}"
       if options[0] && options[0].kind_of?(Hash)
         data = options[0][:data]
         options = data.collect do |optdata|
@@ -168,7 +167,7 @@ module Ragol
       options_processed.each do |opt|
         opt.post_process self, results, results.args
       end
-
+      
       results
     end
     
@@ -179,14 +178,11 @@ module Ragol
     end
 
     def read_rclines lines, results = Ragol::Results.new(options, nil)
-      options_processed = Array.new
-      
       lines.each do |line|
         line.sub!(%r{\#.*}, '')
         next if line.empty?
         name, val = line.split(%r{\s*:\s*})
-        opt = @options.detect { |op| op.match_rc? name }
-        if opt
+        if opt = @options.detect { |op| op.match_rc? name }
           opt.set_option_value val, name, results
         end
       end
