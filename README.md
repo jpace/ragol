@@ -94,6 +94,7 @@ An option that takes a string.
 
 ## EXAMPLES
 
+    optdata = Array.new
     @alpha = nil
     optdata << {
       :tags => %w{ -a --alpha },
@@ -101,6 +102,8 @@ An option that takes a string.
       :set  => Proc.new { |v| @alpha = v },
       :rcname => [ 'alpha' ],
     }
+    optset = Ragol::OptSet.new :data => optdata
+    optset.process ARGV
 
 ## AUTHOR
 
