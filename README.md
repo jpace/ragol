@@ -14,7 +14,7 @@ optional value.
 
 Unlike OptParse, Ragol supports regular expressions as the options themselves.
 For example, this option (from the --context option for Glark) accepts a tag in
-the form "--123":
+the form "-123":
 
 ```
 optdata << {

@@ -1,7 +1,6 @@
 #!/usr/bin/ruby -w
 # -*- ruby -*-
 
-require 'ragol/option'
 require 'ragol/optset'
 require 'support/optset_data'
 
