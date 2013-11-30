@@ -18,7 +18,7 @@ end
 
 spec = Gem::Specification.new do |s| 
   s.name               = "ragol"
-  s.version            = "1.0.0"
+  s.version            = "1.0.1"
   s.author             = "Jeff Pace"
   s.email              = "jeugenepace@gmail.com"
   s.homepage           = "http://github.com/jpace/ragol"
@@ -29,6 +29,7 @@ spec = Gem::Specification.new do |s|
   s.require_path       = "lib"
   s.test_files         = FileList["{test}/**/*test.rb"].to_a
   s.has_rdoc           = false
+  s.license            = 'MIT'
 
   s.add_dependency("logue", ">= 1.0.0")
 end

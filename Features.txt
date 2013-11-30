@@ -259,3 +259,7 @@ Fri May 10 09:08:10 2013
 Sat May 11 20:33:10 2013
 
   Fixed example in documentation.
+
+Sat Nov 30 16:27:38 2013
+
+  Created version 1.0.1, which adds the MIT license.
